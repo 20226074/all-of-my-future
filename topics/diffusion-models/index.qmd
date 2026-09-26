@@ -17,6 +17,11 @@ tags:
   - stochastic-analysis
   - machine-learning
 relations:
+  - target: topic-sde
+    type: connected-via
+    note: "연속시간 score-based diffusion은 forward 및 reverse-time SDE로 기술할 수 있다. 이는 diffusion model을 보는 한 관점이며 분야 전체의 계층을 뜻하지 않는다."
+    evidence:
+      - song2021score
   - target: topic-fokker-planck
     type: connected-via
     note: "Forward SDE가 만드는 주변분포의 변화는 Fokker--Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다."
@@ -52,4 +57,3 @@ Reverse-time 식은 형식적인 시간 반전만으로 얻어지는 것이 아�
 
 Schrödinger bridge와 diffusion model의 관계는 유망한 학습 축이지만, 현재 그래프에서는 탐색 관계로만 둔다.
 :::
-

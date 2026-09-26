@@ -8,5 +8,6 @@ toc: false
 
 첫 버전의 중심 노드를 SDE로 정하고 High-dimensional PDE Solvers, Diffusion Models, Optimal Transport를 주요 가지로 두었다. Fokker–Planck Equation과 Schrödinger Bridge는 서로 다른 가지를 잇는 다리로 배치했다.
 
-이번 버전에서 가장 중요한 결정은 읽기 상태와 노트 검증 상태를 분리한 것이다. 앞으로 AI가 만든 초안은 `ai-draft`로 표시하고, 원문과 대조한 정도를 별도로 올린다.
+이 중심형 설계는 이후 폐기했다. 현재 지도에서는 모든 개념을 동등한 출발점으로 두며, SDE와 다른 분야의 연결도 전체 계층이 아니라 국소적인 학술 관계로만 표현한다.
 
+이번 버전에서 가장 중요한 결정은 읽기 상태와 노트 검증 상태를 분리한 것이다. 앞으로 AI가 만든 초안은 `ai-draft`로 표시하고, 원문과 대조한 정도를 별도로 올린다.

@@ -1,10 +1,10 @@
 ---
 title: "Stochastic Differential Equations"
 short-title: "SDE"
-description: "확률적 동역학을 기술하고 다른 연구 분야로 이어지는 중심 토픽"
+description: "잡음이 있는 연속시간 동역학을 기술하는 확률해석의 한 분야"
 node-id: topic-sde
 node-type: topic
-status: core
+status: active
 maturity: developing
 priority: now
 search-aliases:
@@ -16,31 +16,10 @@ tags:
   - probability
   - stochastic-analysis
   - ito-calculus
-  - core
-relations:
-  - target: topic-high-dimensional-pde
-    type: motivates
-    note: "확률 표현과 BSDE 관점은 일부 고차원 반선형 PDE를 계산하는 방법으로 이어진다. 적용 가능한 PDE의 범위는 따로 확인해야 한다."
-    evidence:
-      - han2018deep
-  - target: topic-diffusion-models
-    type: foundation-for
-    note: "연속시간 score-based diffusion은 forward 및 reverse-time SDE로 기술할 수 있다."
-    evidence:
-      - song2021score
-  - target: topic-fokker-planck
-    type: induces
-    note: "적절한 정칙성 조건 아래 확산 과정의 확률밀도는 전방 Kolmogorov 방정식으로 기술된다. 조건과 부호 규약은 사례별 확인이 필요하다."
-    evidence:
-      - oksendal2003sde
-  - target: topic-optimal-transport
-    type: connected-via
-    note: "확률분포의 시간 변화와 Wasserstein 기하를 통해 연결되는 경로를 우선 탐색한다. 이 연결의 엄밀한 범위는 후속 레퍼런스로 보강한다."
-    evidence:
-      - villani2009ot
+relations: []
 ---
 
-이 사이트에서 SDE는 가장 중심이 되는 허브다. 한 분야를 완결해 설명하기보다, 확률 과정·PDE·생성 모델·분포 기하 사이를 오갈 수 있는 공통 언어로 다룬다.
+SDE는 잡음이 있는 연속시간 계의 경로를 기술하는 독립적인 연구 주제다. 다른 분야와 만나는 지점은 많지만, 그 연결이 다른 주제를 SDE의 하위 분야로 만들지는 않는다.
 
 ## 최소 문제 설정
 
@@ -52,12 +31,12 @@ $$
 
 여기서 우선 확인할 것은 해의 존재와 유일성, Itô 적분의 의미, 생성자, 그리고 해의 분포가 어떻게 변하는가이다. 계수의 조건에 따라 결론이 달라지므로 일반적인 형태만 보고 성질을 단정하지 않는다. 표준 입문 경로는 [@oksendal2003sde]를 기준점으로 삼는다.
 
-## 이 그래프에서의 역할
+## 다른 노드와 만나는 지점
 
 - [High-dimensional PDE Solvers](../high-dimensional-pde/)에서는 확률 표현과 BSDE가 계산법으로 바뀌는 과정을 본다.
 - [Diffusion Models](../diffusion-models/)에서는 forward/reverse-time SDE와 score가 어떤 역할을 하는지 본다.
 - [Fokker--Planck Equations](../fokker-planck/)에서는 개별 경로가 아니라 분포의 시간 변화를 본다.
-- [Optimal Transport](../optimal-transport/)에서는 분포 사이의 거리와 동역학적 관점을 탐색한다.
+- [Optimal Transport](../optimal-transport/)와는 필요할 때 [Fokker--Planck Equations](../fokker-planck/) 같은 더 구체적인 연결을 통해 비교한다.
 
 ## 다음 학습 질문
 
@@ -70,4 +49,3 @@ $$
 
 현재 내용은 학습 지도의 골격이다. 정리 수준의 주장에는 이후 가정과 원문 위치를 추가한다.
 :::
-

@@ -155,7 +155,7 @@ def main() -> int:
                     "year": meta.get("year"),
                     "author": scalar_text(meta.get("author")),
                     "topics": topics,
-                    "cluster": (topics[0].removeprefix("topic-") if topics else "references"),
+                    "cluster": "references",
                 }
             )
         nodes.append(node)
@@ -212,15 +212,7 @@ def main() -> int:
             print(f"  - {error}", file=sys.stderr)
         return 1
 
-    priority_order = {"now": 0, "core": 1, "next": 2, "later": 3, "": 4}
-    nodes.sort(
-        key=lambda node: (
-            0 if node["id"] == "topic-sde" else 1,
-            0 if node["kind"] == "topic" else 1,
-            priority_order.get(node.get("priority", ""), 9),
-            node["title"].casefold(),
-        )
-    )
+    nodes.sort(key=lambda node: node["title"].casefold())
     edges.sort(key=lambda edge: (edge["source"], edge["target"], edge["relation"]))
 
     graph = {
@@ -253,4 +245,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
-

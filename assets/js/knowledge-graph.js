@@ -282,8 +282,6 @@
         this.neighbors.get(edge.source).push({ node: edge.targetNode, edge, outgoing: true });
         this.neighbors.get(edge.target).push({ node: edge.sourceNode, edge, outgoing: false });
       }
-      this.showTopics = true;
-      this.showReferences = this.mode !== "preview";
       this.query = "";
       this.selected = null;
       this.transform = { x: 0, y: 0, k: 1 };
@@ -299,33 +297,34 @@
     build() {
       this.container.replaceChildren();
       this.app = element("div", "graph-app");
-      this.toolbar = element("div", "graph-toolbar");
 
-      const searchWrap = element("label", "graph-search-wrap");
-      const search = element("input", "graph-search");
-      search.type = "search";
-      search.placeholder = "노드 검색";
-      search.setAttribute("aria-label", "지식 지도에서 노드 검색");
-      search.addEventListener("input", () => {
-        this.query = search.value.trim().toLocaleLowerCase("ko");
+      this.explorer = element("div", "graph-explorer");
+      this.explorer.setAttribute("role", "navigation");
+      this.explorer.setAttribute("aria-label", "지식 그래프 탐색기");
+      const explorerHeader = element("div", "explorer-header");
+      explorerHeader.append(element("p", "explorer-kicker", "ATLAS"));
+      const searchWrap = element("label", "explorer-search-wrap");
+      this.searchInput = element("input", "explorer-search");
+      this.searchInput.type = "search";
+      this.searchInput.placeholder = "개념·논문·책 검색";
+      this.searchInput.setAttribute("aria-label", "모든 지식 노드 검색");
+      this.searchInput.addEventListener("input", () => {
+        this.query = this.searchInput.value.trim().toLocaleLowerCase("ko");
         this.applyVisibility();
       });
-      searchWrap.append(search);
-      this.toolbar.append(searchWrap);
-
-      const filters = element("div", "graph-filters");
-      const topicFilter = this.filterButton("Topics", "topics", true);
-      const referenceFilter = this.filterButton("References", "references", this.showReferences);
-      if (this.mode === "preview") {
-        referenceFilter.title = "레퍼런스 노드 표시";
-      }
-      filters.append(topicFilter, referenceFilter);
-      this.toolbar.append(filters);
+      searchWrap.append(this.searchInput);
+      explorerHeader.append(searchWrap);
+      this.explorerCount = element("p", "explorer-count");
+      explorerHeader.append(this.explorerCount);
+      this.explorerTree = element("ul", "explorer-tree");
+      this.explorerTree.setAttribute("role", "tree");
+      this.explorer.append(explorerHeader, this.explorerTree);
 
       const zoomOut = this.actionButton("−", "축소", () => this.zoomBy(0.82));
       const reset = this.actionButton("↺", "보기 초기화", () => this.resetView());
       const zoomIn = this.actionButton("+", "확대", () => this.zoomBy(1.22));
-      this.toolbar.append(zoomOut, reset, zoomIn);
+      const canvasControls = element("div", "graph-canvas-controls");
+      canvasControls.append(zoomOut, reset, zoomIn);
 
       this.stage = element("div", "graph-stage");
       this.svg = svgElement("svg", {
@@ -353,45 +352,107 @@
       this.nodeLayer = svgElement("g", { class: "graph-nodes" });
       this.viewport.append(this.linkLayer, this.nodeLayer);
       this.svg.append(this.viewport);
-      this.stage.append(this.svg);
+      this.stage.append(this.svg, canvasControls);
 
       const legend = element("div", "graph-legend");
       legend.innerHTML =
-        '<span class="legend-item"><i class="legend-shape topic"></i> Topic</span>' +
+        '<span class="legend-item"><i class="legend-shape topic"></i> Concept</span>' +
         '<span class="legend-item"><i class="legend-shape reference"></i> Paper / Book</span>';
       this.stage.append(legend);
 
       this.panel = element("div", "knowledge-panel");
       this.panel.setAttribute("role", "complementary");
       this.panel.setAttribute("aria-live", "polite");
-      this.app.append(this.toolbar, this.stage, this.panel);
+      this.app.append(this.explorer, this.stage, this.panel);
       this.container.append(this.app);
 
       this.createGraphElements();
+      this.buildExplorer();
       this.attachInteraction();
       this.resizeObserver = new ResizeObserver(() => this.resize());
       this.resizeObserver.observe(this.stage);
       this.resize();
       this.showPanel(null);
       this.applyVisibility();
-      const initial = this.nodeById.get("topic-sde") || this.nodes[0];
-      if (initial) this.selectNode(initial, false);
     }
 
-    filterButton(label, type, pressed) {
-      const button = element("button", "graph-filter", label);
-      button.type = "button";
-      button.dataset.filter = type;
-      button.setAttribute("aria-pressed", String(pressed));
-      button.addEventListener("click", () => {
-        const next = button.getAttribute("aria-pressed") !== "true";
-        button.setAttribute("aria-pressed", String(next));
-        if (type === "topics") this.showTopics = next;
-        if (type === "references") this.showReferences = next;
-        this.applyVisibility();
-        this.restart(0.35);
-      });
-      return button;
+    searchText(node) {
+      return [
+        node.title,
+        node.label,
+        node.summary,
+        node.author,
+        node.year,
+        ...(node.tags || []),
+        ...(node.searchAliases || [])
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLocaleLowerCase("ko");
+    }
+
+    nodeTypeLabel(node) {
+      if (node.kind === "topic") return "CONCEPT";
+      return `${(node.referenceType || "SOURCE").toUpperCase()}${node.year ? ` · ${node.year}` : ""}`;
+    }
+
+    buildExplorer() {
+      this.explorerItems = new Map();
+      const ordered = [...this.nodes].sort((a, b) => a.title.localeCompare(b.title, "ko"));
+
+      for (const node of ordered) {
+        const item = element("li", "explorer-item");
+        item.dataset.nodeId = node.id;
+        item.setAttribute("role", "treeitem");
+        const row = element("div", "explorer-row");
+        const uniqueNeighbors = [...new Map(
+          (this.neighbors.get(node.id) || []).map((neighbor) => [neighbor.node.id, neighbor])
+        ).values()].sort((a, b) => a.node.title.localeCompare(b.node.title, "ko"));
+
+        const toggle = element("button", "explorer-toggle", uniqueNeighbors.length ? "›" : "·");
+        toggle.type = "button";
+        toggle.setAttribute("aria-label", `${node.label}의 직접 연결 펼치기`);
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.disabled = !uniqueNeighbors.length;
+
+        const select = element("button", "explorer-node");
+        select.type = "button";
+        select.append(
+          element("span", `explorer-node-icon ${node.kind}`, node.kind === "topic" ? "○" : "▤"),
+          element("span", "explorer-node-label", node.label),
+          element("span", "explorer-node-type", this.nodeTypeLabel(node))
+        );
+        select.addEventListener("click", () => this.selectNode(node, true));
+        row.append(toggle, select);
+
+        const children = element("ul", "explorer-children");
+        children.setAttribute("role", "group");
+        children.hidden = true;
+        for (const neighbor of uniqueNeighbors) {
+          const child = element("li", "explorer-child-item");
+          const childButton = element("button", "explorer-child");
+          childButton.type = "button";
+          childButton.append(
+            element("span", `explorer-node-icon ${neighbor.node.kind}`, neighbor.node.kind === "topic" ? "○" : "▤"),
+            element("span", "explorer-node-label", neighbor.node.label)
+          );
+          childButton.title = relationLabel(neighbor.edge.relation);
+          childButton.addEventListener("click", () => this.selectNode(neighbor.node, true));
+          child.append(childButton);
+          children.append(child);
+        }
+
+        toggle.addEventListener("click", () => {
+          const expanded = toggle.getAttribute("aria-expanded") === "true";
+          toggle.setAttribute("aria-expanded", String(!expanded));
+          toggle.textContent = expanded ? "›" : "⌄";
+          children.hidden = expanded;
+        });
+
+        item.append(row, children);
+        this.explorerTree.append(item);
+        this.explorerItems.set(node.id, { item, select, children, toggle });
+      }
     }
 
     actionButton(symbol, label, action) {
@@ -430,8 +491,7 @@
         group.style.setProperty("--node-color", clusterColors[node.cluster] || "var(--atlas-teal)");
 
         if (node.kind === "topic") {
-          const radius = node.id === "topic-sde" ? 49 : 40;
-          group.append(svgElement("circle", { class: "node-shape", r: radius }));
+          group.append(svgElement("circle", { class: "node-shape", r: 40 }));
         } else {
           group.append(
             svgElement("rect", {
@@ -447,7 +507,7 @@
 
         const text = svgElement("text", { y: node.kind === "topic" ? -4 : -3 });
         const kicker = svgElement("tspan", { class: "node-kicker", x: 0, dy: node.kind === "topic" ? -7 : -8 });
-        kicker.textContent = node.kind === "topic" ? (node.id === "topic-sde" ? "CENTER" : "TOPIC") : node.referenceType;
+        kicker.textContent = node.kind === "topic" ? "CONCEPT" : node.referenceType;
         text.append(kicker);
         const lines = splitLabel(node.label, node.kind === "topic" ? 18 : 21);
         lines.forEach((line, index) => {
@@ -503,15 +563,10 @@
     }
 
     positionNodes() {
-      const centerX = this.width * 0.48;
+      const centerX = this.width * 0.5;
       const centerY = this.height * 0.5;
-      const topics = this.nodes.filter((node) => node.kind === "topic" && node.id !== "topic-sde");
+      const topics = this.nodes.filter((node) => node.kind === "topic");
       const topicRadius = Math.min(this.width, this.height) * 0.31;
-      const sde = this.nodeById.get("topic-sde");
-      if (sde) {
-        sde.x = centerX;
-        sde.y = centerY;
-      }
       topics.forEach((node, index) => {
         const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(topics.length, 1);
         node.x = centerX + Math.cos(angle) * topicRadius;
@@ -519,17 +574,22 @@
       });
       const references = this.nodes.filter((node) => node.kind === "reference");
       references.forEach((node) => {
-        const anchorId = node.topics?.[0];
-        const anchor = this.nodeById.get(anchorId) || sde || { x: centerX, y: centerY };
+        const anchors = (this.neighbors.get(node.id) || [])
+          .map((neighbor) => neighbor.node)
+          .filter((neighbor) => neighbor.kind === "topic");
+        const anchor = anchors.length
+          ? {
+              x: anchors.reduce((sum, item) => sum + item.x, 0) / anchors.length,
+              y: anchors.reduce((sum, item) => sum + item.y, 0) / anchors.length
+            }
+          : { x: centerX, y: centerY };
         const angle = ((hashNumber(node.id) % 360) * Math.PI) / 180;
         node.x = anchor.x + Math.cos(angle) * 105;
         node.y = anchor.y + Math.sin(angle) * 80;
       });
     }
 
-    visible(node) {
-      if (node.kind === "topic" && !this.showTopics) return false;
-      if (node.kind === "reference" && !this.showReferences) return false;
+    visible() {
       return true;
     }
 
@@ -537,27 +597,28 @@
       const matches = new Set();
       if (this.query) {
         for (const node of this.nodes) {
-          const haystack = [node.title, node.label, node.summary, ...(node.tags || []), ...(node.searchAliases || [])]
-            .join(" ")
-            .toLocaleLowerCase("ko");
-          if (haystack.includes(this.query)) matches.add(node.id);
+          if (this.searchText(node).includes(this.query)) matches.add(node.id);
         }
       }
 
       for (const node of this.nodes) {
         const group = this.nodeElements.get(node.id);
-        const shown = this.visible(node);
-        group.style.display = shown ? "" : "none";
         const searchMuted = this.query && !matches.has(node.id);
-        group.classList.toggle("is-muted", Boolean(searchMuted));
+        group.classList.toggle("is-search-muted", Boolean(searchMuted));
+        const explorerItem = this.explorerItems.get(node.id);
+        explorerItem.item.hidden = Boolean(this.query && !matches.has(node.id));
       }
       for (const edge of this.edges) {
         const line = this.edgeElements.get(edge);
-        const shown = this.visible(edge.sourceNode) && this.visible(edge.targetNode);
-        line.style.display = shown ? "" : "none";
         const searchMuted = this.query && !(matches.has(edge.source) && matches.has(edge.target));
-        line.classList.toggle("is-muted", Boolean(searchMuted));
+        line.classList.toggle("is-search-muted", Boolean(searchMuted));
       }
+
+      const count = this.query ? matches.size : this.nodes.length;
+      this.explorerCount.textContent = this.query
+        ? `${count}개 검색 결과`
+        : `${this.nodes.length}개 노드 · 모두 동등한 시작점`;
+      this.explorer.classList.toggle("is-searching", Boolean(this.query));
 
       if (this.query && matches.size === 1) {
         const match = this.nodeById.get([...matches][0]);
@@ -584,31 +645,29 @@
         const group = this.nodeElements.get(node.id);
         group.classList.toggle("is-selected", node.id === selectedId);
         const selectionMuted = Boolean(selectedId) && !connected.has(node.id);
-        const queryMuted = group.classList.contains("is-muted") && Boolean(this.query);
-        group.classList.toggle("is-muted", selectionMuted || queryMuted);
+        group.classList.toggle("is-selection-muted", selectionMuted);
+        this.explorerItems.get(node.id)?.select.classList.toggle("is-selected", node.id === selectedId);
       }
       for (const edge of this.edges) {
         const line = this.edgeElements.get(edge);
         const active = Boolean(selectedId) && (edge.source === selectedId || edge.target === selectedId);
         line.classList.toggle("is-active", active);
-        line.classList.toggle("is-muted", Boolean(selectedId) && !active);
+        line.classList.toggle("is-selection-muted", Boolean(selectedId) && !active);
       }
     }
 
     showPanel(node) {
       this.panel.replaceChildren();
       if (!node) {
-        const empty = element("div", "graph-panel-empty");
-        empty.append(
-          element("p", "panel-type", "EXPLORE"),
-          element("h3", "", "노드를 선택하세요"),
-          element("p", "panel-summary", "직접 연결된 개념과 레퍼런스, 관계의 종류를 여기서 확인할 수 있습니다.")
-        );
-        this.panel.append(empty);
+        this.panel.hidden = true;
+        this.app.classList.remove("has-selection");
         return;
       }
 
-      const type = node.kind === "topic" ? "TOPIC" : `${node.referenceType} · ${node.year || ""}`;
+      this.panel.hidden = false;
+      this.app.classList.add("has-selection");
+
+      const type = node.kind === "topic" ? "CONCEPT" : `${node.referenceType} · ${node.year || ""}`;
       this.panel.append(element("p", "panel-type", type));
       this.panel.append(element("h3", "", node.title));
       this.panel.append(element("p", "panel-summary", node.summary || "설명을 준비 중입니다."));
@@ -844,10 +903,10 @@
         }
       }
 
-      const centerX = this.width * 0.48;
+      const centerX = this.width * 0.5;
       const centerY = this.height * 0.5;
       for (const node of activeNodes) {
-        const gravity = node.id === "topic-sde" ? 0.045 : 0.0055;
+        const gravity = 0.0065;
         if (!node.fixed) {
           node.vx += (centerX - node.x) * gravity * alpha;
           node.vy += (centerY - node.y) * gravity * alpha;

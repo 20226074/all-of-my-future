@@ -1,6 +1,6 @@
 ---
 title: "High-dimensional PDE Solvers"
-description: "차원의 저주를 피하기 위해 확률 표현과 학습 기반 근사를 활용하는 방법"
+description: "차원의 저주 아래에서 PDE를 계산하기 위한 수치·확률·학습 기반 방법"
 node-id: topic-high-dimensional-pde
 node-type: topic
 status: active
@@ -22,15 +22,9 @@ relations:
     note: "일부 반선형 포물형 PDE는 확률 과정과 BSDE를 이용해 표현할 수 있으며, 이를 수치 방법으로 활용할 수 있다."
     evidence:
       - han2018deep
-  - target: topic-fokker-planck
-    type: method-for
-    note: "고차원 Fokker--Planck 문제는 잠재적 응용 대상이지만, deep BSDE 계열 방법이 그대로 적용된다고 가정해서는 안 된다."
-    evidence:
-      - han2018deep
-      - oksendal2003sde
 ---
 
-고차원 PDE에서는 격자점의 수가 차원에 따라 급격히 늘어나는 문제가 핵심 장애물이다. 이 토픽은 모든 PDE를 하나의 방법으로 푼다는 목표보다, **어떤 구조가 있을 때 확률적 표현과 샘플 기반 계산이 유리한가**를 구분하는 데 초점을 둔다.
+고차원 PDE에서는 격자점의 수가 차원에 따라 급격히 늘어나는 문제가 핵심 장애물이다. 이 토픽은 확률적 표현과 샘플 기반 계산뿐 아니라 저랭크·희소 근사, operator learning 등 서로 다른 방법군으로 독립적으로 확장될 수 있다. 현재 연결된 SDE/BSDE 접근은 그중 한 경로이며 전체 분야의 상위 구조가 아니다.
 
 ## 우선 다룰 범위
 
@@ -54,4 +48,3 @@ relations:
 
 “신경망을 쓰면 차원의 저주를 해결한다”는 식의 일반화는 아직 이 노트의 결론이 아니다. 문제 구조와 평가 방식별로 근거를 분리한다.
 :::
-

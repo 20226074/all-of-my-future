@@ -1,18 +1,16 @@
 directed:
-  - prerequisite-for
-  - subtopic-of
-  - foundation-for
-  - motivates
-  - method-for
+  - uses
+  - applies-to
   - generalizes
   - induces
-  - informs
+  - helpful-before
 
 undirected:
   - connected-via
+  - related-to
+  - compared-with
   - complements
   - contrasts-with
 
 implicit:
   - documents
-

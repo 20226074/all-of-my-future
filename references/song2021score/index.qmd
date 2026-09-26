@@ -38,7 +38,7 @@ tags:
 
 ## 왜 읽는가
 
-[SDE](../../topics/sde/index.qmd)의 역시간 동역학이 [Diffusion Models](../../topics/diffusion-models/index.qmd)의 학습과 샘플링으로 어떻게 이어지는지 이해하기 위한 중심 논문이다.
+[SDE](../../topics/sde/index.qmd)의 역시간 동역학이 [Diffusion Models](../../topics/diffusion-models/index.qmd)의 학습과 샘플링으로 어떻게 연결되는지 이해하기 위한 주요 논문이다.
 
 ## 핵심 아이디어
 

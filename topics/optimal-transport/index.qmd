@@ -23,10 +23,9 @@ relations:
     evidence:
       - villani2009ot
   - target: topic-schrodinger-bridge
-    type: foundation-for
+    type: connected-via
     note: "Schrödinger bridge를 entropic transport와 연결해 이해할 수 있으나, 고전적 최적수송과 동일한 문제는 아니다. 직접 근거는 후속 레퍼런스로 보강한다."
-    evidence:
-      - villani2009ot
+    evidence: []
 ---
 
 Optimal Transport(OT)는 한 확률분포를 다른 확률분포로 옮기는 결합 또는 사상을 비용 최소화 관점에서 다룬다. 이 노트에서는 정적 Monge/Kantorovich 문제에서 시작해 Wasserstein 거리와 동적 관점으로 확장한다 [@villani2009ot].
@@ -48,4 +47,3 @@ Optimal Transport(OT)는 한 확률분포를 다른 확률분포로 옮기는 �
 - 정적 OT와 동적 OT는 어떤 가정 아래 동치인가?
 - Entropic regularization은 계산 편의 외에 어떤 확률적 해석을 갖는가?
 - [Schrödinger Bridge](../schrodinger-bridge/)의 small-noise limit와 OT의 관계는 어떤 의미에서 성립하는가?
-

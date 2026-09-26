@@ -31,7 +31,7 @@ tags:
 
 ## 왜 읽는가
 
-[Optimal Transport](../../topics/optimal-transport/index.qmd) 가지의 기준 레퍼런스로 삼고, 이후 SDE·확산·Schrödinger bridge와의 연결을 이해하는 데 필요한 정의와 정리를 원전 수준에서 확인하기 위해 읽는다.
+[Optimal Transport](../../topics/optimal-transport/index.qmd) 학습의 기준 레퍼런스로 삼고, 다른 개념과의 연결을 검토할 때 필요한 정의와 정리를 원전 수준에서 확인하기 위해 읽는다.
 
 ## 핵심 아이디어
 

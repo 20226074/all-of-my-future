@@ -22,11 +22,6 @@ relations:
     note: "SDE가 개별 표본 경로를 기술한다면 전방 Kolmogorov 방정식은 그 과정의 법칙 또는 밀도 변화를 기술한다."
     evidence:
       - oksendal2003sde
-  - target: topic-diffusion-models
-    type: foundation-for
-    note: "Forward noising 과정의 주변분포를 이해하는 PDE 관점을 제공하지만, 실제 diffusion model 학습이 이 PDE를 직접 푸는 것은 아니다."
-    evidence:
-      - song2021score
 ---
 
 Fokker--Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 $p_t(x)$가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.
@@ -56,4 +51,3 @@ $$
 1. 약한 해와 고전해 중 어떤 개념을 사용하고 있는가?
 2. 질량 보존과 비음수성은 어떤 조건에서 보장되는가?
 3. 정상분포는 언제 존재하며 유일한가?
-

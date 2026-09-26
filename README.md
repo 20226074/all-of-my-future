@@ -1,6 +1,6 @@
 # All of My Future
 
-SDE(Stochastic Differential Equations)를 중심으로 앞으로 공부할 연구 주제, 논문, 책을 연결해 가는 개인 지식 베이스입니다. High-dimensional PDE Solver, Diffusion, Optimal Transport처럼 연구가 뻗어 나가는 경로를 토픽과 레퍼런스의 관계로 기록하고, Quarto 사이트와 지식 그래프로 함께 살펴봅니다.
+앞으로 공부할 연구 개념, 논문, 책을 관계로 연결해 가는 개인 지식 베이스입니다. SDE, High-dimensional PDE Solver, Diffusion, Optimal Transport 등 어느 개념도 고정된 루트가 아니며, 각 노드에서 독립적으로 학습을 확장할 수 있습니다.
 
 사이트는 공개 GitHub 저장소와 GitHub Pages에서 운영하는 것을 전제로 합니다. 공개되어도 괜찮은 학습 기록만 저장하세요.
 
@@ -50,7 +50,7 @@ python scripts/check_site.py
 
 렌더링 결과는 `_site/`에 생성되며 Git에는 커밋하지 않습니다. 링크 검사기는 생성된 모든 내부 페이지·파일·본문 fragment를 확인합니다.
 
-## 새 토픽 추가
+## 새 개념 노드 추가
 
 1. `templates/topic.qmd`를 복사해 `topics/<slug>/index.qmd`로 저장합니다. 예: `topics/optimal-transport/index.qmd`.
 2. 복사한 문서의 YAML front matter를 채웁니다. `node-id`는 `topic-`으로 시작하는 고유값이며, 한 번 정하면 바꾸지 않는 식별자로 사용합니다. `relations`의 `target`에는 실제로 존재하는 `node-id`를, `type`에는 `data/relation-types.yml`에 정의된 관계 유형을 적습니다.
@@ -59,7 +59,7 @@ python scripts/check_site.py
 
 템플릿의 필드명이 그래프 생성 스크립트가 기대하는 스키마이므로, 필드를 임의로 바꾸기보다 값을 채워 사용합니다.
 
-## 새 레퍼런스 추가
+## 새 문헌 노드 추가
 
 1. `templates/reference.qmd`를 복사해 `references/<slug>/index.qmd`로 저장합니다. 논문·책 한 항목당 한 디렉터리를 사용합니다.
 2. YAML front matter에 `ref-`로 시작하는 고유 `node-id`, `reference-type`, 저자, 연도, `citekey`, 연결할 토픽의 `node-id`를 기록합니다. URL 또는 DOI는 BibTeX 항목에 넣습니다.

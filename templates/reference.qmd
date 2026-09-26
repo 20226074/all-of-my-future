@@ -10,7 +10,7 @@ citekey: replaceMe
 author: "저자"
 year: 2026
 topics:
-  - topic-sde
+  - topic-replace-me
 reading-status: inbox
 note-status: stub
 source-checked: false
@@ -38,7 +38,7 @@ relations: []
 
 ## 실험 또는 예제
 
-## SDE 중심 그래프에서의 위치
+## 다른 노드와의 연결
 
 ## 전제와 한계
 
@@ -53,4 +53,3 @@ relations: []
 ## 인용
 
 이 노트의 대상은 [@replaceMe]이다.
-

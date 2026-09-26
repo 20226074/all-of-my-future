@@ -35,7 +35,7 @@ tags:
 
 ## 왜 읽는가
 
-[SDE](../../topics/sde/index.qmd)에서 [High-dimensional PDE](../../topics/high-dimensional-pde/index.qmd)로 이어지는 대표적 계산 경로를 파악하고, 확률표현과 딥러닝이 실제 알고리즘에서 어떻게 결합되는지 확인하기 위해 읽는다.
+[High-dimensional PDE](../../topics/high-dimensional-pde/index.qmd)의 한 방법군에서 PDE–BSDE 대응과 딥러닝이 실제 알고리즘으로 어떻게 결합되는지 확인하기 위해 읽는다. 이 경로는 고차원 PDE 전체를 SDE에 종속시키지 않는다.
 
 ## 핵심 아이디어
 

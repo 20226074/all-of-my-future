@@ -6,33 +6,9 @@
     "references": 4,
     "papers": 2,
     "books": 2,
-    "relations": 20
+    "relations": 13
   },
   "nodes": [
-    {
-      "id": "topic-sde",
-      "kind": "topic",
-      "label": "SDE",
-      "title": "Stochastic Differential Equations",
-      "summary": "확률적 동역학을 기술하고 다른 연구 분야로 이어지는 중심 토픽",
-      "url": "topics/sde/",
-      "status": "core",
-      "priority": "now",
-      "tags": [
-        "probability",
-        "stochastic-analysis",
-        "ito-calculus",
-        "core"
-      ],
-      "searchAliases": [
-        "SDE",
-        "stochastic differential equations",
-        "확률미분방정식",
-        "Ito diffusion"
-      ],
-      "maturity": "developing",
-      "cluster": "sde"
-    },
     {
       "id": "topic-diffusion-models",
       "kind": "topic",
@@ -86,7 +62,7 @@
       "kind": "topic",
       "label": "High-dimensional PDE Solvers",
       "title": "High-dimensional PDE Solvers",
-      "summary": "차원의 저주를 피하기 위해 확률 표현과 학습 기반 근사를 활용하는 방법",
+      "summary": "차원의 저주 아래에서 PDE를 계산하기 위한 수치·확률·학습 기반 방법",
       "url": "topics/high-dimensional-pde/",
       "status": "active",
       "priority": "now",
@@ -130,30 +106,6 @@
       "cluster": "optimal-transport"
     },
     {
-      "id": "topic-schrodinger-bridge",
-      "kind": "topic",
-      "label": "Schrödinger Bridge",
-      "title": "Schrödinger Bridge",
-      "summary": "기준 확률 동역학에 가깝게 두 끝점 분포를 연결하는 경로공간 문제",
-      "url": "topics/schrodinger-bridge/",
-      "status": "exploratory",
-      "priority": "later",
-      "tags": [
-        "stochastic-control",
-        "path-space",
-        "entropy",
-        "optimal-transport"
-      ],
-      "searchAliases": [
-        "Schrodinger bridge",
-        "SBP",
-        "슈뢰딩거 브리지",
-        "entropic interpolation"
-      ],
-      "maturity": "seed",
-      "cluster": "schrodinger-bridge"
-    },
-    {
       "id": "ref-villani2009ot",
       "kind": "reference",
       "label": "Villani (2009)",
@@ -178,7 +130,31 @@
       "topics": [
         "topic-optimal-transport"
       ],
-      "cluster": "optimal-transport"
+      "cluster": "references"
+    },
+    {
+      "id": "topic-schrodinger-bridge",
+      "kind": "topic",
+      "label": "Schrödinger Bridge",
+      "title": "Schrödinger Bridge",
+      "summary": "기준 확률 동역학에 가깝게 두 끝점 분포를 연결하는 경로공간 문제",
+      "url": "topics/schrodinger-bridge/",
+      "status": "exploratory",
+      "priority": "later",
+      "tags": [
+        "stochastic-control",
+        "path-space",
+        "entropy",
+        "optimal-transport"
+      ],
+      "searchAliases": [
+        "Schrodinger bridge",
+        "SBP",
+        "슈뢰딩거 브리지",
+        "entropic interpolation"
+      ],
+      "maturity": "seed",
+      "cluster": "schrodinger-bridge"
     },
     {
       "id": "ref-song2021score",
@@ -206,7 +182,7 @@
         "topic-diffusion-models",
         "topic-sde"
       ],
-      "cluster": "diffusion-models"
+      "cluster": "references"
     },
     {
       "id": "ref-han2018deep",
@@ -234,7 +210,30 @@
         "topic-high-dimensional-pde",
         "topic-sde"
       ],
-      "cluster": "high-dimensional-pde"
+      "cluster": "references"
+    },
+    {
+      "id": "topic-sde",
+      "kind": "topic",
+      "label": "SDE",
+      "title": "Stochastic Differential Equations",
+      "summary": "잡음이 있는 연속시간 동역학을 기술하는 확률해석의 한 분야",
+      "url": "topics/sde/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "probability",
+        "stochastic-analysis",
+        "ito-calculus"
+      ],
+      "searchAliases": [
+        "SDE",
+        "stochastic differential equations",
+        "확률미분방정식",
+        "Ito diffusion"
+      ],
+      "maturity": "developing",
+      "cluster": "sde"
     },
     {
       "id": "ref-oksendal2003sde",
@@ -261,7 +260,7 @@
       "topics": [
         "topic-sde"
       ],
-      "cluster": "sde"
+      "cluster": "references"
     }
   ],
   "edges": [
@@ -332,11 +331,11 @@
       "evidence": []
     },
     {
-      "source": "topic-fokker-planck",
-      "target": "topic-diffusion-models",
-      "relation": "foundation-for",
-      "directed": true,
-      "note": "Forward noising 과정의 주변분포를 이해하는 PDE 관점을 제공하지만, 실제 diffusion model 학습이 이 PDE를 직접 푸는 것은 아니다.",
+      "source": "topic-diffusion-models",
+      "target": "topic-sde",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "연속시간 score-based diffusion은 forward 및 reverse-time SDE로 기술할 수 있다. 이는 diffusion model을 보는 한 관점이며 분야 전체의 계층을 뜻하지 않는다.",
       "evidence": [
         "song2021score"
       ]
@@ -348,17 +347,6 @@
       "directed": false,
       "note": "SDE가 개별 표본 경로를 기술한다면 전방 Kolmogorov 방정식은 그 과정의 법칙 또는 밀도 변화를 기술한다.",
       "evidence": [
-        "oksendal2003sde"
-      ]
-    },
-    {
-      "source": "topic-high-dimensional-pde",
-      "target": "topic-fokker-planck",
-      "relation": "method-for",
-      "directed": true,
-      "note": "고차원 Fokker--Planck 문제는 잠재적 응용 대상이지만, deep BSDE 계열 방법이 그대로 적용된다고 가정해서는 안 된다.",
-      "evidence": [
-        "han2018deep",
         "oksendal2003sde"
       ]
     },
@@ -385,70 +373,10 @@
     {
       "source": "topic-optimal-transport",
       "target": "topic-schrodinger-bridge",
-      "relation": "foundation-for",
-      "directed": true,
+      "relation": "connected-via",
+      "directed": false,
       "note": "Schrödinger bridge를 entropic transport와 연결해 이해할 수 있으나, 고전적 최적수송과 동일한 문제는 아니다. 직접 근거는 후속 레퍼런스로 보강한다.",
-      "evidence": [
-        "villani2009ot"
-      ]
-    },
-    {
-      "source": "topic-schrodinger-bridge",
-      "target": "topic-diffusion-models",
-      "relation": "complements",
-      "directed": false,
-      "note": "두 접근 모두 분포 사이의 확률 동역학을 구성하지만 학습 목표와 주어진 정보가 다를 수 있다. 후속 전문 문헌으로 검증한다.",
       "evidence": []
-    },
-    {
-      "source": "topic-schrodinger-bridge",
-      "target": "topic-optimal-transport",
-      "relation": "connected-via",
-      "directed": false,
-      "note": "Entropic transport와의 관계를 통해 비교할 수 있지만, 비용·기준 측도·극한 절차를 구분해야 한다. 현재는 탐색 관계다.",
-      "evidence": [
-        "villani2009ot"
-      ]
-    },
-    {
-      "source": "topic-sde",
-      "target": "topic-diffusion-models",
-      "relation": "foundation-for",
-      "directed": true,
-      "note": "연속시간 score-based diffusion은 forward 및 reverse-time SDE로 기술할 수 있다.",
-      "evidence": [
-        "song2021score"
-      ]
-    },
-    {
-      "source": "topic-sde",
-      "target": "topic-fokker-planck",
-      "relation": "induces",
-      "directed": true,
-      "note": "적절한 정칙성 조건 아래 확산 과정의 확률밀도는 전방 Kolmogorov 방정식으로 기술된다. 조건과 부호 규약은 사례별 확인이 필요하다.",
-      "evidence": [
-        "oksendal2003sde"
-      ]
-    },
-    {
-      "source": "topic-sde",
-      "target": "topic-high-dimensional-pde",
-      "relation": "motivates",
-      "directed": true,
-      "note": "확률 표현과 BSDE 관점은 일부 고차원 반선형 PDE를 계산하는 방법으로 이어진다. 적용 가능한 PDE의 범위는 따로 확인해야 한다.",
-      "evidence": [
-        "han2018deep"
-      ]
-    },
-    {
-      "source": "topic-sde",
-      "target": "topic-optimal-transport",
-      "relation": "connected-via",
-      "directed": false,
-      "note": "확률분포의 시간 변화와 Wasserstein 기하를 통해 연결되는 경로를 우선 탐색한다. 이 연결의 엄밀한 범위는 후속 레퍼런스로 보강한다.",
-      "evidence": [
-        "villani2009ot"
-      ]
     }
   ]
 }
