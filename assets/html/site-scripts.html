@@ -1,0 +1,25 @@
+<script>
+(() => {
+  const assets = [
+    ["assets/js/site.js", "atlas-site-script"],
+    ["assets/js/knowledge-graph.js", "atlas-graph-script"]
+  ];
+  const candidates = [...document.querySelectorAll("link[href], script[src]")]
+    .map((element) => element.href || element.src)
+    .filter(Boolean);
+  const libraryUrl = candidates.find((url) => url.includes("/site_libs/"));
+  const rootUrl = libraryUrl
+    ? libraryUrl.slice(0, libraryUrl.indexOf("/site_libs/") + 1)
+    : new URL("./", document.baseURI).href;
+
+  for (const [path, id] of assets) {
+    if (document.getElementById(id)) continue;
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = new URL(path, rootUrl).href;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+})();
+</script>
+

@@ -1,0 +1,5 @@
+format:
+  html:
+    toc: true
+    toc-depth: 2
+    anchor-sections: true

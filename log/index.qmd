@@ -1,0 +1,18 @@
+---
+title: "Learning Log"
+subtitle: "무엇을 추가했는지보다, 이해가 어떻게 바뀌었는지를 기록한다"
+description: "연구 지식 지도의 변경 기록"
+listing:
+  contents:
+    - "*.qmd"
+    - "!index.qmd"
+  type: default
+  sort: "date desc"
+  filter-ui: false
+  sort-ui: false
+  page-size: 12
+toc: false
+sidebar: false
+---
+
+짧은 공부 기록과 구조 변경을 남긴다. 레퍼런스의 상세 요약은 각 Reference 페이지에, 여러 자료를 통합한 설명은 Topic 페이지에 둔다.

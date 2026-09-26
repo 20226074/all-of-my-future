@@ -1,0 +1,27 @@
+# Quarto build and cache
+/.quarto/
+/_site/
+/.tools/
+
+# Python environments and caches
+/.venv/
+/venv/
+__pycache__/
+*.py[cod]
+/.pytest_cache/
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+*.local
+
+# Editor and operating-system files
+/.vscode/
+/.idea/
+.DS_Store
+Thumbs.db
+
+# `_freeze/` and `_publish.yml` are intentionally committed when generated.
+
+**/*.quarto_ipynb

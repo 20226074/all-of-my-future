@@ -1,0 +1,55 @@
+---
+title: "Diffusion Models"
+description: "노이즈를 더하는 과정과 역시간 확률 동역학을 이용하는 생성 모델"
+node-id: topic-diffusion-models
+node-type: topic
+status: active
+maturity: seed
+priority: now
+search-aliases:
+  - diffusion model
+  - score-based generative model
+  - score SDE
+  - 확산 모델
+tags:
+  - generative-modeling
+  - score-matching
+  - stochastic-analysis
+  - machine-learning
+relations:
+  - target: topic-fokker-planck
+    type: connected-via
+    note: "Forward SDE가 만드는 주변분포의 변화는 Fokker--Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다."
+    evidence:
+      - song2021score
+  - target: topic-schrodinger-bridge
+    type: connected-via
+    note: "두 분야 모두 기준 확률 동역학과 분포의 연결을 다루지만 목적함수와 제약은 동일하지 않다. 직접적인 대응은 후속 문헌으로 검증한다."
+    evidence: []
+---
+
+이 토픽에서는 이미지 생성 기법 전체보다 **연속시간 확률 과정으로 표현되는 diffusion/score 모델**에 먼저 집중한다. 기본 출발점은 forward noising SDE, 시간별 score 근사, 그리고 reverse-time dynamics이다 [@song2021score].
+
+## 핵심 구성요소
+
+- 데이터 분포를 단순한 기준 분포 쪽으로 보내는 forward process
+- 시간별 score $\nabla_x \log p_t(x)$의 근사
+- 학습된 score를 사용하는 reverse-time SDE 또는 probability-flow ODE
+- 샘플 품질, 계산량, likelihood 평가 사이의 선택
+
+## SDE 관점에서 확인할 것
+
+Reverse-time 식은 형식적인 시간 반전만으로 얻어지는 것이 아니다. 밀도의 존재, 계수의 정칙성, score 근사의 정확도 등 필요한 조건을 원문별로 기록해야 한다. 또한 이론식과 실제 discretization 및 sampler의 차이를 분리한다.
+
+## 다음 연결
+
+- [Fokker--Planck Equations](../fokker-planck/): 주변분포가 따르는 방정식
+- [Schrödinger Bridge](../schrodinger-bridge/): 기준 경로 측도에 대한 제약된 분포 연결 문제
+- [SDE](../sde/): 확률 적분과 역시간 동역학의 기반
+
+::: {.callout-note}
+## 확인 대기
+
+Schrödinger bridge와 diffusion model의 관계는 유망한 학습 축이지만, 현재 그래프에서는 탐색 관계로만 둔다.
+:::
+

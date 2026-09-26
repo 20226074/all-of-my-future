@@ -1,0 +1,56 @@
+---
+title: "레퍼런스 제목"
+short-title: "Author (Year)"
+description: "목록에 보일 한 문장"
+graph-summary: "그래프 상세 패널에 보일 한 문장"
+node-id: ref-replace-me
+node-type: reference
+reference-type: paper
+citekey: replaceMe
+author: "저자"
+year: 2026
+topics:
+  - topic-sde
+reading-status: inbox
+note-status: stub
+source-checked: false
+priority: later
+last-reviewed: 2026-09-26
+tags: []
+relations: []
+---
+
+::: {.callout-warning title="노트 상태: stub"}
+이 문서는 아직 원문과 대조되지 않은 수집 단계다.
+:::
+
+## 한 줄 요약
+
+## 왜 읽는가
+
+## 문제 설정
+
+## 핵심 아이디어
+
+## 주요 정리·결과
+
+## 방법과 유도
+
+## 실험 또는 예제
+
+## SDE 중심 그래프에서의 위치
+
+## 전제와 한계
+
+## 내가 이해한 것
+
+## 확인이 필요한 주장
+
+| 주장 | 원문 위치 | 확인 상태 |
+|---|---|---|
+|  |  | 미확인 |
+
+## 인용
+
+이 노트의 대상은 [@replaceMe]이다.
+

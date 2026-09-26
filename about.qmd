@@ -1,0 +1,66 @@
+---
+title: "About this atlas"
+subtitle: "개인 연구 노트가 지식 그래프로 자라는 방식"
+description: "사이트 목적, 메타데이터 규칙, AI 협업 원칙"
+toc: true
+sidebar: false
+---
+
+## 목적
+
+이곳은 완성된 지식을 전시하는 블로그가 아니다. 앞으로 공부할 논문과 책을 모으고, 질문하고, 설명하고, 다시 원문과 대조하면서 **나의 연구 지식 구조가 어떻게 변하는지** 기록하는 작업 공간이다. 현재 중심은 Stochastic Differential Equations(SDE)다.
+
+## 세 층의 구조
+
+:::: {.process-grid}
+::: {.process-step}
+<span>01</span>
+
+### Reference
+
+논문이나 책 한 권에 대한 구조화된 노트. 서지 정보, AI 초안, 원문 검증 위치를 함께 둔다.
+:::
+
+::: {.process-step}
+<span>02</span>
+
+### Topic
+
+여러 레퍼런스를 가로질러 형성한 이해. 문제, 선행지식, 핵심 결과, 열린 질문을 종합한다.
+:::
+
+::: {.process-step}
+<span>03</span>
+
+### Map
+
+Topic 사이의 의미 관계와 Reference가 다루는 Topic을 탐색 가능한 그래프로 보여준다.
+:::
+::::
+
+## AI와 함께 쓰는 원칙
+
+::: {.callout-important title="유창함과 검증은 다르다"}
+AI가 작성한 요약은 기본적으로 `ai-draft`다. 핵심 주장에는 가능한 한 원문의 페이지, 절, 정리 번호를 붙이고 직접 대조한 뒤에만 `checked` 또는 `verified`로 바꾼다.
+:::
+
+- 모르는 것을 그럴듯하게 메우지 않고 질문으로 남긴다.
+- 한 자료의 요약과 여러 자료를 종합한 Topic 설명을 구분한다.
+- Reference 노드는 논문과 책만 허용한다.
+- 관계 유형을 자유롭게 늘리지 않고 통제된 어휘를 쓴다.
+- 공개 저장소에 둘 수 없는 개인정보나 미공개 연구 자료는 기록하지 않는다.
+
+## 새 자료를 추가하는 법
+
+1. `bibliography/references.bib`에 정확한 서지 정보를 넣는다.
+2. `templates/reference.qmd`를 새 `references/<citekey>/index.qmd`로 복사한다.
+3. YAML의 `node-id`, `citekey`, `topics`, 두 상태 필드를 채운다.
+4. 본문에 읽는 목적과 확인할 질문부터 적는다.
+5. `python scripts/build_graph.py`로 메타데이터와 관계를 검증한다.
+6. `quarto preview`에서 목록·그래프·링크를 확인한다.
+
+토픽은 `templates/topic.qmd`에서 시작한다. 새 노드를 만들 때 그래프 JSON을 직접 고치지 않는다.
+
+## 왜 Quarto인가
+
+Quarto는 Markdown에 가까운 `.qmd` 파일, 수식과 인용, 자동 목록, 전체 텍스트 검색, 밝은/어두운 테마를 한 정적 사이트에 묶는다. 결과물은 서버 데이터베이스 없이 GitHub Pages에서 공개할 수 있어 오래 보존하고 어디서든 접근하기 좋다.

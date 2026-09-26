@@ -1,0 +1,37 @@
+---
+title: "Learning Queue"
+subtitle: "수집에서 검증까지, 다음 행동이 보이는 읽기 목록"
+description: "읽을 자료와 노트 검증 상태를 함께 보는 작업 대기열"
+toc: true
+sidebar: false
+---
+
+## 두 개의 상태를 따로 본다
+
+`reading-status`는 자료를 얼마나 읽었는지, `note-status`는 이 사이트의 설명을 원문과 얼마나 대조했는지를 뜻한다. 논문을 다 읽어도 노트는 AI 초안일 수 있고, 필요한 절만 확인해 노트를 검증할 수도 있다.
+
+<div class="queue-board" data-learning-queue>
+  <div class="graph-loading" role="status">읽기 목록을 불러오는 중…</div>
+</div>
+
+## 상태 사전
+
+| 축 | 상태 | 의미 |
+|---|---|---|
+| 읽기 | `inbox` | 일단 수집함 |
+| 읽기 | `queued` | 읽을 순서에 올림 |
+| 읽기 | `reading` | 현재 읽는 중 |
+| 읽기 | `complete` | 목표 범위를 읽음 |
+| 노트 | `stub` | 서지 정보와 질문만 있음 |
+| 노트 | `ai-draft` | AI 초안, 원문 대조 전 |
+| 노트 | `checked` | 핵심 주장 일부를 원문에서 확인 |
+| 노트 | `verified` | 중요한 주장과 위치를 충분히 확인 |
+
+## 추천 작업 순서
+
+1. `inbox`에 DOI 또는 책을 등록한다.
+2. 왜 읽는지 한 문장으로 적고 `queued`로 옮긴다.
+3. AI 초안은 반드시 `note-status: ai-draft`로 남긴다.
+4. 주장별 페이지·절·정리 번호를 대조해 `checked`로 올린다.
+5. 여러 레퍼런스를 함께 이해한 뒤 Topic 페이지에 통합한다.
+

@@ -1,0 +1,111 @@
+project:
+  type: website
+  output-dir: _site
+  pre-render:
+    - python scripts/build_graph.py
+  render:
+    - "*.qmd"
+    - "topics/**/*.qmd"
+    - "references/**/*.qmd"
+    - "log/**/*.qmd"
+    - "!templates/**"
+  resources:
+    - "assets/generated/**"
+    - "assets/js/**"
+
+lang: ko
+date-format: "YYYY-MM-DD"
+bibliography: bibliography/references.bib
+
+website:
+  title: "All of My Future"
+  description: "SDE를 중심으로 확장되는 개인 연구 지식 지도"
+  # GitHub 저장소가 정해지면 아래 줄을 실제 주소로 바꾸고 주석을 해제하세요.
+  # site-url: "https://USERNAME.github.io/REPOSITORY/"
+  page-navigation: true
+  reader-mode: true
+  back-to-top-navigation: true
+  bread-crumbs: true
+  search:
+    location: navbar
+    type: overlay
+    show-item-context: tree
+    limit: 20
+  navbar:
+    pinned: true
+    collapse-below: lg
+    left:
+      - text: Home
+        href: index.qmd
+      - text: Map
+        href: graph.qmd
+      - sidebar:topics
+      - sidebar:references
+      - text: Queue
+        href: queue.qmd
+      - text: Log
+        href: log/index.qmd
+    right:
+      - text: About
+        href: about.qmd
+  sidebar:
+    - id: topics
+      title: Topics
+      style: docked
+      collapse-level: 2
+      contents:
+        - topics/index.qmd
+        - section: "Core"
+          contents:
+            - topics/sde/index.qmd
+        - section: "Research branches"
+          contents:
+            - topics/high-dimensional-pde/index.qmd
+            - topics/diffusion-models/index.qmd
+            - topics/optimal-transport/index.qmd
+        - section: "Bridges"
+          contents:
+            - topics/fokker-planck/index.qmd
+            - topics/schrodinger-bridge/index.qmd
+    - id: references
+      title: References
+      style: docked
+      collapse-level: 2
+      contents:
+        - references/index.qmd
+        - section: "Books"
+          contents:
+            - references/oksendal2003sde/index.qmd
+            - references/villani2009ot/index.qmd
+        - section: "Papers"
+          contents:
+            - references/han2018deep/index.qmd
+            - references/song2021score/index.qmd
+  page-footer:
+    border: true
+    left: "A living research atlas · built with [Quarto](https://quarto.org/)"
+    right:
+      - text: "Map"
+        href: graph.qmd
+      - text: "Working guide"
+        href: about.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    css: assets/styles.css
+    toc: true
+    toc-depth: 3
+    anchor-sections: true
+    smooth-scroll: true
+    code-copy: true
+    code-overflow: wrap
+    citations-hover: true
+    footnotes-hover: true
+    link-external-newwindow: true
+    include-after-body: assets/html/site-scripts.html
+
+execute:
+  freeze: auto

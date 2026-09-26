@@ -1,0 +1,59 @@
+---
+title: "Fokker--Planck Equations"
+description: "확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE"
+node-id: topic-fokker-planck
+node-type: topic
+status: active
+maturity: seed
+priority: now
+search-aliases:
+  - Fokker-Planck equation
+  - forward Kolmogorov equation
+  - 포커 플랑크 방정식
+  - probability density evolution
+tags:
+  - partial-differential-equations
+  - probability-density
+  - stochastic-processes
+  - kolmogorov-equations
+relations:
+  - target: topic-sde
+    type: connected-via
+    note: "SDE가 개별 표본 경로를 기술한다면 전방 Kolmogorov 방정식은 그 과정의 법칙 또는 밀도 변화를 기술한다."
+    evidence:
+      - oksendal2003sde
+  - target: topic-diffusion-models
+    type: foundation-for
+    note: "Forward noising 과정의 주변분포를 이해하는 PDE 관점을 제공하지만, 실제 diffusion model 학습이 이 PDE를 직접 푸는 것은 아니다."
+    evidence:
+      - song2021score
+---
+
+Fokker--Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 $p_t(x)$가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.
+
+## 기본 형태
+
+형식적으로 $dX_t=b(X_t,t)dt+\sigma(X_t,t)dW_t$에 대응하는 방정식은 다음 꼴이다.
+
+$$
+\partial_t p_t
+=-\nabla\!\cdot(bp_t)
++\frac12\sum_{i,j}\partial_{ij}\!\left(a_{ij}p_t\right),
+\qquad a=\sigma\sigma^\top.
+$$
+
+이 식은 계수, 경계조건, 밀도의 존재 여부에 따라 해석이 달라질 수 있으므로 현재는 형식적 기준식으로만 사용한다 [@oksendal2003sde].
+
+## 연결해서 볼 것
+
+- [SDE](../sde/): 생성자와 전방·후방 Kolmogorov 방정식
+- [Diffusion Models](../diffusion-models/): forward process와 reverse-time dynamics
+- [Optimal Transport](../optimal-transport/): Wasserstein gradient-flow 해석이 가능한 경우
+- [High-dimensional PDE Solvers](../high-dimensional-pde/): 상태 차원이 클 때의 계산 문제
+
+## 확인할 질문
+
+1. 약한 해와 고전해 중 어떤 개념을 사용하고 있는가?
+2. 질량 보존과 비음수성은 어떤 조건에서 보장되는가?
+3. 정상분포는 언제 존재하며 유일한가?
+

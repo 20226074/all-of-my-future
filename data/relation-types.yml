@@ -1,0 +1,18 @@
+directed:
+  - prerequisite-for
+  - subtopic-of
+  - foundation-for
+  - motivates
+  - method-for
+  - generalizes
+  - induces
+  - informs
+
+undirected:
+  - connected-via
+  - complements
+  - contrasts-with
+
+implicit:
+  - documents
+

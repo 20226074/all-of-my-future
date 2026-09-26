@@ -1,0 +1,57 @@
+---
+title: "High-dimensional PDE Solvers"
+description: "차원의 저주를 피하기 위해 확률 표현과 학습 기반 근사를 활용하는 방법"
+node-id: topic-high-dimensional-pde
+node-type: topic
+status: active
+maturity: seed
+priority: now
+search-aliases:
+  - high-dimensional PDE
+  - 고차원 편미분방정식
+  - deep BSDE
+  - neural PDE solver
+tags:
+  - partial-differential-equations
+  - numerical-methods
+  - deep-learning
+  - bsde
+relations:
+  - target: topic-sde
+    type: connected-via
+    note: "일부 반선형 포물형 PDE는 확률 과정과 BSDE를 이용해 표현할 수 있으며, 이를 수치 방법으로 활용할 수 있다."
+    evidence:
+      - han2018deep
+  - target: topic-fokker-planck
+    type: method-for
+    note: "고차원 Fokker--Planck 문제는 잠재적 응용 대상이지만, deep BSDE 계열 방법이 그대로 적용된다고 가정해서는 안 된다."
+    evidence:
+      - han2018deep
+      - oksendal2003sde
+---
+
+고차원 PDE에서는 격자점의 수가 차원에 따라 급격히 늘어나는 문제가 핵심 장애물이다. 이 토픽은 모든 PDE를 하나의 방법으로 푼다는 목표보다, **어떤 구조가 있을 때 확률적 표현과 샘플 기반 계산이 유리한가**를 구분하는 데 초점을 둔다.
+
+## 우선 다룰 범위
+
+- Feynman--Kac 표현과 그 적용 조건
+- Forward--Backward SDE와 반선형 포물형 PDE의 관계
+- Monte Carlo 방식의 차원 의존성
+- Deep BSDE 방법의 목적함수와 시간 이산화
+- 오차의 출처: 표현, 이산화, 최적화, 일반화
+
+[@han2018deep]은 이 경로의 대표적인 출발점이지만, 논문에 포함된 예제가 전체 고차원 PDE를 대표하지는 않는다.
+
+## 읽을 때 확인할 질문
+
+1. 대상 PDE가 선형·반선형·완전 비선형 중 어디에 속하는가?
+2. 확률 표현에 필요한 계수와 해의 정칙성 가정은 무엇인가?
+3. 보고된 수치 오차는 기준해와 어떻게 비교되었는가?
+4. 차원이 증가할 때 계산량과 실패 양상이 실제로 어떻게 변하는가?
+
+::: {.callout-warning}
+## 경계
+
+“신경망을 쓰면 차원의 저주를 해결한다”는 식의 일반화는 아직 이 노트의 결론이 아니다. 문제 구조와 평가 방식별로 근거를 분리한다.
+:::
+
