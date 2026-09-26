@@ -53,25 +53,31 @@ python scripts/check_site.py
 ## 새 개념 노드 추가
 
 1. `templates/topic.qmd`를 복사해 `topics/<slug>/index.qmd`로 저장합니다. 예: `topics/optimal-transport/index.qmd`.
-2. 복사한 문서의 YAML front matter를 채웁니다. `node-id`는 `topic-`으로 시작하는 고유값이며, 한 번 정하면 바꾸지 않는 식별자로 사용합니다. `relations`의 `target`에는 실제로 존재하는 `node-id`를, `type`에는 `data/relation-types.yml`에 정의된 관계 유형을 적습니다.
+2. 복사한 문서의 YAML front matter를 채웁니다. `node-id`는 `topic-`으로 시작하는 고유값이며, 한 번 정하면 바꾸지 않는 식별자로 사용합니다. `importance`는 1–5 사이의 정수입니다. `relations`의 `target`에는 실제로 존재하는 concept 또는 entry의 `node-id`를, `type`에는 `data/relation-types.yml`에 정의된 관계 유형을 적습니다.
 3. 본문에는 현재의 이해, 핵심 질문, 다음에 읽을 자료를 기록합니다.
 4. `quarto preview`로 페이지와 그래프 연결을 확인합니다.
 
 템플릿의 필드명이 그래프 생성 스크립트가 기대하는 스키마이므로, 필드를 임의로 바꾸기보다 값을 채워 사용합니다.
 
-## 새 문헌 노드 추가
+## 새 항목(Entry) 추가
+
+개념이 아닌 프로젝트 이름, 연구 질문, 주장, 메모, 아이디어는 `templates/entry.qmd`를 복사해 `entries/<slug>/index.qmd`에 둡니다. `node-id`는 `entry-`로 시작하고, `entry-kind`에는 `project`, `question`, `statement`, `note`, `idea` 중 하나를 씁니다. 그래프에서는 concept가 원, entry가 둥근 사각형으로 나타납니다.
+
+Concept와 entry의 크기는 직접 지정한 `importance`, 연결된 concept/entry 수, 연결된 논문·책 수를 함께 반영해 자동으로 계산됩니다. 긴 이름은 도형 안에서 자동 줄바꿈되고 필요에 따라 글자 크기가 줄어듭니다.
+
+## 새 문헌 추가
 
 1. `templates/reference.qmd`를 복사해 `references/<slug>/index.qmd`로 저장합니다. 논문·책 한 항목당 한 디렉터리를 사용합니다.
-2. YAML front matter에 `ref-`로 시작하는 고유 `node-id`, `reference-type`, 저자, 연도, `citekey`, 연결할 토픽의 `node-id`를 기록합니다. URL 또는 DOI는 BibTeX 항목에 넣습니다.
+2. YAML front matter에 `ref-`로 시작하는 고유 `node-id`, `reference-type`, 저자, 연도, `citekey`, 연결할 concept/entry의 `node-id`를 `attached-to`에 기록합니다. URL 또는 DOI는 BibTeX 항목에 넣습니다.
 3. 본문에는 요약, 핵심 아이디어, 이해한 내용, 열린 질문, 다시 볼 부분을 정리합니다.
 4. BibTeX 항목을 `bibliography/references.bib`에 추가하고, 그 키를 문서의 `citekey`와 본문 인용에 사용합니다.
-5. `quarto preview`로 레퍼런스 페이지와 토픽 연결을 확인합니다.
+5. `quarto preview`로 해당 concept/entry의 상세 패널에 문헌이 나타나는지 확인합니다.
 
 저작권이 있는 논문 PDF나 책 파일 자체를 저장소에 올리지 말고, DOI·출판사·arXiv 등 합법적인 원문 링크를 기록합니다.
 
 ## 지식 그래프 자동 생성
 
-`scripts/build_graph.py`는 `topics/**/index.qmd`와 `references/**/index.qmd`의 QMD front matter를 읽고 사이트에서 사용하는 `assets/generated/knowledge-graph.json`을 생성합니다.
+`scripts/build_graph.py`는 `topics/**/index.qmd`, `entries/**/index.qmd`, `references/**/index.qmd`의 QMD front matter를 읽고 사이트에서 사용하는 `assets/generated/knowledge-graph.json`을 생성합니다. 중앙 그래프에는 concept와 entry만 그리며, 논문과 책은 연결된 노드의 상세 패널과 검색 결과에 표시합니다.
 
 직접 다시 만들려면 프로젝트 루트에서 실행합니다.
 
@@ -80,6 +86,8 @@ python scripts/build_graph.py
 ```
 
 Quarto 설정의 `project.pre-render`에도 같은 명령이 연결되어 있으므로 `quarto preview`, `quarto render`, GitHub Actions 배포 때 그래프가 자동으로 갱신됩니다. 생성 오류가 나면 중복된 ID, 존재하지 않는 연결 ID, 템플릿에서 빠진 필드를 먼저 확인합니다.
+
+왼쪽 탐색기의 concept/entry 순서는 드래그하거나 이동 핸들에서 `Alt+↑/↓`를 눌러 바꿀 수 있습니다. 정적 사이트라 이 순서는 현재 브라우저의 로컬 저장소에 보관되며, 다른 기기나 브라우저와 자동 동기화되지는 않습니다.
 
 ## 최초 GitHub Pages 배포
 

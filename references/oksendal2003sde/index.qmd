@@ -8,7 +8,7 @@ node-type: reference
 reference-type: book
 citekey: oksendal2003sde
 year: 2003
-topics:
+attached-to:
   - topic-sde
 reading-status: queued
 note-status: ai-draft
@@ -43,7 +43,7 @@ Itô 적분과 Itô 공식에서 시작해 확산과 SDE의 여러 응용으로 
 
 ## 그래프에서의 위치
 
-- 연결 토픽: [Stochastic Differential Equations](../../topics/sde/index.qmd)
+- 연결 대상: [Stochastic Differential Equations](../../topics/sde/index.qmd)
 - 역할: SDE 개념을 뒷받침하는 기초 교재 노드
 - 다음 연결 후보: Itô calculus, diffusion processes, Feynman–Kac 관계. 후보 연결은 해당 절을 직접 읽은 뒤 확정한다.
 

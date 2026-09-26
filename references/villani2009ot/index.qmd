@@ -8,7 +8,7 @@ node-type: reference
 reference-type: book
 citekey: villani2009ot
 year: 2009
-topics:
+attached-to:
   - topic-optimal-transport
 reading-status: queued
 note-status: ai-draft
@@ -44,7 +44,7 @@ tags:
 
 ## 그래프에서의 위치
 
-- 연결 토픽: [Optimal Transport](../../topics/optimal-transport/index.qmd)
+- 연결 대상: [Optimal Transport](../../topics/optimal-transport/index.qmd)
 - 역할: 최적수송 가지의 광범위한 이론 참고서 노드
 - 다음 연결 후보: [Schrödinger Bridge](../../topics/schrodinger-bridge/index.qmd), Wasserstein gradient flow, diffusion. 책과 후속 문헌에서 직접 관계를 확인한 뒤 연결한다.
 

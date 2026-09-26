@@ -1,0 +1,34 @@
+---
+title: "All of My Future"
+description: "공부할 개념과 문헌을 연결하며 계속 확장하는 개인 지식 지도 프로젝트"
+node-id: entry-all-of-my-future
+node-type: entry
+entry-kind: project
+status: active
+maturity: developing
+priority: now
+importance: 3
+search-aliases:
+  - research atlas
+  - knowledge graph project
+  - 지식 지도 프로젝트
+tags:
+  - knowledge-management
+  - research-workflow
+relations: []
+---
+
+개념을 고정된 계층에 넣기보다, 개념·질문·프로젝트와 문헌 사이의 관계를 계속 갱신하는 개인 연구 인프라다.
+
+## 프로젝트 원칙
+
+- 모든 개념은 독립적인 출발점이 될 수 있다.
+- 논문과 책은 그래프의 모양을 복잡하게 만들기보다 관련 노드의 근거로 나타낸다.
+- AI가 만든 설명과 원문으로 확인한 설명을 구분한다.
+- 구조는 학습이 진행되면서 바뀔 수 있다.
+
+## 다음 개선
+
+- 새 개념과 문헌을 추가하는 대화형 작업 흐름
+- 기기 사이에서 탐색기 순서를 공유하는 방법
+- 관계 근거와 검증 상태를 더 세밀하게 표시하는 방법

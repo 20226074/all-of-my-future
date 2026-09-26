@@ -6,6 +6,7 @@ node-type: topic
 status: exploratory
 maturity: seed
 priority: later
+importance: 3
 search-aliases:
   - Schrodinger bridge
   - SBP

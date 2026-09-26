@@ -6,6 +6,7 @@ project:
   render:
     - "*.qmd"
     - "topics/**/*.qmd"
+    - "entries/**/*.qmd"
     - "references/**/*.qmd"
     - "log/**/*.qmd"
     - "!templates/**"

@@ -8,6 +8,7 @@ node-type: topic
 status: active
 maturity: seed
 priority: later
+importance: 3
 cluster: replace-me
 search-aliases: []
 tags: []

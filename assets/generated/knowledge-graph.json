@@ -1,14 +1,41 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "generatedFrom": "Quarto front matter",
   "stats": {
     "topics": 6,
+    "entries": 1,
+    "graphNodes": 7,
     "references": 4,
     "papers": 2,
     "books": 2,
+    "graphRelations": 7,
+    "documentLinks": 6,
     "relations": 13
   },
   "nodes": [
+    {
+      "id": "entry-all-of-my-future",
+      "kind": "entry",
+      "label": "All of My Future",
+      "title": "All of My Future",
+      "summary": "공부할 개념과 문헌을 연결하며 계속 확장하는 개인 지식 지도 프로젝트",
+      "url": "entries/all-of-my-future/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "knowledge-management",
+        "research-workflow"
+      ],
+      "searchAliases": [
+        "research atlas",
+        "knowledge graph project",
+        "지식 지도 프로젝트"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "all-of-my-future",
+      "entryKind": "project"
+    },
     {
       "id": "topic-diffusion-models",
       "kind": "topic",
@@ -31,6 +58,7 @@
         "확산 모델"
       ],
       "maturity": "seed",
+      "importance": 3,
       "cluster": "diffusion-models"
     },
     {
@@ -55,6 +83,7 @@
         "probability density evolution"
       ],
       "maturity": "seed",
+      "importance": 3,
       "cluster": "fokker-planck"
     },
     {
@@ -79,6 +108,7 @@
         "neural PDE solver"
       ],
       "maturity": "seed",
+      "importance": 3,
       "cluster": "high-dimensional-pde"
     },
     {
@@ -103,6 +133,7 @@
         "Wasserstein geometry"
       ],
       "maturity": "seed",
+      "importance": 3,
       "cluster": "optimal-transport"
     },
     {
@@ -127,7 +158,7 @@
       "citekey": "villani2009ot",
       "year": 2009,
       "author": "Cédric Villani",
-      "topics": [
+      "attachedTo": [
         "topic-optimal-transport"
       ],
       "cluster": "references"
@@ -154,6 +185,7 @@
         "entropic interpolation"
       ],
       "maturity": "seed",
+      "importance": 3,
       "cluster": "schrodinger-bridge"
     },
     {
@@ -178,7 +210,7 @@
       "citekey": "song2021score",
       "year": 2021,
       "author": "Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, Ben Poole",
-      "topics": [
+      "attachedTo": [
         "topic-diffusion-models",
         "topic-sde"
       ],
@@ -206,7 +238,7 @@
       "citekey": "han2018deep",
       "year": 2018,
       "author": "Jiequn Han, Arnulf Jentzen, Weinan E",
-      "topics": [
+      "attachedTo": [
         "topic-high-dimensional-pde",
         "topic-sde"
       ],
@@ -233,6 +265,7 @@
         "Ito diffusion"
       ],
       "maturity": "developing",
+      "importance": 3,
       "cluster": "sde"
     },
     {
@@ -257,7 +290,7 @@
       "citekey": "oksendal2003sde",
       "year": 2003,
       "author": "Bernt Øksendal",
-      "topics": [
+      "attachedTo": [
         "topic-sde"
       ],
       "cluster": "references"
@@ -269,7 +302,7 @@
       "target": "topic-high-dimensional-pde",
       "relation": "documents",
       "directed": true,
-      "note": "이 레퍼런스가 다루는 토픽",
+      "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
     },
     {
@@ -277,7 +310,7 @@
       "target": "topic-sde",
       "relation": "documents",
       "directed": true,
-      "note": "이 레퍼런스가 다루는 토픽",
+      "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
     },
     {
@@ -285,7 +318,7 @@
       "target": "topic-sde",
       "relation": "documents",
       "directed": true,
-      "note": "이 레퍼런스가 다루는 토픽",
+      "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
     },
     {
@@ -293,7 +326,7 @@
       "target": "topic-diffusion-models",
       "relation": "documents",
       "directed": true,
-      "note": "이 레퍼런스가 다루는 토픽",
+      "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
     },
     {
@@ -301,7 +334,7 @@
       "target": "topic-sde",
       "relation": "documents",
       "directed": true,
-      "note": "이 레퍼런스가 다루는 토픽",
+      "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
     },
     {
@@ -309,7 +342,7 @@
       "target": "topic-optimal-transport",
       "relation": "documents",
       "directed": true,
-      "note": "이 레퍼런스가 다루는 토픽",
+      "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
     },
     {

@@ -7,6 +7,7 @@ node-type: topic
 status: active
 maturity: developing
 priority: now
+importance: 3
 search-aliases:
   - SDE
   - stochastic differential equations

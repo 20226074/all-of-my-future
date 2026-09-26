@@ -1,0 +1,31 @@
+---
+title: "새 항목 이름 또는 문장"
+short-title: "그래프 안의 짧은 이름"
+description: "검색 결과와 상세 패널에 보일 한 문장"
+graph-summary: "그래프에서 이 항목을 선택했을 때 보일 설명"
+node-id: entry-replace-me
+node-type: entry
+entry-kind: project
+status: active
+maturity: seed
+priority: later
+importance: 3
+cluster: replace-me
+search-aliases: []
+tags: []
+relations: []
+---
+
+## 이 항목의 목적
+
+개념 자체라기보다 프로젝트, 질문, 주장, 메모로서 기록할 내용을 적는다.
+
+`entry-kind`에는 `project`, `question`, `statement`, `note`, `idea`를 사용할 수 있다.
+
+## 연결할 이유
+
+다른 노드와 단순히 비슷해서가 아니라, 어떤 맥락에서 연결되는지 적는다.
+
+## 관련 문헌
+
+## 다음 행동

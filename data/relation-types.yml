@@ -4,6 +4,10 @@ directed:
   - generalizes
   - induces
   - helpful-before
+  - investigates
+  - asks-about
+  - implements
+  - motivates
 
 undirected:
   - connected-via

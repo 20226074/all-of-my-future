@@ -9,7 +9,7 @@ reference-type: paper
 citekey: replaceMe
 author: "저자"
 year: 2026
-topics:
+attached-to:
   - topic-replace-me
 reading-status: inbox
 note-status: stub

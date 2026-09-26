@@ -6,6 +6,7 @@ node-type: topic
 status: active
 maturity: seed
 priority: now
+importance: 3
 search-aliases:
   - diffusion model
   - score-based generative model

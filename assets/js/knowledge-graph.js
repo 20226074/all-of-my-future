@@ -214,7 +214,7 @@
           const author = element("p", "reference-author", reference.author);
           const description = element("p", "reference-description", reference.summary || "요약을 준비 중입니다.");
           const topics = element("div", "reference-topics");
-          for (const topicId of reference.topics || []) {
+          for (const topicId of reference.attachedTo || []) {
             const topic = nodeById.get(topicId);
             if (!topic) continue;
             const topicLink = element("a", "topic-chip", topic.label);
@@ -263,25 +263,94 @@
     return Math.abs(value >>> 0);
   }
 
+  function clamp(value, minimum, maximum) {
+    return Math.max(minimum, Math.min(maximum, value));
+  }
+
+  const labelCanvas = document.createElement("canvas");
+  const labelContext = labelCanvas.getContext("2d");
+
+  function fitLabel(label, maxWidth, maxHeight, preferredSize = 14, maxLines = 3) {
+    const words = String(label).trim().split(/\s+/).filter(Boolean);
+    const measure = (text, size) => {
+      labelContext.font = `650 ${size}px Inter, "Segoe UI", "Noto Sans KR", sans-serif`;
+      return labelContext.measureText(text).width;
+    };
+
+    const wrap = (fontSize) => {
+      const lines = [];
+      let current = "";
+      let splitLongWord = false;
+      const pushCurrent = () => {
+        if (current) lines.push(current);
+        current = "";
+      };
+
+      for (const word of words) {
+        if (measure(word, fontSize) > maxWidth) {
+          splitLongWord = true;
+          pushCurrent();
+          for (const character of Array.from(word)) {
+            const candidate = `${current}${character}`;
+            if (current && measure(candidate, fontSize) > maxWidth) pushCurrent();
+            current += character;
+          }
+          continue;
+        }
+
+        const candidate = current ? `${current} ${word}` : word;
+        if (current && measure(candidate, fontSize) > maxWidth) pushCurrent();
+        current = current ? `${current} ${word}` : word;
+      }
+      pushCurrent();
+      return { lines, splitLongWord };
+    };
+
+    let fontSize = preferredSize;
+    let lastLayout = { lines: [String(label)], fontSize, lineHeight: fontSize * 1.18 };
+    for (let attempt = 0; attempt < 80; attempt += 1) {
+      const { lines, splitLongWord } = wrap(fontSize);
+      const lineHeight = fontSize * 1.18;
+      lastLayout = { lines, fontSize, lineHeight };
+      if (
+        lines.length <= maxLines &&
+        lines.every((line) => measure(line, fontSize) <= maxWidth) &&
+        lines.length * lineHeight <= maxHeight &&
+        (!splitLongWord || fontSize <= 8)
+      ) {
+        return { lines, fontSize, lineHeight };
+      }
+      fontSize = fontSize > 4 ? fontSize - 0.5 : fontSize * 0.82;
+    }
+    return lastLayout;
+  }
+
   class KnowledgeGraph {
     constructor(container, graph) {
       this.container = container;
       this.mode = container.dataset.mode || "full";
       this.rawGraph = graph;
-      this.nodes = graph.nodes.map((node) => ({ ...node, x: 0, y: 0, vx: 0, vy: 0 }));
-      this.nodeById = new Map(this.nodes.map((node) => [node.id, node]));
-      this.edges = graph.edges
+      this.allNodes = graph.nodes.map((node) => ({ ...node, x: 0, y: 0, vx: 0, vy: 0 }));
+      this.nodeById = new Map(this.allNodes.map((node) => [node.id, node]));
+      this.nodes = this.allNodes.filter((node) => node.kind === "topic" || node.kind === "entry");
+      this.graphNodeIds = new Set(this.nodes.map((node) => node.id));
+      this.allEdges = graph.edges
         .filter((edge) => this.nodeById.has(edge.source) && this.nodeById.has(edge.target))
         .map((edge) => ({
           ...edge,
           sourceNode: this.nodeById.get(edge.source),
           targetNode: this.nodeById.get(edge.target)
         }));
-      this.neighbors = new Map(this.nodes.map((node) => [node.id, []]));
-      for (const edge of this.edges) {
+      this.edges = this.allEdges.filter(
+        (edge) => this.graphNodeIds.has(edge.source) && this.graphNodeIds.has(edge.target)
+      );
+      this.neighbors = new Map(this.allNodes.map((node) => [node.id, []]));
+      for (const edge of this.allEdges) {
         this.neighbors.get(edge.source).push({ node: edge.targetNode, edge, outgoing: true });
         this.neighbors.get(edge.target).push({ node: edge.sourceNode, edge, outgoing: false });
       }
+      this.orderStorageKey = `knowledge-atlas:explorer-order:v1:${siteRoot.pathname.replace(/\/$/, "") || "/"}`;
+      this.computeNodeGeometry();
       this.query = "";
       this.selected = null;
       this.transform = { x: 0, y: 0, k: 1 };
@@ -294,6 +363,36 @@
       this.build();
     }
 
+    computeNodeGeometry() {
+      for (const node of this.nodes) {
+        const uniqueNeighbors = [...new Map(
+          (this.neighbors.get(node.id) || []).map((item) => [item.node.id, item.node])
+        ).values()];
+        node.relatedNodeCount = uniqueNeighbors.filter((item) => this.graphNodeIds.has(item.id)).length;
+        node.sourceCount = uniqueNeighbors.filter((item) => item.kind === "reference").length;
+        node.importance = clamp(Number(node.importance) || 3, 1, 5);
+        const sizeUnit = clamp(
+          46 +
+            node.importance * 5 +
+            Math.sqrt(node.relatedNodeCount) * 7 +
+            Math.sqrt(node.sourceCount) * 5,
+          54,
+          96
+        );
+
+        if (node.kind === "topic") {
+          node.radius = sizeUnit;
+          node.halfWidth = sizeUnit;
+          node.halfHeight = sizeUnit;
+        } else {
+          node.width = clamp(sizeUnit * 2.3, 142, 240);
+          node.height = clamp(sizeUnit * 1.15, 72, 116);
+          node.halfWidth = node.width / 2;
+          node.halfHeight = node.height / 2;
+        }
+      }
+    }
+
     build() {
       this.container.replaceChildren();
       this.app = element("div", "graph-app");
@@ -302,11 +401,17 @@
       this.explorer.setAttribute("role", "navigation");
       this.explorer.setAttribute("aria-label", "지식 그래프 탐색기");
       const explorerHeader = element("div", "explorer-header");
-      explorerHeader.append(element("p", "explorer-kicker", "ATLAS"));
+      const explorerTitleRow = element("div", "explorer-title-row");
+      explorerTitleRow.append(element("p", "explorer-kicker", "ATLAS"));
+      this.resetOrderButton = element("button", "explorer-order-reset", "순서 초기화");
+      this.resetOrderButton.type = "button";
+      this.resetOrderButton.addEventListener("click", () => this.resetExplorerOrder());
+      explorerTitleRow.append(this.resetOrderButton);
+      explorerHeader.append(explorerTitleRow);
       const searchWrap = element("label", "explorer-search-wrap");
       this.searchInput = element("input", "explorer-search");
       this.searchInput.type = "search";
-      this.searchInput.placeholder = "개념·논문·책 검색";
+      this.searchInput.placeholder = "개념·항목·문헌 검색";
       this.searchInput.setAttribute("aria-label", "모든 지식 노드 검색");
       this.searchInput.addEventListener("input", () => {
         this.query = this.searchInput.value.trim().toLocaleLowerCase("ko");
@@ -318,7 +423,13 @@
       explorerHeader.append(this.explorerCount);
       this.explorerTree = element("ul", "explorer-tree");
       this.explorerTree.setAttribute("role", "tree");
-      this.explorer.append(explorerHeader, this.explorerTree);
+      this.explorerResults = element("ul", "explorer-results");
+      this.explorerResults.setAttribute("role", "list");
+      this.explorerResults.hidden = true;
+      this.explorerLive = element("p", "visually-hidden");
+      this.explorerLive.setAttribute("role", "status");
+      this.explorerLive.setAttribute("aria-live", "polite");
+      this.explorer.append(explorerHeader, this.explorerTree, this.explorerResults, this.explorerLive);
 
       const zoomOut = this.actionButton("−", "축소", () => this.zoomBy(0.82));
       const reset = this.actionButton("↺", "보기 초기화", () => this.resetView());
@@ -328,8 +439,8 @@
 
       this.stage = element("div", "graph-stage");
       this.svg = svgElement("svg", {
-        role: "img",
-        "aria-label": "토픽과 레퍼런스의 관계 그래프",
+        role: "group",
+        "aria-label": "개념과 항목의 관계 그래프",
         tabindex: "0"
       });
       const defs = svgElement("defs");
@@ -348,7 +459,7 @@
       this.svg.append(defs);
 
       this.viewport = svgElement("g", { class: "graph-viewport" });
-      this.linkLayer = svgElement("g", { class: "graph-links" });
+      this.linkLayer = svgElement("g", { class: "graph-links", "aria-hidden": "true" });
       this.nodeLayer = svgElement("g", { class: "graph-nodes" });
       this.viewport.append(this.linkLayer, this.nodeLayer);
       this.svg.append(this.viewport);
@@ -356,8 +467,8 @@
 
       const legend = element("div", "graph-legend");
       legend.innerHTML =
-        '<span class="legend-item"><i class="legend-shape topic"></i> Concept</span>' +
-        '<span class="legend-item"><i class="legend-shape reference"></i> Paper / Book</span>';
+        '<span class="legend-item"><i class="legend-shape concept"></i> Concept</span>' +
+        '<span class="legend-item"><i class="legend-shape entry"></i> Entry</span>';
       this.stage.append(legend);
 
       this.panel = element("div", "knowledge-panel");
@@ -393,17 +504,41 @@
 
     nodeTypeLabel(node) {
       if (node.kind === "topic") return "CONCEPT";
+      if (node.kind === "entry") return (node.entryKind || "ENTRY").toUpperCase();
       return `${(node.referenceType || "SOURCE").toUpperCase()}${node.year ? ` · ${node.year}` : ""}`;
+    }
+
+    nodeIcon(node) {
+      if (node.kind === "topic") return "○";
+      if (node.kind === "entry") return "▢";
+      return "▤";
     }
 
     buildExplorer() {
       this.explorerItems = new Map();
-      const ordered = [...this.nodes].sort((a, b) => a.title.localeCompare(b.title, "ko"));
+      const defaults = [...this.nodes].sort((a, b) => {
+        const orderA = Number.isFinite(Number(a.explorerOrder)) ? Number(a.explorerOrder) : Number.MAX_SAFE_INTEGER;
+        const orderB = Number.isFinite(Number(b.explorerOrder)) ? Number(b.explorerOrder) : Number.MAX_SAFE_INTEGER;
+        return orderA - orderB || a.title.localeCompare(b.title, "ko");
+      });
+      this.defaultRootIds = defaults.map((node) => node.id);
+      const defaultById = new Map(defaults.map((node) => [node.id, node]));
+      let storedIds = [];
+      try {
+        const stored = JSON.parse(window.localStorage.getItem(this.orderStorageKey) || "null");
+        if (stored?.version === 1 && Array.isArray(stored.ids)) storedIds = stored.ids;
+      } catch {
+        storedIds = [];
+      }
+      const validStored = storedIds.filter((id, index) => defaultById.has(id) && storedIds.indexOf(id) === index);
+      const orderedIds = [...validStored, ...this.defaultRootIds.filter((id) => !validStored.includes(id))];
 
-      for (const node of ordered) {
+      for (const nodeId of orderedIds) {
+        const node = defaultById.get(nodeId);
         const item = element("li", "explorer-item");
         item.dataset.nodeId = node.id;
         item.setAttribute("role", "treeitem");
+        item.setAttribute("aria-expanded", "false");
         const row = element("div", "explorer-row");
         const uniqueNeighbors = [...new Map(
           (this.neighbors.get(node.id) || []).map((neighbor) => [neighbor.node.id, neighbor])
@@ -415,43 +550,179 @@
         toggle.setAttribute("aria-expanded", "false");
         toggle.disabled = !uniqueNeighbors.length;
 
+        const reorder = element("button", "explorer-reorder-handle", "⠿");
+        reorder.type = "button";
+        reorder.draggable = true;
+        reorder.title = "드래그하거나 Alt+↑/↓로 순서 이동";
+        reorder.setAttribute("aria-label", `${node.label} 순서 이동`);
+        reorder.setAttribute("aria-keyshortcuts", "Alt+ArrowUp Alt+ArrowDown");
+        reorder.addEventListener("click", (event) => event.preventDefault());
+        reorder.addEventListener("keydown", (event) => {
+          if (!event.altKey || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
+          event.preventDefault();
+          this.moveExplorerItem(node.id, event.key === "ArrowUp" ? -1 : 1);
+        });
+        reorder.addEventListener("dragstart", (event) => {
+          this.draggedExplorerId = node.id;
+          item.classList.add("is-dragging");
+          event.dataTransfer.effectAllowed = "move";
+          event.dataTransfer.setData("text/plain", node.id);
+        });
+        reorder.addEventListener("dragend", () => this.clearExplorerDragState());
+
         const select = element("button", "explorer-node");
         select.type = "button";
         select.append(
-          element("span", `explorer-node-icon ${node.kind}`, node.kind === "topic" ? "○" : "▤"),
+          element("span", `explorer-node-icon ${node.kind}`, this.nodeIcon(node)),
           element("span", "explorer-node-label", node.label),
           element("span", "explorer-node-type", this.nodeTypeLabel(node))
         );
         select.addEventListener("click", () => this.selectNode(node, true));
-        row.append(toggle, select);
+        row.append(toggle, reorder, select);
 
         const children = element("ul", "explorer-children");
         children.setAttribute("role", "group");
         children.hidden = true;
-        for (const neighbor of uniqueNeighbors) {
-          const child = element("li", "explorer-child-item");
-          const childButton = element("button", "explorer-child");
-          childButton.type = "button";
-          childButton.append(
-            element("span", `explorer-node-icon ${neighbor.node.kind}`, neighbor.node.kind === "topic" ? "○" : "▤"),
-            element("span", "explorer-node-label", neighbor.node.label)
-          );
-          childButton.title = relationLabel(neighbor.edge.relation);
-          childButton.addEventListener("click", () => this.selectNode(neighbor.node, true));
-          child.append(childButton);
-          children.append(child);
-        }
+        const appendChildren = (label, neighbors) => {
+          if (!neighbors.length) return;
+          const heading = element("li", "explorer-child-group-label", label);
+          heading.setAttribute("role", "presentation");
+          children.append(heading);
+          for (const neighbor of neighbors) {
+            const child = element("li", "explorer-child-item");
+            child.setAttribute("role", "treeitem");
+            const childButton = element("button", "explorer-child");
+            childButton.type = "button";
+            childButton.append(
+              element("span", `explorer-node-icon ${neighbor.node.kind}`, this.nodeIcon(neighbor.node)),
+              element("span", "explorer-node-label", neighbor.node.label)
+            );
+            childButton.title = relationLabel(neighbor.edge.relation);
+            childButton.addEventListener("click", () =>
+              this.selectNode(neighbor.node, this.graphNodeIds.has(neighbor.node.id))
+            );
+            child.append(childButton);
+            children.append(child);
+          }
+        };
+        appendChildren(
+          "CONNECTED NODES",
+          uniqueNeighbors.filter((neighbor) => this.graphNodeIds.has(neighbor.node.id))
+        );
+        appendChildren(
+          "PAPERS & BOOKS",
+          uniqueNeighbors.filter((neighbor) => neighbor.node.kind === "reference")
+        );
 
         toggle.addEventListener("click", () => {
           const expanded = toggle.getAttribute("aria-expanded") === "true";
           toggle.setAttribute("aria-expanded", String(!expanded));
+          item.setAttribute("aria-expanded", String(!expanded));
           toggle.textContent = expanded ? "›" : "⌄";
           children.hidden = expanded;
         });
 
+        item.addEventListener("dragover", (event) => {
+          if (!this.draggedExplorerId || this.draggedExplorerId === node.id) return;
+          event.preventDefault();
+          const before = event.clientY < row.getBoundingClientRect().top + row.getBoundingClientRect().height / 2;
+          item.classList.toggle("drop-before", before);
+          item.classList.toggle("drop-after", !before);
+        });
+        item.addEventListener("dragleave", () => item.classList.remove("drop-before", "drop-after"));
+        item.addEventListener("drop", (event) => {
+          event.preventDefault();
+          const movedId = this.draggedExplorerId;
+          const dragged = this.explorerItems.get(movedId)?.item;
+          if (!dragged || dragged === item) return this.clearExplorerDragState();
+          const before = event.clientY < row.getBoundingClientRect().top + row.getBoundingClientRect().height / 2;
+          if (before) item.before(dragged);
+          else item.after(dragged);
+          this.saveExplorerOrder(movedId);
+          this.clearExplorerDragState();
+        });
+
         item.append(row, children);
         this.explorerTree.append(item);
-        this.explorerItems.set(node.id, { item, select, children, toggle });
+        this.explorerItems.set(node.id, { item, select, children, toggle, reorder });
+      }
+    }
+
+    currentExplorerIds() {
+      return [...this.explorerTree.children]
+        .map((item) => item.dataset.nodeId)
+        .filter(Boolean);
+    }
+
+    saveExplorerOrder(movedId) {
+      const ids = this.currentExplorerIds();
+      try {
+        window.localStorage.setItem(
+          this.orderStorageKey,
+          JSON.stringify({ version: 1, ids, updatedAt: new Date().toISOString() })
+        );
+      } catch {
+        // The visual order still works when storage is unavailable.
+      }
+      const position = ids.indexOf(movedId) + 1;
+      const moved = this.nodeById.get(movedId);
+      this.explorerLive.textContent = `${moved?.label || "항목"}, ${ids.length}개 중 ${position}번째로 이동`;
+    }
+
+    moveExplorerItem(nodeId, delta) {
+      const current = this.currentExplorerIds();
+      const index = current.indexOf(nodeId);
+      const targetIndex = clamp(index + delta, 0, current.length - 1);
+      if (index < 0 || targetIndex === index) return;
+      const item = this.explorerItems.get(nodeId).item;
+      const target = this.explorerItems.get(current[targetIndex]).item;
+      if (delta < 0) target.before(item);
+      else target.after(item);
+      this.saveExplorerOrder(nodeId);
+      this.explorerItems.get(nodeId).reorder.focus();
+    }
+
+    resetExplorerOrder() {
+      for (const nodeId of this.defaultRootIds) {
+        const item = this.explorerItems.get(nodeId)?.item;
+        if (item) this.explorerTree.append(item);
+      }
+      try {
+        window.localStorage.removeItem(this.orderStorageKey);
+      } catch {
+        // Keep the reset visual order even if storage is unavailable.
+      }
+      this.explorerLive.textContent = "탐색기 순서를 기본값으로 되돌렸습니다.";
+    }
+
+    clearExplorerDragState() {
+      this.draggedExplorerId = null;
+      for (const item of this.explorerTree.children) {
+        item.classList.remove("is-dragging", "drop-before", "drop-after");
+      }
+    }
+
+    renderSearchResults(matches) {
+      this.explorerResults.replaceChildren();
+      const results = [...matches]
+        .map((id) => this.nodeById.get(id))
+        .filter(Boolean)
+        .sort((a, b) => a.title.localeCompare(b.title, "ko"));
+      for (const node of results) {
+        const item = element("li", "explorer-result-item");
+        const button = element("button", "explorer-result");
+        button.type = "button";
+        button.append(
+          element("span", `explorer-node-icon ${node.kind}`, this.nodeIcon(node)),
+          element("span", "explorer-node-label", node.label),
+          element("span", "explorer-node-type", this.nodeTypeLabel(node))
+        );
+        button.addEventListener("click", () => this.selectNode(node, this.graphNodeIds.has(node.id)));
+        item.append(button);
+        this.explorerResults.append(item);
+      }
+      if (!results.length) {
+        this.explorerResults.append(element("li", "explorer-empty", "검색 결과가 없습니다."));
       }
     }
 
@@ -486,32 +757,41 @@
           class: `graph-node ${node.kind}`,
           tabindex: "0",
           role: "button",
-          "aria-label": `${node.kind === "topic" ? "토픽" : node.referenceType}: ${node.title}`
+          "aria-label": `${node.kind === "topic" ? "개념" : node.entryKind || "항목"}: ${node.title}`
         });
         group.style.setProperty("--node-color", clusterColors[node.cluster] || "var(--atlas-teal)");
 
         if (node.kind === "topic") {
-          group.append(svgElement("circle", { class: "node-shape", r: 40 }));
+          group.append(svgElement("circle", { class: "node-shape", r: node.radius }));
         } else {
           group.append(
             svgElement("rect", {
               class: "node-shape",
-              x: -57,
-              y: -29,
-              width: 114,
-              height: 58,
-              rx: 10
+              x: -node.halfWidth,
+              y: -node.halfHeight,
+              width: node.width,
+              height: node.height,
+              rx: Math.min(24, node.height * 0.28)
             })
           );
         }
 
-        const text = svgElement("text", { y: node.kind === "topic" ? -4 : -3 });
-        const kicker = svgElement("tspan", { class: "node-kicker", x: 0, dy: node.kind === "topic" ? -7 : -8 });
-        kicker.textContent = node.kind === "topic" ? "CONCEPT" : node.referenceType;
-        text.append(kicker);
-        const lines = splitLabel(node.label, node.kind === "topic" ? 18 : 21);
+        const availableWidth = node.kind === "topic" ? node.radius * 1.42 : node.width - 24;
+        const availableHeight = node.kind === "topic" ? node.radius * 1.3 : node.height - 20;
+        const preferredSize = clamp((node.kind === "topic" ? node.radius : node.height) * 0.18, 11, 15);
+        const layout = fitLabel(
+          node.label,
+          availableWidth,
+          availableHeight,
+          preferredSize,
+          node.kind === "entry" ? 9 : 3
+        );
+        const startY = -((layout.lines.length - 1) * layout.lineHeight) / 2 + layout.fontSize * 0.34;
+        const text = svgElement("text", { y: startY });
+        text.style.fontSize = `${layout.fontSize}px`;
+        const lines = layout.lines;
         lines.forEach((line, index) => {
-          const span = svgElement("tspan", { x: 0, dy: index === 0 ? 17 : 13 });
+          const span = svgElement("tspan", { x: 0, dy: index === 0 ? 0 : layout.lineHeight });
           span.textContent = line;
           text.append(span);
         });
@@ -522,6 +802,10 @@
         group.append(title);
         group.addEventListener("click", (event) => {
           event.stopPropagation();
+          if (this.suppressNodeClick) {
+            this.suppressNodeClick = false;
+            return;
+          }
           this.selectNode(node, true);
         });
         group.addEventListener("dblclick", (event) => {
@@ -556,6 +840,7 @@
         for (const node of this.nodes) {
           node.x *= scaleX;
           node.y *= scaleY;
+          this.clampNode(node);
         }
       }
       this.renderPositions();
@@ -565,27 +850,11 @@
     positionNodes() {
       const centerX = this.width * 0.5;
       const centerY = this.height * 0.5;
-      const topics = this.nodes.filter((node) => node.kind === "topic");
-      const topicRadius = Math.min(this.width, this.height) * 0.31;
-      topics.forEach((node, index) => {
-        const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(topics.length, 1);
-        node.x = centerX + Math.cos(angle) * topicRadius;
-        node.y = centerY + Math.sin(angle) * topicRadius * 0.72;
-      });
-      const references = this.nodes.filter((node) => node.kind === "reference");
-      references.forEach((node) => {
-        const anchors = (this.neighbors.get(node.id) || [])
-          .map((neighbor) => neighbor.node)
-          .filter((neighbor) => neighbor.kind === "topic");
-        const anchor = anchors.length
-          ? {
-              x: anchors.reduce((sum, item) => sum + item.x, 0) / anchors.length,
-              y: anchors.reduce((sum, item) => sum + item.y, 0) / anchors.length
-            }
-          : { x: centerX, y: centerY };
-        const angle = ((hashNumber(node.id) % 360) * Math.PI) / 180;
-        node.x = anchor.x + Math.cos(angle) * 105;
-        node.y = anchor.y + Math.sin(angle) * 80;
+      const radius = Math.min(this.width, this.height) * 0.3;
+      this.nodes.forEach((node, index) => {
+        const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(this.nodes.length, 1);
+        node.x = centerX + Math.cos(angle) * radius;
+        node.y = centerY + Math.sin(angle) * radius * 0.72;
       });
     }
 
@@ -596,43 +865,50 @@
     applyVisibility() {
       const matches = new Set();
       if (this.query) {
-        for (const node of this.nodes) {
+        for (const node of this.allNodes) {
           if (this.searchText(node).includes(this.query)) matches.add(node.id);
+        }
+      }
+
+      const graphMatches = new Set([...matches].filter((id) => this.graphNodeIds.has(id)));
+      for (const nodeId of matches) {
+        if (this.graphNodeIds.has(nodeId)) continue;
+        for (const relation of this.neighbors.get(nodeId) || []) {
+          if (this.graphNodeIds.has(relation.node.id)) graphMatches.add(relation.node.id);
         }
       }
 
       for (const node of this.nodes) {
         const group = this.nodeElements.get(node.id);
-        const searchMuted = this.query && !matches.has(node.id);
+        const searchMuted = this.query && !graphMatches.has(node.id);
         group.classList.toggle("is-search-muted", Boolean(searchMuted));
-        const explorerItem = this.explorerItems.get(node.id);
-        explorerItem.item.hidden = Boolean(this.query && !matches.has(node.id));
       }
       for (const edge of this.edges) {
         const line = this.edgeElements.get(edge);
-        const searchMuted = this.query && !(matches.has(edge.source) && matches.has(edge.target));
+        const searchMuted = this.query && !(graphMatches.has(edge.source) && graphMatches.has(edge.target));
         line.classList.toggle("is-search-muted", Boolean(searchMuted));
       }
 
+      this.explorerTree.hidden = Boolean(this.query);
+      this.explorerResults.hidden = !this.query;
+      this.resetOrderButton.disabled = Boolean(this.query);
+      if (this.query) this.renderSearchResults(matches);
+
+      const sourceCount = this.allNodes.length - this.nodes.length;
       const count = this.query ? matches.size : this.nodes.length;
       this.explorerCount.textContent = this.query
         ? `${count}개 검색 결과`
-        : `${this.nodes.length}개 노드 · 모두 동등한 시작점`;
+        : `${this.nodes.length}개 노드 · 문헌 ${sourceCount}개`;
       this.explorer.classList.toggle("is-searching", Boolean(this.query));
 
-      if (this.query && matches.size === 1) {
-        const match = this.nodeById.get([...matches][0]);
-        if (match) this.selectNode(match, false);
-      } else {
-        this.updateSelectionClasses();
-      }
+      this.updateSelectionClasses();
     }
 
     selectNode(node, center) {
       this.selected = node;
       this.showPanel(node);
       this.updateSelectionClasses();
-      if (center) this.centerNode(node);
+      if (center && this.graphNodeIds.has(node.id)) this.centerNode(node);
     }
 
     updateSelectionClasses() {
@@ -667,18 +943,25 @@
       this.panel.hidden = false;
       this.app.classList.add("has-selection");
 
-      const type = node.kind === "topic" ? "CONCEPT" : `${node.referenceType} · ${node.year || ""}`;
+      const type = node.kind === "topic"
+        ? "CONCEPT"
+        : node.kind === "entry"
+          ? (node.entryKind || "ENTRY").toUpperCase()
+          : `${node.referenceType} · ${node.year || ""}`;
       this.panel.append(element("p", "panel-type", type));
       this.panel.append(element("h3", "", node.title));
       this.panel.append(element("p", "panel-summary", node.summary || "설명을 준비 중입니다."));
 
       const badges = element("div", "panel-badges");
-      if (node.kind === "topic") {
+      if (node.kind === "topic" || node.kind === "entry") {
         for (const status of [node.status, node.maturity].filter(Boolean)) {
           const badge = element("span", "status-badge", statusLabel(status));
           badge.dataset.status = status;
           badges.append(badge);
         }
+        const importance = element("span", "status-badge", `중요도 ${node.importance}/5`);
+        importance.dataset.status = "importance";
+        badges.append(importance);
       } else {
         for (const status of [node.readingStatus, node.noteStatus].filter(Boolean)) {
           const badge = element("span", "status-badge", statusLabel(status));
@@ -688,18 +971,57 @@
       }
       this.panel.append(badges);
 
-      const relations = (this.neighbors.get(node.id) || []).filter((item) => this.visible(item.node));
-      if (relations.length) {
+      const relations = [...new Map(
+        (this.neighbors.get(node.id) || []).map((item) => [item.node.id, item])
+      ).values()];
+      const relatedNodes = relations.filter((item) => this.graphNodeIds.has(item.node.id));
+      const sources = relations
+        .filter((item) => item.node.kind === "reference")
+        .map((item) => item.node)
+        .sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
+
+      if (node.kind !== "reference") {
+        const sourceSection = element("div", "panel-sources");
+        sourceSection.append(element("h4", "", `Papers & Books · ${sources.length}`));
+        if (!sources.length) {
+          sourceSection.append(element("p", "panel-source-empty", "아직 연결된 문헌이 없습니다."));
+        } else {
+          for (const [referenceType, label] of [["paper", "PAPERS"], ["book", "BOOKS"]]) {
+            const groupSources = sources.filter((source) => source.referenceType === referenceType);
+            if (!groupSources.length) continue;
+            const group = element("div", "panel-source-group");
+            group.append(element("p", "panel-source-group-label", `${label} · ${groupSources.length}`));
+            const list = element("ul", "panel-source-list");
+            for (const source of groupSources) {
+              const li = element("li", "panel-source-item");
+              const link = element("a", "panel-source-link", source.title);
+              link.href = nodeUrl(source);
+              const meta = element(
+                "span",
+                "panel-source-meta",
+                [source.author, source.year].filter(Boolean).join(" · ")
+              );
+              li.append(link, meta);
+              list.append(li);
+            }
+            group.append(list);
+            sourceSection.append(group);
+          }
+        }
+        this.panel.append(sourceSection);
+      }
+
+      if (relatedNodes.length) {
         const relationSection = element("div", "panel-relations");
-        relationSection.append(element("h4", "", `직접 연결 ${relations.length}`));
+        relationSection.append(element("h4", "", `연결된 노드 ${relatedNodes.length}`));
         const list = element("ul");
-        for (const item of relations.slice(0, 8)) {
+        for (const item of relatedNodes.slice(0, 10)) {
           const li = element("li");
           const link = element("a", "", item.node.label);
           link.href = "#";
           link.addEventListener("click", (event) => {
             event.preventDefault();
-            this.selectNode(item.node, true);
+            this.selectNode(item.node, this.graphNodeIds.has(item.node.id));
           });
           const relation = relationLabel(item.edge.relation);
           if (item.outgoing) {
@@ -742,17 +1064,20 @@
 
       this.svg.addEventListener("pointerdown", (event) => {
         const nodeGroup = event.target.closest(".graph-node");
-        this.svg.setPointerCapture(event.pointerId);
         if (nodeGroup) {
+          nodeGroup.setPointerCapture(event.pointerId);
           const node = this.nodeById.get(
             [...this.nodeElements.entries()].find(([, group]) => group === nodeGroup)?.[0]
           );
           if (!node) return;
           const point = this.toGraphPoint(event);
           this.drag = { node, offsetX: node.x - point.x, offsetY: node.y - point.y };
+          this.dragStart = { x: event.clientX, y: event.clientY };
+          this.dragMoved = false;
           node.fixed = true;
           this.restart(0.35);
         } else {
+          this.svg.setPointerCapture(event.pointerId);
           this.pan = {
             startX: event.clientX,
             startY: event.clientY,
@@ -765,9 +1090,16 @@
 
       this.svg.addEventListener("pointermove", (event) => {
         if (this.drag) {
+          if (
+            this.dragStart &&
+            Math.hypot(event.clientX - this.dragStart.x, event.clientY - this.dragStart.y) > 4
+          ) {
+            this.dragMoved = true;
+          }
           const point = this.toGraphPoint(event);
           this.drag.node.x = point.x + this.drag.offsetX;
           this.drag.node.y = point.y + this.drag.offsetY;
+          this.clampNode(this.drag.node);
           this.drag.node.vx = 0;
           this.drag.node.vy = 0;
           this.renderPositions();
@@ -782,8 +1114,13 @@
       });
 
       const finishPointer = () => {
-        if (this.drag) this.drag.node.fixed = false;
+        if (this.drag) {
+          this.drag.node.fixed = false;
+          if (this.dragMoved) this.suppressNodeClick = true;
+        }
         this.drag = null;
+        this.dragStart = null;
+        this.dragMoved = false;
         this.pan = null;
         this.stage.classList.remove("is-panning");
       };
@@ -834,6 +1171,120 @@
       this.applyTransform();
     }
 
+    boundaryDistance(node, unitX, unitY) {
+      if (node.kind === "topic") return node.radius;
+      const horizontal = Math.abs(unitX) / Math.max(node.halfWidth, 1);
+      const vertical = Math.abs(unitY) / Math.max(node.halfHeight, 1);
+      return 1 / Math.max(horizontal, vertical, 0.0001);
+    }
+
+    clampNode(node) {
+      const padding = 14;
+      const halfWidth = Math.min(node.halfWidth, Math.max(20, this.width / 2 - padding));
+      const halfHeight = Math.min(node.halfHeight, Math.max(20, this.height / 2 - padding));
+      node.x = clamp(node.x, halfWidth + padding, this.width - halfWidth - padding);
+      node.y = clamp(node.y, halfHeight + padding, this.height - halfHeight - padding);
+    }
+
+    collisionDisplacement(a, b, padding = 14) {
+      if (a.kind === "topic" && b.kind === "topic") {
+        let dx = b.x - a.x;
+        let dy = b.y - a.y;
+        let distance = Math.hypot(dx, dy);
+        if (distance < 0.01) {
+          const angle = (hashNumber(`${a.id}:${b.id}`) % 360) * (Math.PI / 180);
+          dx = Math.cos(angle);
+          dy = Math.sin(angle);
+          distance = 1;
+        }
+        return {
+          unitX: dx / distance,
+          unitY: dy / distance,
+          overlap: a.radius + b.radius + padding - distance
+        };
+      }
+
+      if (a.kind === "entry" && b.kind === "entry") {
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const overlapX = a.halfWidth + b.halfWidth + padding - Math.abs(dx);
+        const overlapY = a.halfHeight + b.halfHeight + padding - Math.abs(dy);
+        if (overlapX <= 0 || overlapY <= 0) return { unitX: 0, unitY: 0, overlap: 0 };
+        if (overlapX < overlapY) {
+          return { unitX: dx < 0 ? -1 : 1, unitY: 0, overlap: overlapX };
+        }
+        return { unitX: 0, unitY: dy < 0 ? -1 : 1, overlap: overlapY };
+      }
+
+      const circleIsA = a.kind === "topic";
+      const circle = circleIsA ? a : b;
+      const rectangle = circleIsA ? b : a;
+      const closestX = clamp(
+        circle.x,
+        rectangle.x - rectangle.halfWidth,
+        rectangle.x + rectangle.halfWidth
+      );
+      const closestY = clamp(
+        circle.y,
+        rectangle.y - rectangle.halfHeight,
+        rectangle.y + rectangle.halfHeight
+      );
+      let dx = circle.x - closestX;
+      let dy = circle.y - closestY;
+      let distance = Math.hypot(dx, dy);
+      let overlap;
+
+      if (distance < 0.01) {
+        const horizontalGap = rectangle.halfWidth - Math.abs(circle.x - rectangle.x);
+        const verticalGap = rectangle.halfHeight - Math.abs(circle.y - rectangle.y);
+        if (horizontalGap < verticalGap) {
+          dx = circle.x < rectangle.x ? -1 : 1;
+          dy = 0;
+          overlap = circle.radius + padding + horizontalGap;
+        } else {
+          dx = 0;
+          dy = circle.y < rectangle.y ? -1 : 1;
+          overlap = circle.radius + padding + verticalGap;
+        }
+        distance = 1;
+      } else {
+        overlap = circle.radius + padding - distance;
+      }
+
+      const direction = circleIsA ? -1 : 1;
+      return {
+        unitX: (dx / distance) * direction,
+        unitY: (dy / distance) * direction,
+        overlap
+      };
+    }
+
+    resolveCollisions(nodes, passes = 3) {
+      for (let pass = 0; pass < passes; pass += 1) {
+        for (let i = 0; i < nodes.length; i += 1) {
+          const a = nodes[i];
+          for (let j = i + 1; j < nodes.length; j += 1) {
+            const b = nodes[j];
+            const { unitX, unitY, overlap } = this.collisionDisplacement(a, b);
+            if (overlap <= 0) continue;
+
+            const movableCount = Number(!a.fixed) + Number(!b.fixed);
+            if (!movableCount) continue;
+            const correction = overlap / movableCount;
+            if (!a.fixed) {
+              a.x -= unitX * correction;
+              a.y -= unitY * correction;
+            }
+            if (!b.fixed) {
+              b.x += unitX * correction;
+              b.y += unitY * correction;
+            }
+          }
+        }
+        for (const node of nodes) this.clampNode(node);
+      }
+    }
+
     applyTransform() {
       this.viewport.setAttribute(
         "transform",
@@ -859,10 +1310,15 @@
         const dx = target.x - source.x;
         const dy = target.y - source.y;
         const distance = Math.max(1, Math.hypot(dx, dy));
-        const desired = source.kind === "topic" && target.kind === "topic" ? 185 : 118;
+        const unitX = dx / distance;
+        const unitY = dy / distance;
+        const desired =
+          this.boundaryDistance(source, unitX, unitY) +
+          this.boundaryDistance(target, -unitX, -unitY) +
+          72;
         const strength = (distance - desired) * 0.018 * alpha;
-        const fx = (dx / distance) * strength;
-        const fy = (dy / distance) * strength;
+        const fx = unitX * strength;
+        const fy = unitY * strength;
         if (!source.fixed) {
           source.vx += fx;
           source.vy += fy;
@@ -886,12 +1342,17 @@
             distanceSquared = dx * dx + dy * dy;
           }
           const distance = Math.sqrt(distanceSquared);
-          const minimum = (a.kind === "topic" ? 52 : 65) + (b.kind === "topic" ? 52 : 65);
-          const charge = ((a.kind === "topic" || b.kind === "topic" ? 2600 : 1550) * alpha) / distanceSquared;
-          const collision = distance < minimum ? (minimum - distance) * 0.04 * alpha : 0;
-          const force = Math.min(2.8, charge + collision);
-          const fx = (dx / distance) * force;
-          const fy = (dy / distance) * force;
+          const unitX = dx / distance;
+          const unitY = dy / distance;
+          const minimum =
+            this.boundaryDistance(a, unitX, unitY) +
+            this.boundaryDistance(b, -unitX, -unitY) +
+            20;
+          const charge = (3100 * alpha) / distanceSquared;
+          const collision = distance < minimum ? (minimum - distance) * 0.105 * alpha : 0;
+          const force = Math.min(5.2, charge + collision);
+          const fx = unitX * force;
+          const fy = unitY * force;
           if (!a.fixed) {
             a.vx -= fx;
             a.vy -= fy;
@@ -914,11 +1375,10 @@
           node.vy *= 0.83;
           node.x += node.vx;
           node.y += node.vy;
-          const margin = node.kind === "topic" ? 55 : 68;
-          node.x = Math.max(margin, Math.min(this.width - margin, node.x));
-          node.y = Math.max(margin, Math.min(this.height - margin, node.y));
+          this.clampNode(node);
         }
       }
+      this.resolveCollisions(activeNodes);
 
       this.renderPositions();
       this.alpha *= 0.968;
@@ -932,10 +1392,17 @@
     renderPositions() {
       for (const edge of this.edges) {
         const line = this.edgeElements.get(edge);
-        line.setAttribute("x1", edge.sourceNode.x);
-        line.setAttribute("y1", edge.sourceNode.y);
-        line.setAttribute("x2", edge.targetNode.x);
-        line.setAttribute("y2", edge.targetNode.y);
+        const dx = edge.targetNode.x - edge.sourceNode.x;
+        const dy = edge.targetNode.y - edge.sourceNode.y;
+        const distance = Math.max(1, Math.hypot(dx, dy));
+        const unitX = dx / distance;
+        const unitY = dy / distance;
+        const sourceOffset = this.boundaryDistance(edge.sourceNode, unitX, unitY) + 2;
+        const targetOffset = this.boundaryDistance(edge.targetNode, -unitX, -unitY) + 8;
+        line.setAttribute("x1", edge.sourceNode.x + unitX * sourceOffset);
+        line.setAttribute("y1", edge.sourceNode.y + unitY * sourceOffset);
+        line.setAttribute("x2", edge.targetNode.x - unitX * targetOffset);
+        line.setAttribute("y2", edge.targetNode.y - unitY * targetOffset);
       }
       for (const node of this.nodes) {
         this.nodeElements.get(node.id).setAttribute("transform", `translate(${node.x} ${node.y})`);

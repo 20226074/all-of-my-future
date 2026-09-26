@@ -6,6 +6,7 @@ node-type: topic
 status: active
 maturity: seed
 priority: now
+importance: 3
 search-aliases:
   - Fokker-Planck equation
   - forward Kolmogorov equation
