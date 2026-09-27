@@ -92,7 +92,8 @@
         top.append(readingBadge);
 
         const title = element("h3", "", reference.title);
-        const summary = element("p", "", reference.summary || "요약을 준비 중입니다.");
+        const author = element("p", "reference-author", reference.firstAuthor || reference.author || "저자 미상");
+        author.title = reference.author || author.textContent;
         const badges = element("div", "panel-badges");
         const noteBadge = element("span", "status-badge", statusLabel(reference.noteStatus));
         noteBadge.dataset.status = reference.noteStatus;
@@ -104,7 +105,7 @@
         }
         const link = element("a", "card-link", "노트 열기 →");
         link.href = nodeUrl(reference);
-        card.append(top, title, summary, badges, link);
+        card.append(top, title, author, badges, link);
         board.append(card);
       }
     });
@@ -211,19 +212,27 @@
           const titleLink = element("a", "", reference.title);
           titleLink.href = nodeUrl(reference);
           title.append(titleLink);
-          const author = element("p", "reference-author", reference.author);
-          const description = element("p", "reference-description", reference.summary || "요약을 준비 중입니다.");
+          const author = element(
+            "p",
+            "reference-author",
+            reference.firstAuthor || reference.author || "저자 미상"
+          );
+          author.title = reference.author || author.textContent;
           const topics = element("div", "reference-topics");
           for (const topicId of reference.attachedTo || []) {
             const topic = nodeById.get(topicId);
             if (!topic) continue;
-            const topicLink = element("a", "topic-chip", topic.label);
+            const topicLink = element(
+              "a",
+              `topic-chip${topicId === reference.primaryNode ? " is-primary" : ""}`,
+              topic.label
+            );
             topicLink.href = nodeUrl(topic);
             topics.append(topicLink);
           }
           const open = element("a", "card-link", "노트 열기 →");
           open.href = nodeUrl(reference);
-          card.append(top, title, author, description, topics, open);
+          card.append(top, title, author, topics, open);
           grid.append(card);
         }
       };
@@ -334,6 +343,17 @@
       this.nodeById = new Map(this.allNodes.map((node) => [node.id, node]));
       this.nodes = this.allNodes.filter((node) => node.kind === "topic" || node.kind === "entry");
       this.graphNodeIds = new Set(this.nodes.map((node) => node.id));
+      this.viewStorageKey = `knowledge-atlas:view:v2:${siteRoot.pathname.replace(/\/$/, "") || "/"}`;
+      this.legacyOrderStorageKey = `knowledge-atlas:explorer-order:v1:${siteRoot.pathname.replace(/\/$/, "") || "/"}`;
+      this.publishedView = this.normalizeView(graph.view);
+      this.localView = this.loadLocalView();
+      this.effectiveView = this.mergeViews(this.publishedView, this.localView);
+      for (const node of this.nodes) {
+        node.publishedImportance = clamp(Number(node.importance) || 3, 1, 5);
+        const viewImportance = this.effectiveView.nodes[node.id]?.importance;
+        node.importance = clamp(Number(viewImportance) || node.publishedImportance, 1, 5);
+        node.pinned = false;
+      }
       this.allEdges = graph.edges
         .filter((edge) => this.nodeById.has(edge.source) && this.nodeById.has(edge.target))
         .map((edge) => ({
@@ -349,7 +369,6 @@
         this.neighbors.get(edge.source).push({ node: edge.targetNode, edge, outgoing: true });
         this.neighbors.get(edge.target).push({ node: edge.sourceNode, edge, outgoing: false });
       }
-      this.orderStorageKey = `knowledge-atlas:explorer-order:v1:${siteRoot.pathname.replace(/\/$/, "") || "/"}`;
       this.computeNodeGeometry();
       this.query = "";
       this.selected = null;
@@ -361,6 +380,158 @@
       this.width = 900;
       this.height = 520;
       this.build();
+    }
+
+    normalizeView(view) {
+      const normalized = { schemaVersion: 1, explorerOrder: [], nodes: {} };
+      if (!view || typeof view !== "object") return normalized;
+      if (Array.isArray(view.explorerOrder)) {
+        normalized.explorerOrder = view.explorerOrder.filter(
+          (id, index, ids) => this.graphNodeIds.has(id) && ids.indexOf(id) === index
+        );
+      }
+      if (view.nodes && typeof view.nodes === "object") {
+        for (const [id, rawConfig] of Object.entries(view.nodes)) {
+          if (!this.graphNodeIds.has(id) || !rawConfig || typeof rawConfig !== "object") continue;
+          const config = {};
+          const importance = Number(rawConfig.importance);
+          if (Number.isInteger(importance) && importance >= 1 && importance <= 5) {
+            config.importance = importance;
+          }
+          const x = Number(rawConfig.x);
+          const y = Number(rawConfig.y);
+          if (Number.isFinite(x) && Number.isFinite(y) && x >= 0 && x <= 1 && y >= 0 && y <= 1) {
+            config.x = x;
+            config.y = y;
+            config.pinned = rawConfig.pinned !== false;
+          }
+          if (Object.keys(config).length) normalized.nodes[id] = config;
+        }
+      }
+      return normalized;
+    }
+
+    mergeViews(published, local) {
+      const nodes = {};
+      for (const id of this.graphNodeIds) {
+        const merged = { ...(published.nodes[id] || {}), ...(local.nodes[id] || {}) };
+        if (Object.keys(merged).length) nodes[id] = merged;
+      }
+      return {
+        schemaVersion: 1,
+        explorerOrder: local.explorerOrder.length
+          ? [...local.explorerOrder]
+          : [...published.explorerOrder],
+        nodes
+      };
+    }
+
+    loadLocalView() {
+      try {
+        const stored = JSON.parse(window.localStorage.getItem(this.viewStorageKey) || "null");
+        if (stored?.schemaVersion === 1) return this.normalizeView(stored);
+      } catch {
+        // Fall through to the explorer-order migration below.
+      }
+
+      try {
+        const legacy = JSON.parse(window.localStorage.getItem(this.legacyOrderStorageKey) || "null");
+        if (legacy?.version === 1 && Array.isArray(legacy.ids)) {
+          return this.normalizeView({ schemaVersion: 1, explorerOrder: legacy.ids, nodes: {} });
+        }
+      } catch {
+        // Start from the published view when storage is unavailable or invalid.
+      }
+      return { schemaVersion: 1, explorerOrder: [], nodes: {} };
+    }
+
+    hasLocalView() {
+      return this.localView.explorerOrder.length > 0 || Object.keys(this.localView.nodes).length > 0;
+    }
+
+    saveLocalView(message = "이 브라우저에 자동 저장됨") {
+      this.localView = this.normalizeView(this.localView);
+      this.effectiveView = this.mergeViews(this.publishedView, this.localView);
+      try {
+        window.localStorage.setItem(
+          this.viewStorageKey,
+          JSON.stringify({ ...this.localView, updatedAt: new Date().toISOString() })
+        );
+        window.localStorage.removeItem(this.legacyOrderStorageKey);
+        this.updateStorageStatus(message);
+      } catch {
+        this.updateStorageStatus("저장할 수 없음");
+      }
+    }
+
+    updateStorageStatus(message) {
+      if (!this.storageStatus) return;
+      this.storageStatus.textContent = message || (this.hasLocalView() ? "로컬 배치 사용 중" : "게시 배치");
+      this.storageStatus.dataset.local = String(this.hasLocalView());
+    }
+
+    captureView() {
+      const nodes = {};
+      for (const node of this.nodes) {
+        const config = { importance: node.importance };
+        if (node.pinned && this.width > 0 && this.height > 0) {
+          config.x = Number(clamp(node.x / this.width, 0, 1).toFixed(6));
+          config.y = Number(clamp(node.y / this.height, 0, 1).toFixed(6));
+          config.pinned = true;
+        }
+        nodes[node.id] = config;
+      }
+      return {
+        schemaVersion: 1,
+        explorerOrder: this.currentExplorerIds(),
+        nodes
+      };
+    }
+
+    exportView() {
+      const blob = new Blob([`${JSON.stringify(this.captureView(), null, 2)}\n`], {
+        type: "application/json"
+      });
+      const href = URL.createObjectURL(blob);
+      const download = element("a");
+      download.href = href;
+      download.download = "graph-view.json";
+      document.body.append(download);
+      download.click();
+      download.remove();
+      window.setTimeout(() => URL.revokeObjectURL(href), 0);
+      this.updateStorageStatus("게시용 배치 파일을 내보냄");
+    }
+
+    async importViewFile() {
+      const file = this.importInput.files?.[0];
+      if (!file) return;
+      try {
+        const parsed = JSON.parse(await file.text());
+        if (parsed?.schemaVersion !== 1) throw new Error("지원하지 않는 배치 파일입니다.");
+        this.localView = this.normalizeView(parsed);
+        this.saveLocalView("배치 파일을 가져옴");
+        window.location.reload();
+      } catch (error) {
+        window.alert(error instanceof Error ? error.message : "배치 파일을 읽을 수 없습니다.");
+        this.importInput.value = "";
+      }
+    }
+
+    restorePublishedView() {
+      if (!this.hasLocalView()) {
+        this.updateStorageStatus("이미 게시 배치를 사용 중");
+        return;
+      }
+      if (!window.confirm("이 브라우저에 저장된 순서·위치·중요도를 지우고 게시 배치로 돌아갈까요?")) {
+        return;
+      }
+      try {
+        window.localStorage.removeItem(this.viewStorageKey);
+        window.localStorage.removeItem(this.legacyOrderStorageKey);
+      } finally {
+        window.location.reload();
+      }
     }
 
     computeNodeGeometry() {
@@ -403,10 +574,8 @@
       const explorerHeader = element("div", "explorer-header");
       const explorerTitleRow = element("div", "explorer-title-row");
       explorerTitleRow.append(element("p", "explorer-kicker", "ATLAS"));
-      this.resetOrderButton = element("button", "explorer-order-reset", "순서 초기화");
-      this.resetOrderButton.type = "button";
-      this.resetOrderButton.addEventListener("click", () => this.resetExplorerOrder());
-      explorerTitleRow.append(this.resetOrderButton);
+      this.storageStatus = element("p", "explorer-storage-status");
+      explorerTitleRow.append(this.storageStatus);
       explorerHeader.append(explorerTitleRow);
       const searchWrap = element("label", "explorer-search-wrap");
       this.searchInput = element("input", "explorer-search");
@@ -421,6 +590,23 @@
       explorerHeader.append(searchWrap);
       this.explorerCount = element("p", "explorer-count");
       explorerHeader.append(this.explorerCount);
+
+      const viewTools = element("div", "explorer-view-tools");
+      const exportButton = element("button", "explorer-view-button", "배치 내보내기");
+      exportButton.type = "button";
+      exportButton.addEventListener("click", () => this.exportView());
+      const importButton = element("button", "explorer-view-button", "가져오기");
+      importButton.type = "button";
+      this.importInput = element("input", "visually-hidden");
+      this.importInput.type = "file";
+      this.importInput.accept = "application/json,.json";
+      this.importInput.addEventListener("change", () => this.importViewFile());
+      importButton.addEventListener("click", () => this.importInput.click());
+      this.restoreViewButton = element("button", "explorer-view-button", "게시 배치 복원");
+      this.restoreViewButton.type = "button";
+      this.restoreViewButton.addEventListener("click", () => this.restorePublishedView());
+      viewTools.append(exportButton, importButton, this.restoreViewButton, this.importInput);
+      explorerHeader.append(viewTools);
       this.explorerTree = element("ul", "explorer-tree");
       this.explorerTree.setAttribute("role", "tree");
       this.explorerResults = element("ul", "explorer-results");
@@ -477,6 +663,8 @@
       this.app.append(this.explorer, this.stage, this.panel);
       this.container.append(this.app);
 
+      this.updateStorageStatus();
+
       this.createGraphElements();
       this.buildExplorer();
       this.attachInteraction();
@@ -521,17 +709,12 @@
         const orderB = Number.isFinite(Number(b.explorerOrder)) ? Number(b.explorerOrder) : Number.MAX_SAFE_INTEGER;
         return orderA - orderB || a.title.localeCompare(b.title, "ko");
       });
-      this.defaultRootIds = defaults.map((node) => node.id);
       const defaultById = new Map(defaults.map((node) => [node.id, node]));
-      let storedIds = [];
-      try {
-        const stored = JSON.parse(window.localStorage.getItem(this.orderStorageKey) || "null");
-        if (stored?.version === 1 && Array.isArray(stored.ids)) storedIds = stored.ids;
-      } catch {
-        storedIds = [];
-      }
-      const validStored = storedIds.filter((id, index) => defaultById.has(id) && storedIds.indexOf(id) === index);
-      const orderedIds = [...validStored, ...this.defaultRootIds.filter((id) => !validStored.includes(id))];
+      const alphabeticalIds = defaults.map((node) => node.id);
+      const publishedIds = this.publishedView.explorerOrder.filter((id) => defaultById.has(id));
+      this.defaultRootIds = [...publishedIds, ...alphabeticalIds.filter((id) => !publishedIds.includes(id))];
+      const preferredIds = this.effectiveView.explorerOrder.filter((id) => defaultById.has(id));
+      const orderedIds = [...preferredIds, ...this.defaultRootIds.filter((id) => !preferredIds.includes(id))];
 
       for (const nodeId of orderedIds) {
         const node = defaultById.get(nodeId);
@@ -599,7 +782,11 @@
             );
             childButton.title = relationLabel(neighbor.edge.relation);
             childButton.addEventListener("click", () =>
-              this.selectNode(neighbor.node, this.graphNodeIds.has(neighbor.node.id))
+              this.selectNode(
+                neighbor.node,
+                this.graphNodeIds.has(neighbor.node.id),
+                neighbor.node.kind === "reference" ? node : null
+              )
             );
             child.append(childButton);
             children.append(child);
@@ -656,14 +843,8 @@
 
     saveExplorerOrder(movedId) {
       const ids = this.currentExplorerIds();
-      try {
-        window.localStorage.setItem(
-          this.orderStorageKey,
-          JSON.stringify({ version: 1, ids, updatedAt: new Date().toISOString() })
-        );
-      } catch {
-        // The visual order still works when storage is unavailable.
-      }
+      this.localView.explorerOrder = ids;
+      this.saveLocalView("순서를 자동 저장함");
       const position = ids.indexOf(movedId) + 1;
       const moved = this.nodeById.get(movedId);
       this.explorerLive.textContent = `${moved?.label || "항목"}, ${ids.length}개 중 ${position}번째로 이동`;
@@ -687,11 +868,8 @@
         const item = this.explorerItems.get(nodeId)?.item;
         if (item) this.explorerTree.append(item);
       }
-      try {
-        window.localStorage.removeItem(this.orderStorageKey);
-      } catch {
-        // Keep the reset visual order even if storage is unavailable.
-      }
+      this.localView.explorerOrder = [];
+      this.saveLocalView("게시 순서로 되돌림");
       this.explorerLive.textContent = "탐색기 순서를 기본값으로 되돌렸습니다.";
     }
 
@@ -738,6 +916,54 @@
       return button;
     }
 
+    renderNodeGeometry(node, group) {
+      const desiredShape = node.kind === "topic" ? "circle" : "rect";
+      let shape = group.querySelector(":scope > .node-shape");
+      if (!shape || shape.localName !== desiredShape) {
+        const replacement = svgElement(desiredShape, { class: "node-shape" });
+        if (shape) shape.replaceWith(replacement);
+        else group.prepend(replacement);
+        shape = replacement;
+      }
+
+      if (node.kind === "topic") {
+        shape.setAttribute("r", node.radius);
+      } else {
+        shape.setAttribute("x", -node.halfWidth);
+        shape.setAttribute("y", -node.halfHeight);
+        shape.setAttribute("width", node.width);
+        shape.setAttribute("height", node.height);
+        shape.setAttribute("rx", Math.min(24, node.height * 0.28));
+      }
+
+      const availableWidth = node.kind === "topic" ? node.radius * 1.42 : node.width - 24;
+      const availableHeight = node.kind === "topic" ? node.radius * 1.3 : node.height - 20;
+      const preferredSize = clamp((node.kind === "topic" ? node.radius : node.height) * 0.18, 11, 15);
+      const layout = fitLabel(
+        node.label,
+        availableWidth,
+        availableHeight,
+        preferredSize,
+        node.kind === "entry" ? 9 : 3
+      );
+      const startY = -((layout.lines.length - 1) * layout.lineHeight) / 2 + layout.fontSize * 0.34;
+      let text = group.querySelector(":scope > .node-label-text");
+      if (!text) {
+        text = svgElement("text", { class: "node-label-text" });
+        const title = group.querySelector(":scope > title");
+        if (title) group.insertBefore(text, title);
+        else group.append(text);
+      }
+      text.replaceChildren();
+      text.setAttribute("y", startY);
+      text.style.fontSize = `${layout.fontSize}px`;
+      layout.lines.forEach((line, index) => {
+        const span = svgElement("tspan", { x: 0, dy: index === 0 ? 0 : layout.lineHeight });
+        span.textContent = line;
+        text.append(span);
+      });
+    }
+
     createGraphElements() {
       this.edgeElements = new Map();
       this.nodeElements = new Map();
@@ -761,45 +987,10 @@
         });
         group.style.setProperty("--node-color", clusterColors[node.cluster] || "var(--atlas-teal)");
 
-        if (node.kind === "topic") {
-          group.append(svgElement("circle", { class: "node-shape", r: node.radius }));
-        } else {
-          group.append(
-            svgElement("rect", {
-              class: "node-shape",
-              x: -node.halfWidth,
-              y: -node.halfHeight,
-              width: node.width,
-              height: node.height,
-              rx: Math.min(24, node.height * 0.28)
-            })
-          );
-        }
-
-        const availableWidth = node.kind === "topic" ? node.radius * 1.42 : node.width - 24;
-        const availableHeight = node.kind === "topic" ? node.radius * 1.3 : node.height - 20;
-        const preferredSize = clamp((node.kind === "topic" ? node.radius : node.height) * 0.18, 11, 15);
-        const layout = fitLabel(
-          node.label,
-          availableWidth,
-          availableHeight,
-          preferredSize,
-          node.kind === "entry" ? 9 : 3
-        );
-        const startY = -((layout.lines.length - 1) * layout.lineHeight) / 2 + layout.fontSize * 0.34;
-        const text = svgElement("text", { y: startY });
-        text.style.fontSize = `${layout.fontSize}px`;
-        const lines = layout.lines;
-        lines.forEach((line, index) => {
-          const span = svgElement("tspan", { x: 0, dy: index === 0 ? 0 : layout.lineHeight });
-          span.textContent = line;
-          text.append(span);
-        });
-        group.append(text);
-
         const title = svgElement("title");
         title.textContent = node.title;
         group.append(title);
+        this.renderNodeGeometry(node, group);
         group.addEventListener("click", (event) => {
           event.stopPropagation();
           if (this.suppressNodeClick) {
@@ -808,10 +999,7 @@
           }
           this.selectNode(node, true);
         });
-        group.addEventListener("dblclick", (event) => {
-          event.stopPropagation();
-          window.location.href = nodeUrl(node);
-        });
+        group.addEventListener("dblclick", (event) => event.stopPropagation());
         group.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
@@ -852,9 +1040,20 @@
       const centerY = this.height * 0.5;
       const radius = Math.min(this.width, this.height) * 0.3;
       this.nodes.forEach((node, index) => {
+        const saved = this.effectiveView.nodes[node.id] || {};
+        if (Number.isFinite(saved.x) && Number.isFinite(saved.y)) {
+          node.x = saved.x * this.width;
+          node.y = saved.y * this.height;
+          node.pinned = saved.pinned !== false;
+          node.fixed = node.pinned;
+          this.clampNode(node);
+          return;
+        }
         const angle = -Math.PI / 2 + (index * Math.PI * 2) / Math.max(this.nodes.length, 1);
         node.x = centerX + Math.cos(angle) * radius;
         node.y = centerY + Math.sin(angle) * radius * 0.72;
+        node.pinned = false;
+        node.fixed = false;
       });
     }
 
@@ -891,7 +1090,6 @@
 
       this.explorerTree.hidden = Boolean(this.query);
       this.explorerResults.hidden = !this.query;
-      this.resetOrderButton.disabled = Boolean(this.query);
       if (this.query) this.renderSearchResults(matches);
 
       const sourceCount = this.allNodes.length - this.nodes.length;
@@ -904,8 +1102,9 @@
       this.updateSelectionClasses();
     }
 
-    selectNode(node, center) {
+    selectNode(node, center, origin = null) {
       this.selected = node;
+      this.panelOrigin = node.kind === "reference" ? origin : null;
       this.showPanel(node);
       this.updateSelectionClasses();
       if (center && this.graphNodeIds.has(node.id)) this.centerNode(node);
@@ -932,8 +1131,174 @@
       }
     }
 
+    setNodeImportance(node, value) {
+      node.importance = clamp(Math.round(Number(value) || node.importance), 1, 5);
+      const config = { ...(this.localView.nodes[node.id] || {}) };
+      config.importance = node.importance;
+      this.localView.nodes[node.id] = config;
+      this.computeNodeGeometry();
+      const group = this.nodeElements.get(node.id);
+      if (group) this.renderNodeGeometry(node, group);
+      this.clampNode(node);
+      this.renderPositions();
+      this.saveLocalView("중요도를 자동 저장함");
+      this.restart(0.45);
+    }
+
+    saveNodePosition(node) {
+      const config = { ...(this.localView.nodes[node.id] || {}) };
+      config.x = Number(clamp(node.x / this.width, 0, 1).toFixed(6));
+      config.y = Number(clamp(node.y / this.height, 0, 1).toFixed(6));
+      config.pinned = true;
+      this.localView.nodes[node.id] = config;
+      node.pinned = true;
+      node.fixed = true;
+      this.saveLocalView("노드 위치를 자동 저장함");
+    }
+
+    resetNodePosition(node) {
+      const config = { ...(this.localView.nodes[node.id] || {}) };
+      delete config.x;
+      delete config.y;
+      delete config.pinned;
+      if (Object.keys(config).length) this.localView.nodes[node.id] = config;
+      else delete this.localView.nodes[node.id];
+
+      const published = this.publishedView.nodes[node.id] || {};
+      if (Number.isFinite(published.x) && Number.isFinite(published.y)) {
+        node.x = published.x * this.width;
+        node.y = published.y * this.height;
+        node.pinned = published.pinned !== false;
+        node.fixed = node.pinned;
+      } else {
+        node.pinned = false;
+        node.fixed = false;
+      }
+      this.clampNode(node);
+      this.saveLocalView("노드 위치를 게시 배치로 되돌림");
+      this.restart(0.7);
+      this.showPanel(node);
+    }
+
+    buildLayoutEditor(node) {
+      const editor = element("details", "panel-layout-editor");
+      const summary = element("summary", "", "배치 편집");
+      const row = element("label", "panel-importance-control");
+      const label = element("span", "", "노드 크기");
+      const input = element("input");
+      input.type = "range";
+      input.min = "1";
+      input.max = "5";
+      input.step = "1";
+      input.value = String(node.importance);
+      input.setAttribute("aria-label", `${node.label} 중요도`);
+      const output = element("output", "", `${node.importance} / 5`);
+      input.addEventListener("input", () => {
+        output.textContent = `${input.value} / 5`;
+        this.setNodeImportance(node, input.value);
+      });
+      row.append(label, input, output);
+
+      const positionHint = element(
+        "p",
+        "panel-layout-hint",
+        "그래프에서 노드를 끌어 놓으면 그 위치가 이 브라우저에 고정됩니다."
+      );
+      const release = element("button", "panel-position-reset", "위치를 게시 배치로 복원");
+      release.type = "button";
+      release.addEventListener("click", () => this.resetNodePosition(node));
+      editor.append(summary, row, positionHint, release);
+      return editor;
+    }
+
+    appendSourceGroup(section, label, sources, owner) {
+      if (!sources.length) return;
+      const group = element("div", "panel-source-group");
+      group.append(element("p", "panel-source-group-label", `${label} · ${sources.length}`));
+      const list = element("ul", "panel-source-list");
+      for (const source of sources) {
+        const li = element("li", "panel-source-item");
+        const kind = source.referenceType === "paper" ? "PAPER" : "BOOK";
+        const top = element("div", "panel-source-top");
+        top.append(element("span", "panel-source-kind", [kind, source.year].filter(Boolean).join(" · ")));
+        if (source.primaryNode !== owner.id) {
+          const primary = this.nodeById.get(source.primaryNode);
+          top.append(element("span", "panel-source-origin", primary ? `주 소속 · ${primary.label}` : "연결 문헌"));
+        }
+        const link = element("a", "panel-source-link", source.title);
+        link.href = nodeUrl(source);
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          this.selectNode(source, false, owner);
+        });
+        const author = element(
+          "span",
+          "panel-source-meta",
+          source.firstAuthor || source.author || "저자 미상"
+        );
+        author.title = source.author || author.textContent;
+        li.append(top, link, author);
+        list.append(li);
+      }
+      group.append(list);
+      section.append(group);
+    }
+
+    showReferencePanel(node) {
+      this.panel.classList.add("is-reference-detail");
+      const header = element("div", "reference-detail-header");
+      if (this.panelOrigin) {
+        const back = element("button", "reference-detail-back", `← ${this.panelOrigin.label}`);
+        back.type = "button";
+        back.addEventListener("click", () => this.selectNode(this.panelOrigin, true));
+        header.append(back);
+      }
+      const headingRow = element("div", "reference-detail-heading-row");
+      headingRow.append(
+        element(
+          "p",
+          "panel-type",
+          `${node.referenceType === "paper" ? "PAPER" : "BOOK"}${node.year ? ` · ${node.year}` : ""}`
+        )
+      );
+      const external = element("a", "reference-detail-external", "새 탭 ↗");
+      external.href = nodeUrl(node);
+      external.target = "_blank";
+      external.rel = "noopener noreferrer";
+      headingRow.append(external);
+      header.append(headingRow);
+      header.append(element("h3", "", node.title));
+      const authors = element("p", "reference-detail-authors", node.author || "저자 미상");
+      authors.title = node.author || "";
+      header.append(authors);
+
+      const topics = element("div", "reference-detail-topics");
+      for (const topicId of node.attachedTo || []) {
+        const topic = this.nodeById.get(topicId);
+        if (!topic) continue;
+        const chip = element(
+          "button",
+          `reference-topic-chip${topicId === node.primaryNode ? " is-primary" : ""}`,
+          topic.label
+        );
+        chip.type = "button";
+        chip.addEventListener("click", () => this.selectNode(topic, true));
+        topics.append(chip);
+      }
+      header.append(topics);
+
+      const detailUrl = new URL(nodeUrl(node));
+      detailUrl.searchParams.set("embed", "1");
+      const frame = element("iframe", "reference-detail-frame");
+      frame.src = detailUrl.href;
+      frame.title = `${node.title} 상세 노트`;
+      frame.loading = "eager";
+      this.panel.append(header, frame);
+    }
+
     showPanel(node) {
       this.panel.replaceChildren();
+      this.panel.classList.remove("is-reference-detail");
       if (!node) {
         this.panel.hidden = true;
         this.app.classList.remove("has-selection");
@@ -942,34 +1307,16 @@
 
       this.panel.hidden = false;
       this.app.classList.add("has-selection");
+      if (node.kind === "reference") {
+        this.showReferencePanel(node);
+        return;
+      }
 
-      const type = node.kind === "topic"
-        ? "CONCEPT"
-        : node.kind === "entry"
-          ? (node.entryKind || "ENTRY").toUpperCase()
-          : `${node.referenceType} · ${node.year || ""}`;
+      const type = node.kind === "topic" ? "CONCEPT" : (node.entryKind || "ENTRY").toUpperCase();
       this.panel.append(element("p", "panel-type", type));
       this.panel.append(element("h3", "", node.title));
-      this.panel.append(element("p", "panel-summary", node.summary || "설명을 준비 중입니다."));
-
-      const badges = element("div", "panel-badges");
-      if (node.kind === "topic" || node.kind === "entry") {
-        for (const status of [node.status, node.maturity].filter(Boolean)) {
-          const badge = element("span", "status-badge", statusLabel(status));
-          badge.dataset.status = status;
-          badges.append(badge);
-        }
-        const importance = element("span", "status-badge", `중요도 ${node.importance}/5`);
-        importance.dataset.status = "importance";
-        badges.append(importance);
-      } else {
-        for (const status of [node.readingStatus, node.noteStatus].filter(Boolean)) {
-          const badge = element("span", "status-badge", statusLabel(status));
-          badge.dataset.status = status;
-          badges.append(badge);
-        }
-      }
-      this.panel.append(badges);
+      if (node.summary) this.panel.append(element("p", "panel-summary", node.summary));
+      this.panel.append(this.buildLayoutEditor(node));
 
       const relations = [...new Map(
         (this.neighbors.get(node.id) || []).map((item) => [item.node.id, item])
@@ -980,36 +1327,25 @@
         .map((item) => item.node)
         .sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
 
-      if (node.kind !== "reference") {
-        const sourceSection = element("div", "panel-sources");
-        sourceSection.append(element("h4", "", `Papers & Books · ${sources.length}`));
-        if (!sources.length) {
-          sourceSection.append(element("p", "panel-source-empty", "아직 연결된 문헌이 없습니다."));
-        } else {
-          for (const [referenceType, label] of [["paper", "PAPERS"], ["book", "BOOKS"]]) {
-            const groupSources = sources.filter((source) => source.referenceType === referenceType);
-            if (!groupSources.length) continue;
-            const group = element("div", "panel-source-group");
-            group.append(element("p", "panel-source-group-label", `${label} · ${groupSources.length}`));
-            const list = element("ul", "panel-source-list");
-            for (const source of groupSources) {
-              const li = element("li", "panel-source-item");
-              const link = element("a", "panel-source-link", source.title);
-              link.href = nodeUrl(source);
-              const meta = element(
-                "span",
-                "panel-source-meta",
-                [source.author, source.year].filter(Boolean).join(" · ")
-              );
-              li.append(link, meta);
-              list.append(li);
-            }
-            group.append(list);
-            sourceSection.append(group);
-          }
-        }
-        this.panel.append(sourceSection);
+      const sourceSection = element("div", "panel-sources");
+      sourceSection.append(element("h4", "", `Papers & Books · ${sources.length}`));
+      if (!sources.length) {
+        sourceSection.append(element("p", "panel-source-empty", "아직 연결된 문헌이 없습니다."));
+      } else {
+        this.appendSourceGroup(
+          sourceSection,
+          "이 노드의 문헌",
+          sources.filter((source) => source.primaryNode === node.id),
+          node
+        );
+        this.appendSourceGroup(
+          sourceSection,
+          "다른 노드에서 연결",
+          sources.filter((source) => source.primaryNode !== node.id),
+          node
+        );
       }
+      this.panel.append(sourceSection);
 
       if (relatedNodes.length) {
         const relationSection = element("div", "panel-relations");
@@ -1021,23 +1357,16 @@
           link.href = "#";
           link.addEventListener("click", (event) => {
             event.preventDefault();
-            this.selectNode(item.node, this.graphNodeIds.has(item.node.id));
+            this.selectNode(item.node, true);
           });
           const relation = relationLabel(item.edge.relation);
-          if (item.outgoing) {
-            li.append(document.createTextNode(`${relation} → `), link);
-          } else {
-            li.append(document.createTextNode(`← ${relation} — `), link);
-          }
+          if (item.outgoing) li.append(document.createTextNode(`${relation} → `), link);
+          else li.append(document.createTextNode(`← ${relation} — `), link);
           list.append(li);
         }
         relationSection.append(list);
         this.panel.append(relationSection);
       }
-
-      const open = element("a", "btn btn-primary panel-open", "페이지 열기");
-      open.href = nodeUrl(node);
-      this.panel.append(open);
     }
 
     attachInteraction() {
@@ -1071,7 +1400,12 @@
           );
           if (!node) return;
           const point = this.toGraphPoint(event);
-          this.drag = { node, offsetX: node.x - point.x, offsetY: node.y - point.y };
+          this.drag = {
+            node,
+            offsetX: node.x - point.x,
+            offsetY: node.y - point.y,
+            wasFixed: Boolean(node.fixed)
+          };
           this.dragStart = { x: event.clientX, y: event.clientY };
           this.dragMoved = false;
           node.fixed = true;
@@ -1115,8 +1449,13 @@
 
       const finishPointer = () => {
         if (this.drag) {
-          this.drag.node.fixed = false;
-          if (this.dragMoved) this.suppressNodeClick = true;
+          if (this.dragMoved) {
+            this.drag.node.fixed = true;
+            this.saveNodePosition(this.drag.node);
+            this.suppressNodeClick = true;
+          } else {
+            this.drag.node.fixed = this.drag.wasFixed;
+          }
         }
         this.drag = null;
         this.dragStart = null;

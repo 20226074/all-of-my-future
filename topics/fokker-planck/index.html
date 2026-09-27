@@ -8,7 +8,7 @@
 
 <meta name="description" content="확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE">
 
-<title>Fokker–Planck Equations – All of My Future</title>
+<title>Fokker-Planck Equation – All of My Future</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -62,9 +62,9 @@ div.csl-indent {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-818d184b08356d11f409228bc6fb20cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-09d0e59b89bacc583be77fb923b5fcf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-818d184b08356d11f409228bc6fb20cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "일치 없음",
@@ -339,7 +339,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Fokker–Planck Equations</h1>
+<h1 class="title">Fokker-Planck Equation</h1>
 </div>
 
 <div>
@@ -361,7 +361,7 @@ window.Quarto = {
 </header>
 
 
-<p>Fokker–Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 <span class="math inline">\(p_t(x)\)</span>가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.</p>
+<p>Fokker-Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 <span class="math inline">\(p_t(x)\)</span>가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.</p>
 <section id="기본-형태" class="level2">
 <h2 class="anchored" data-anchor-id="기본-형태">기본 형태</h2>
 <p>형식적으로 <span class="math inline">\(dX_t=b(X_t,t)dt+\sigma(X_t,t)dW_t\)</span>에 대응하는 방정식은 다음 꼴이다.</p>
@@ -400,54 +400,29 @@ window.Quarto = {
 </div>
 </div></section></div></main> <!-- /main -->
 <script>
-
 (() => {
-
   const assets = [
-
     ["assets/js/site.js", "atlas-site-script"],
-
     ["assets/js/knowledge-graph.js", "atlas-graph-script"]
-
   ];
-
   const candidates = [...document.querySelectorAll("link[href], script[src]")]
-
     .map((element) => element.href || element.src)
-
     .filter(Boolean);
-
   const libraryUrl = candidates.find((url) => url.includes("/site_libs/"));
-
   const rootUrl = libraryUrl
-
     ? libraryUrl.slice(0, libraryUrl.indexOf("/site_libs/") + 1)
-
     : new URL("./", document.baseURI).href;
 
-
-
   for (const [path, id] of assets) {
-
     if (document.getElementById(id)) continue;
-
     const script = document.createElement("script");
-
     script.id = id;
-
     script.src = new URL(path, rootUrl).href;
-
     script.defer = true;
-
     document.body.appendChild(script);
-
   }
-
 })();
-
 </script>
-
-
 
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -43,9 +43,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-818d184b08356d11f409228bc6fb20cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="site_libs/bootstrap/bootstrap-dark-09d0e59b89bacc583be77fb923b5fcf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="site_libs/bootstrap/bootstrap-818d184b08356d11f409228bc6fb20cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "일치 없음",
@@ -381,13 +381,13 @@ ul.task-list li input[type="checkbox"] {
 <ol type="1">
 <li><code>bibliography/references.bib</code>에 정확한 서지 정보를 넣는다.</li>
 <li><code>templates/reference.qmd</code>를 새 <code>references/&lt;citekey&gt;/index.qmd</code>로 복사한다.</li>
-<li>YAML의 <code>node-id</code>, <code>citekey</code>, <code>attached-to</code>, 두 상태 필드를 채운다.</li>
-<li>본문에 읽는 목적과 확인할 질문부터 적는다.</li>
+<li>YAML의 <code>node-id</code>, <code>citekey</code>, <code>attached-to</code>, <code>primary-node</code>, 두 상태 필드를 채운다.</li>
+<li>첫 수식 전에 공간·확률변수·측도·계수·시간 방향을 정의하고, 핵심 아이디어가 그 표기에서 어떻게 나오는지 적는다.</li>
 <li><code>python scripts/build_graph.py</code>로 메타데이터와 관계를 검증한다.</li>
 <li><code>quarto preview</code>에서 목록·그래프·링크를 확인한다.</li>
 </ol>
 <p>개념은 <code>templates/topic.qmd</code>, 프로젝트·질문·문장형 항목은 <code>templates/entry.qmd</code>에서 시작한다. 왼쪽 탐색기의 최상위에는 concept와 entry가 나타나며, 문헌은 그 아래 또는 검색 결과에서 찾는다. 새 대상을 만들 때 그래프 JSON을 직접 고치지 않는다.</p>
-<p>탐색기 순서는 드래그 또는 <code>Alt+↑/↓</code>로 바꿀 수 있다. 현재는 정적 사이트이므로 변경한 순서를 그 브라우저에만 저장한다.</p>
+<p>탐색기 순서는 드래그 또는 <code>Alt+↑/↓</code>로 바꿀 수 있고, 그래프 노드를 끌어 위치를 고정하거나 오른쪽의 <strong>배치 편집</strong>에서 중요도를 바꿀 수 있다. 이 값들은 같은 사이트 주소·같은 브라우저에 자동 저장된다. <strong>배치 내보내기</strong>로 받은 <code>graph-view.json</code>을 다른 기기에서 가져올 수 있으며, 저장소의 <code>data/graph-view.json</code>으로 반영해 push하면 모든 방문자에게 같은 게시 배치를 기본값으로 제공할 수 있다.</p>
 </section>
 <section id="왜-quarto인가" class="level2">
 <h2 class="anchored" data-anchor-id="왜-quarto인가">왜 Quarto인가</h2>
@@ -398,54 +398,29 @@ ul.task-list li input[type="checkbox"] {
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a></main> <!-- /main -->
 <script>
-
 (() => {
-
   const assets = [
-
     ["assets/js/site.js", "atlas-site-script"],
-
     ["assets/js/knowledge-graph.js", "atlas-graph-script"]
-
   ];
-
   const candidates = [...document.querySelectorAll("link[href], script[src]")]
-
     .map((element) => element.href || element.src)
-
     .filter(Boolean);
-
   const libraryUrl = candidates.find((url) => url.includes("/site_libs/"));
-
   const rootUrl = libraryUrl
-
     ? libraryUrl.slice(0, libraryUrl.indexOf("/site_libs/") + 1)
-
     : new URL("./", document.baseURI).href;
 
-
-
   for (const [path, id] of assets) {
-
     if (document.getElementById(id)) continue;
-
     const script = document.createElement("script");
-
     script.id = id;
-
     script.src = new URL(path, rootUrl).href;
-
     script.defer = true;
-
     document.body.appendChild(script);
-
   }
-
 })();
-
 </script>
-
-
 
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

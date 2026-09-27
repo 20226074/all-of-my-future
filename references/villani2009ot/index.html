@@ -7,7 +7,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Cédric Villani">
-<meta name="description" content="결합, Kantorovich 쌍대성, Wasserstein 거리에서 수송기하까지 폭넓게 다루는 최적수송 참고서.">
 
 <title>Optimal Transport: Old and New – All of My Future</title>
 <style>
@@ -63,9 +62,9 @@ div.csl-indent {
 <link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-818d184b08356d11f409228bc6fb20cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../../site_libs/bootstrap/bootstrap-dark-09d0e59b89bacc583be77fb923b5fcf0.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../../site_libs/bootstrap/bootstrap-818d184b08356d11f409228bc6fb20cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "일치 없음",
@@ -83,6 +82,35 @@ div.csl-indent {
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../assets/styles.css">
 </head>
@@ -294,19 +322,8 @@ div.csl-indent {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">목차</h2>
-   
-  <ul class="collapse">
-  <li><a href="#한-줄-요약" id="toc-한-줄-요약" class="nav-link active" data-scroll-target="#한-줄-요약">한 줄 요약</a></li>
-  <li><a href="#왜-읽는가" id="toc-왜-읽는가" class="nav-link" data-scroll-target="#왜-읽는가">왜 읽는가</a></li>
-  <li><a href="#핵심-아이디어" id="toc-핵심-아이디어" class="nav-link" data-scroll-target="#핵심-아이디어">핵심 아이디어</a></li>
-  <li><a href="#그래프에서의-위치" id="toc-그래프에서의-위치" class="nav-link" data-scroll-target="#그래프에서의-위치">그래프에서의 위치</a></li>
-  <li><a href="#확인할-주장" id="toc-확인할-주장" class="nav-link" data-scroll-target="#확인할-주장">확인할 주장</a></li>
-  <li><a href="#인용" id="toc-인용" class="nav-link" data-scroll-target="#인용">인용</a></li>
-  </ul>
-</nav>
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -317,11 +334,6 @@ div.csl-indent {
 <h1 class="title">Optimal Transport: Old and New</h1>
 </div>
 
-<div>
-  <div class="description">
-    결합, Kantorovich 쌍대성, Wasserstein 거리에서 수송기하까지 폭넓게 다루는 최적수송 참고서.
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
@@ -342,66 +354,49 @@ div.csl-indent {
 </header>
 
 
-<div class="callout callout-style-default callout-warning callout-titled" title="AI 초안 · 원문 확인 필요">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">경고</span>AI 초안 · 원문 확인 필요
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>이 노트는 <a href="https://link.springer.com/book/10.1007/978-3-540-71050-9">Springer의 공식 도서 페이지</a>에 공개된 소개와 목차만을 바탕으로 작성했다. 976쪽 원문을 정독한 요약이 아니며, 정리의 정확한 가정과 증명은 직접 확인해야 한다.</p>
-</div>
-</div>
-<section id="한-줄-요약" class="level2">
-<h2 class="anchored" data-anchor-id="한-줄-요약">한 줄 요약</h2>
-<p>결합과 Monge–Kantorovich 문제에서 출발해 Kantorovich 쌍대성, Wasserstein 거리, 변위 보간과 수송기하를 폭넓게 전개하는 최적수송 참고서다.</p>
-</section>
-<section id="왜-읽는가" class="level2">
-<h2 class="anchored" data-anchor-id="왜-읽는가">왜 읽는가</h2>
-<p><a href="../../topics/optimal-transport/index.html">Optimal Transport</a> 학습의 기준 레퍼런스로 삼고, 다른 개념과의 연결을 검토할 때 필요한 정의와 정리를 원전 수준에서 확인하기 위해 읽는다.</p>
+<div class="reference-note-content">
+<section id="문제-설정과-표기" class="level2">
+<h2 class="anchored" data-anchor-id="문제-설정과-표기">문제 설정과 표기</h2>
+<p><span class="math inline">\(\mu\)</span>와 <span class="math inline">\(\nu\)</span>를 각각 공간 <span class="math inline">\(\mathcal X\)</span>와 <span class="math inline">\(\mathcal Y\)</span> 위의 확률측도라고 하자. 결합(coupling) <span class="math inline">\(\pi\)</span>는 <span class="math inline">\(\mathcal X\times\mathcal Y\)</span> 위의 확률측도로서 첫 번째 주변분포가 <span class="math inline">\(\mu\)</span>, 두 번째 주변분포가 <span class="math inline">\(\nu\)</span>인 것이다. 모든 결합의 집합을 <span class="math inline">\(\Pi(\mu,\nu)\)</span>라고 쓴다.</p>
+<p><span class="math inline">\(c(x,y)\)</span>가 질량 한 단위를 <span class="math inline">\(x\)</span>에서 <span class="math inline">\(y\)</span>로 옮기는 비용이면 Kantorovich 문제는</p>
+<p><span class="math display">\[
+\inf_{\pi\in\Pi(\mu,\nu)}
+\int_{\mathcal X\times\mathcal Y}c(x,y)\,d\pi(x,y)
+\]</span></p>
+<p>이다. <span class="math inline">\(\pi\)</span>는 <span class="math inline">\(x\)</span>의 질량을 여러 <span class="math inline">\(y\)</span>로 나눌 수 있기 때문에, 하나의 사상 <span class="math inline">\(T(x)\)</span>만 허용하는 Monge 문제를 선형 최적화 문제로 완화한다.</p>
 </section>
 <section id="핵심-아이디어" class="level2">
 <h2 class="anchored" data-anchor-id="핵심-아이디어">핵심 아이디어</h2>
-<p>출판사 소개와 목차에서 직접 확인되는 범위는 다음과 같다.</p>
+<p>비용이 <span class="math inline">\(c(x,y)=d(x,y)^p\)</span>이고 두 측도가 유한한 <span class="math inline">\(p\)</span>차 적률을 가지면 <span class="math inline">\(p\)</span>-Wasserstein 거리는</p>
+<p><span class="math display">\[
+W_p(\mu,\nu)
+=\left(
+\inf_{\pi\in\Pi(\mu,\nu)}
+\int d(x,y)^p\,d\pi(x,y)
+\right)^{1/p}
+\]</span></p>
+<p>로 정의된다. 이 값은 두 분포의 차이를 각 위치의 확률값만 비교하지 않고, 질량을 실제로 얼마나 멀리 옮겨야 하는지로 측정한다.</p>
+<p>Kantorovich duality는 결합 <span class="math inline">\(\pi\)</span>를 직접 최적화하는 문제를 potential 함수의 최적화로 바꾼다. 일반 비용에서는</p>
+<p><span class="math display">\[
+\inf_{\pi\in\Pi(\mu,\nu)}\int c\,d\pi
+=\sup_{\varphi(x)+\psi(y)\le c(x,y)}
+\left(
+\int\varphi\,d\mu+\int\psi\,d\nu
+\right)
+\]</span></p>
+<p>꼴이다. Primal의 수송계획과 dual의 potential을 함께 보면 최적성 조건, Wasserstein 공간의 지오데식, 변위 보간으로 이어지는 구조를 설명할 수 있다.</p>
+</section>
+<section id="원문" class="level2">
+<h2 class="anchored" data-anchor-id="원문">원문</h2>
 <ul>
-<li>coupling과 변수변환에서 출발해 최적수송의 기본 구도를 소개한다.</li>
-<li>cyclical monotonicity, Kantorovich duality, Wasserstein distances, displacement interpolation을 다룬다.</li>
-<li>Monge 문제의 해법, Jacobian 방정식과 매끄러움, Riemannian geometry·Ricci curvature·Otto calculus·displacement convexity로 범위를 확장한다.</li>
-<li>이 페이지에는 아직 개별 정리의 가정이나 증명 내용을 요약하지 않았다.</li>
+<li>서지정보: <span class="citation" data-cites="villani2009ot">(<a href="#ref-villani2009ot" role="doc-biblioref">Villani 2009년</a>)</span></li>
+<li><a href="https://link.springer.com/book/10.1007/978-3-540-71050-9">Springer 도서 페이지</a></li>
 </ul>
 </section>
-<section id="그래프에서의-위치" class="level2">
-<h2 class="anchored" data-anchor-id="그래프에서의-위치">그래프에서의 위치</h2>
-<ul>
-<li>연결 대상: <a href="../../topics/optimal-transport/index.html">Optimal Transport</a></li>
-<li>역할: 최적수송 가지의 광범위한 이론 참고서 노드</li>
-<li>다음 연결 후보: <a href="../../topics/schrodinger-bridge/index.html">Schrödinger Bridge</a>, Wasserstein gradient flow, diffusion. 책과 후속 문헌에서 직접 관계를 확인한 뒤 연결한다.</li>
-</ul>
-</section>
-<section id="확인할-주장" class="level2">
-<h2 class="anchored" data-anchor-id="확인할-주장">확인할 주장</h2>
-<ul class="task-list">
-<li><label><input type="checkbox">Monge 문제와 Kantorovich 완화의 정확한 정의와 가정을 정리한다.</label></li>
-<li><label><input type="checkbox">Kantorovich 쌍대성 정리의 적용 조건을 확인한다.</label></li>
-<li><label><input type="checkbox">Wasserstein 거리의 정의역과 위상적 성질을 필요한 범위에서 검산한다.</label></li>
-<li><label><input type="checkbox">displacement interpolation과 displacement convexity의 정의를 예제와 함께 정리한다.</label></li>
-<li><label><input type="checkbox">SDE·확산·Schrödinger bridge로 이어지는 연결은 후속 문헌과 교차검증한다.</label></li>
-</ul>
-</section>
-<section id="인용" class="level2">
-<h2 class="anchored" data-anchor-id="인용">인용</h2>
-<p>서지정보: <span class="citation" data-cites="villani2009ot">(<a href="#ref-villani2009ot" role="doc-biblioref">Villani 2009년</a>)</span></p>
-<ul>
-<li>공식 출판사 페이지: <a href="https://link.springer.com/book/10.1007/978-3-540-71050-9" class="uri">https://link.springer.com/book/10.1007/978-3-540-71050-9</a></li>
-<li>DOI: <a href="https://doi.org/10.1007/978-3-540-71050-9" class="uri">https://doi.org/10.1007/978-3-540-71050-9</a></li>
-</ul>
+</div>
 
 
 
-</section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">참고문헌</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-villani2009ot" class="csl-entry" role="listitem">
@@ -409,54 +404,29 @@ Villani, Cédric. 2009년. <em>Optimal Transport: Old and New</em>. Vol 338. Gru
 </div>
 </div></section></div></main> <!-- /main -->
 <script>
-
 (() => {
-
   const assets = [
-
     ["assets/js/site.js", "atlas-site-script"],
-
     ["assets/js/knowledge-graph.js", "atlas-graph-script"]
-
   ];
-
   const candidates = [...document.querySelectorAll("link[href], script[src]")]
-
     .map((element) => element.href || element.src)
-
     .filter(Boolean);
-
   const libraryUrl = candidates.find((url) => url.includes("/site_libs/"));
-
   const rootUrl = libraryUrl
-
     ? libraryUrl.slice(0, libraryUrl.indexOf("/site_libs/") + 1)
-
     : new URL("./", document.baseURI).href;
 
-
-
   for (const [path, id] of assets) {
-
     if (document.getElementById(id)) continue;
-
     const script = document.createElement("script");
-
     script.id = id;
-
     script.src = new URL(path, rootUrl).href;
-
     script.defer = true;
-
     document.body.appendChild(script);
-
   }
-
 })();
-
 </script>
-
-
 
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {

@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "generatedFrom": "Quarto front matter",
   "stats": {
     "topics": 6,
@@ -11,6 +11,11 @@
     "graphRelations": 7,
     "documentLinks": 6,
     "relations": 13
+  },
+  "view": {
+    "schemaVersion": 1,
+    "explorerOrder": [],
+    "nodes": {}
   },
   "nodes": [
     {
@@ -64,8 +69,8 @@
     {
       "id": "topic-fokker-planck",
       "kind": "topic",
-      "label": "Fokker--Planck Equations",
-      "title": "Fokker--Planck Equations",
+      "label": "Fokker-Planck Equation",
+      "title": "Fokker-Planck Equation",
       "summary": "확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE",
       "url": "topics/fokker-planck/",
       "status": "active",
@@ -158,9 +163,11 @@
       "citekey": "villani2009ot",
       "year": 2009,
       "author": "Cédric Villani",
+      "firstAuthor": "Cédric Villani",
       "attachedTo": [
         "topic-optimal-transport"
       ],
+      "primaryNode": "topic-optimal-transport",
       "cluster": "references"
     },
     {
@@ -210,10 +217,12 @@
       "citekey": "song2021score",
       "year": 2021,
       "author": "Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, Ben Poole",
+      "firstAuthor": "Yang Song",
       "attachedTo": [
         "topic-diffusion-models",
         "topic-sde"
       ],
+      "primaryNode": "topic-diffusion-models",
       "cluster": "references"
     },
     {
@@ -238,10 +247,12 @@
       "citekey": "han2018deep",
       "year": 2018,
       "author": "Jiequn Han, Arnulf Jentzen, Weinan E",
+      "firstAuthor": "Jiequn Han",
       "attachedTo": [
         "topic-high-dimensional-pde",
         "topic-sde"
       ],
+      "primaryNode": "topic-high-dimensional-pde",
       "cluster": "references"
     },
     {
@@ -290,9 +301,11 @@
       "citekey": "oksendal2003sde",
       "year": 2003,
       "author": "Bernt Øksendal",
+      "firstAuthor": "Bernt Øksendal",
       "attachedTo": [
         "topic-sde"
       ],
+      "primaryNode": "topic-sde",
       "cluster": "references"
     }
   ],
@@ -350,7 +363,7 @@
       "target": "topic-fokker-planck",
       "relation": "connected-via",
       "directed": false,
-      "note": "Forward SDE가 만드는 주변분포의 변화는 Fokker--Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다.",
+      "note": "Forward SDE가 만드는 주변분포의 변화는 Fokker-Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다.",
       "evidence": [
         "song2021score"
       ]
@@ -398,7 +411,7 @@
       "target": "topic-fokker-planck",
       "relation": "connected-via",
       "directed": false,
-      "note": "일부 Fokker--Planck 동역학은 Wasserstein 공간의 gradient-flow 관점에서 연구된다. 정확한 에너지와 가정은 문제별로 확인한다.",
+      "note": "일부 Fokker-Planck 동역학은 Wasserstein 공간의 gradient-flow 관점에서 연구된다. 정확한 에너지와 가정은 문제별로 확인한다.",
       "evidence": [
         "villani2009ot"
       ]
