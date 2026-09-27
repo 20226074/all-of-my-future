@@ -8,11 +8,16 @@
   {
     "listing": "/topics/index.html",
     "items": [
+      "/topics/classifier-free-guidance/index.html",
+      "/topics/conditional-diffusion/index.html",
+      "/topics/ddpm/index.html",
       "/topics/diffusion-models/index.html",
       "/topics/fokker-planck/index.html",
       "/topics/high-dimensional-pde/index.html",
+      "/topics/latent-diffusion/index.html",
       "/topics/optimal-transport/index.html",
       "/topics/schrodinger-bridge/index.html",
+      "/topics/score-based-sde/index.html",
       "/topics/sde/index.html"
     ]
   }

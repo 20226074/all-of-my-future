@@ -2,19 +2,32 @@
   "schemaVersion": 3,
   "generatedFrom": "Quarto front matter",
   "stats": {
-    "topics": 6,
+    "topics": 11,
     "entries": 1,
-    "graphNodes": 7,
-    "references": 4,
-    "papers": 2,
+    "graphNodes": 12,
+    "references": 8,
+    "papers": 6,
     "books": 2,
-    "graphRelations": 7,
-    "documentLinks": 6,
-    "relations": 13
+    "graphRelations": 18,
+    "documentLinks": 19,
+    "relations": 37
   },
   "view": {
     "schemaVersion": 1,
-    "explorerOrder": [],
+    "explorerOrder": [
+      "topic-diffusion-models",
+      "topic-ddpm",
+      "topic-score-sde",
+      "topic-conditional-diffusion",
+      "topic-classifier-free-guidance",
+      "topic-latent-diffusion",
+      "topic-sde",
+      "topic-fokker-planck",
+      "topic-high-dimensional-pde",
+      "topic-optimal-transport",
+      "topic-schrodinger-bridge",
+      "entry-all-of-my-future"
+    ],
     "nodes": {}
   },
   "nodes": [
@@ -42,11 +55,142 @@
       "entryKind": "project"
     },
     {
+      "id": "ref-ho2022cfg",
+      "kind": "reference",
+      "label": "Ho & Salimans (2022)",
+      "title": "Classifier-Free Diffusion Guidance",
+      "summary": "조건부·무조건부 denoiser를 공동 학습하고 그 차이로 별도 classifier 없는 guidance를 구성한다.",
+      "url": "references/ho2022cfg/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "classifier-free-guidance",
+        "conditional-generation",
+        "guidance-scale"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": false,
+      "citekey": "ho2022cfg",
+      "year": 2022,
+      "author": "Jonathan Ho, Tim Salimans",
+      "firstAuthor": "Jonathan Ho",
+      "attachedTo": [
+        "topic-classifier-free-guidance",
+        "topic-conditional-diffusion",
+        "topic-diffusion-models"
+      ],
+      "primaryNode": "topic-classifier-free-guidance",
+      "cluster": "references"
+    },
+    {
+      "id": "topic-classifier-free-guidance",
+      "kind": "topic",
+      "label": "Classifier-Free Guidance",
+      "title": "Classifier-Free Guidance",
+      "summary": "조건부·무조건부 denoiser의 차이로 별도 classifier 없이 guidance를 만드는 방법",
+      "url": "topics/classifier-free-guidance/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "diffusion-models",
+        "conditional-generation",
+        "guidance"
+      ],
+      "searchAliases": [
+        "CFG",
+        "classifier free guidance",
+        "guidance scale"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "classifier-free-guidance"
+    },
+    {
+      "id": "topic-conditional-diffusion",
+      "kind": "topic",
+      "label": "Conditional Diffusion",
+      "title": "Conditional Diffusion & Guidance",
+      "summary": "조건부 score와 classifier gradient로 생성분포를 원하는 조건 쪽으로 바꾸는 방법",
+      "url": "topics/conditional-diffusion/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "diffusion-models",
+        "conditional-generation",
+        "classifier-guidance"
+      ],
+      "searchAliases": [
+        "conditional diffusion",
+        "classifier guidance",
+        "guided diffusion",
+        "조건부 확산"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "conditional-diffusion"
+    },
+    {
+      "id": "topic-ddpm",
+      "kind": "topic",
+      "label": "DDPM",
+      "title": "Denoising Diffusion Probabilistic Models",
+      "summary": "이산 Gaussian Markov chain과 noise prediction으로 역과정을 학습하는 diffusion formulation",
+      "url": "topics/ddpm/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "diffusion-models",
+        "variational-inference",
+        "denoising"
+      ],
+      "searchAliases": [
+        "DDPM",
+        "denoising diffusion probabilistic model",
+        "discrete diffusion"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "ddpm"
+    },
+    {
+      "id": "ref-ho2020ddpm",
+      "kind": "reference",
+      "label": "Ho et al. (2020)",
+      "title": "Denoising Diffusion Probabilistic Models",
+      "summary": "Gaussian forward chain, variational reverse model, noise-prediction objective를 결합한 DDPM의 대표 논문.",
+      "url": "references/ho2020ddpm/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "ddpm",
+        "noise-prediction",
+        "variational-bound"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": false,
+      "citekey": "ho2020ddpm",
+      "year": 2020,
+      "author": "Jonathan Ho, Ajay Jain, Pieter Abbeel",
+      "firstAuthor": "Jonathan Ho",
+      "attachedTo": [
+        "topic-ddpm",
+        "topic-diffusion-models"
+      ],
+      "primaryNode": "topic-ddpm",
+      "cluster": "references"
+    },
+    {
       "id": "topic-diffusion-models",
       "kind": "topic",
       "label": "Diffusion Models",
       "title": "Diffusion Models",
-      "summary": "노이즈를 더하는 과정과 역시간 확률 동역학을 이용하는 생성 모델",
+      "summary": "노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학",
       "url": "topics/diffusion-models/",
       "status": "active",
       "priority": "now",
@@ -62,9 +206,40 @@
         "score SDE",
         "확산 모델"
       ],
-      "maturity": "seed",
-      "importance": 3,
+      "maturity": "developing",
+      "importance": 4,
       "cluster": "diffusion-models"
+    },
+    {
+      "id": "ref-dhariwal2021guided",
+      "kind": "reference",
+      "label": "Dhariwal & Nichol (2021)",
+      "title": "Diffusion Models Beat GANs on Image Synthesis",
+      "summary": "Noisy classifier의 gradient로 reverse diffusion을 조정해 fidelity와 diversity를 교환하는 classifier guidance.",
+      "url": "references/dhariwal2021guided/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "classifier-guidance",
+        "guided-diffusion",
+        "conditional-generation"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": false,
+      "citekey": "dhariwal2021guided",
+      "year": 2021,
+      "author": "Prafulla Dhariwal, Alexander Nichol",
+      "firstAuthor": "Prafulla Dhariwal",
+      "attachedTo": [
+        "topic-conditional-diffusion",
+        "topic-diffusion-models",
+        "topic-ddpm"
+      ],
+      "primaryNode": "topic-conditional-diffusion",
+      "cluster": "references"
     },
     {
       "id": "topic-fokker-planck",
@@ -87,7 +262,7 @@
         "포커 플랑크 방정식",
         "probability density evolution"
       ],
-      "maturity": "seed",
+      "maturity": "developing",
       "importance": 3,
       "cluster": "fokker-planck"
     },
@@ -112,9 +287,64 @@
         "deep BSDE",
         "neural PDE solver"
       ],
-      "maturity": "seed",
+      "maturity": "developing",
       "importance": 3,
       "cluster": "high-dimensional-pde"
+    },
+    {
+      "id": "ref-rombach2022ldm",
+      "kind": "reference",
+      "label": "Rombach et al. (2022)",
+      "title": "High-Resolution Image Synthesis with Latent Diffusion Models",
+      "summary": "Perceptual autoencoder의 latent에서 diffusion을 학습하고 cross-attention으로 다양한 조건을 주입한다.",
+      "url": "references/rombach2022ldm/",
+      "status": "",
+      "priority": "next",
+      "tags": [
+        "latent-diffusion",
+        "autoencoder",
+        "cross-attention"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": false,
+      "citekey": "rombach2022ldm",
+      "year": 2022,
+      "author": "Robin Rombach, Andreas Blattmann, Dominik Lorenz, Patrick Esser, Björn Ommer",
+      "firstAuthor": "Robin Rombach",
+      "attachedTo": [
+        "topic-latent-diffusion",
+        "topic-diffusion-models",
+        "topic-conditional-diffusion"
+      ],
+      "primaryNode": "topic-latent-diffusion",
+      "cluster": "references"
+    },
+    {
+      "id": "topic-latent-diffusion",
+      "kind": "topic",
+      "label": "Latent Diffusion",
+      "title": "Latent Diffusion",
+      "summary": "압축된 latent representation에서 diffusion을 수행하고 decoder로 데이터 공간에 복원하는 방법",
+      "url": "topics/latent-diffusion/",
+      "status": "active",
+      "priority": "next",
+      "tags": [
+        "diffusion-models",
+        "latent-variable-models",
+        "autoencoders",
+        "cross-attention"
+      ],
+      "searchAliases": [
+        "latent diffusion model",
+        "LDM",
+        "stable diffusion foundation"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "latent-diffusion"
     },
     {
       "id": "topic-optimal-transport",
@@ -123,7 +353,7 @@
       "title": "Optimal Transport",
       "summary": "확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽",
       "url": "topics/optimal-transport/",
-      "status": "exploratory",
+      "status": "active",
       "priority": "next",
       "tags": [
         "probability-measures",
@@ -137,7 +367,7 @@
         "최적수송",
         "Wasserstein geometry"
       ],
-      "maturity": "seed",
+      "maturity": "developing",
       "importance": 3,
       "cluster": "optimal-transport"
     },
@@ -146,7 +376,7 @@
       "kind": "reference",
       "label": "Villani (2009)",
       "title": "Optimal Transport: Old and New",
-      "summary": "결합, Kantorovich 쌍대성, Wasserstein 거리에서 수송기하까지 폭넓게 다루는 최적수송 참고서.",
+      "summary": "결합, Kantorovich 쌍대성, Wasserstein 거리에서 수송기하까지 폭넓게 전개하는 참고서.",
       "url": "references/villani2009ot/",
       "status": "",
       "priority": "now",
@@ -200,7 +430,7 @@
       "kind": "reference",
       "label": "Song et al. (2021)",
       "title": "Score-Based Generative Modeling through Stochastic Differential Equations",
-      "summary": "확산형 생성모델을 연속시간 SDE로 통합하고 역시간 SDE를 이용해 표본을 생성하는 틀.",
+      "summary": "여러 diffusion formulation을 연속시간 SDE로 통합하고 reverse SDE와 probability-flow ODE를 제시한다.",
       "url": "references/song2021score/",
       "status": "",
       "priority": "now",
@@ -219,18 +449,45 @@
       "author": "Yang Song, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, Ben Poole",
       "firstAuthor": "Yang Song",
       "attachedTo": [
+        "topic-score-sde",
         "topic-diffusion-models",
-        "topic-sde"
+        "topic-sde",
+        "topic-fokker-planck"
       ],
-      "primaryNode": "topic-diffusion-models",
+      "primaryNode": "topic-score-sde",
       "cluster": "references"
+    },
+    {
+      "id": "topic-score-sde",
+      "kind": "topic",
+      "label": "Score SDE / ODE",
+      "title": "Score-based SDE & Probability-flow ODE",
+      "summary": "Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점",
+      "url": "topics/score-based-sde/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "diffusion-models",
+        "stochastic-differential-equations",
+        "score-matching",
+        "ordinary-differential-equations"
+      ],
+      "searchAliases": [
+        "score SDE",
+        "reverse-time SDE",
+        "probability flow ODE",
+        "score-based generative modeling"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "score-sde"
     },
     {
       "id": "ref-han2018deep",
       "kind": "reference",
       "label": "Han et al. (2018)",
       "title": "Solving high-dimensional partial differential equations using deep learning",
-      "summary": "반선형 포물형 PDE를 BSDE로 바꾸고 해의 공간 기울기를 신경망으로 근사하는 deep BSDE 접근.",
+      "summary": "반선형 포물형 PDE의 BSDE 표현에서 control Z=σᵀ∇u를 신경망으로 근사하는 deep BSDE 알고리즘.",
       "url": "references/han2018deep/",
       "status": "",
       "priority": "now",
@@ -260,7 +517,7 @@
       "kind": "topic",
       "label": "SDE",
       "title": "Stochastic Differential Equations",
-      "summary": "잡음이 있는 연속시간 동역학을 기술하는 확률해석의 한 분야",
+      "summary": "잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반",
       "url": "topics/sde/",
       "status": "active",
       "priority": "now",
@@ -284,7 +541,7 @@
       "kind": "reference",
       "label": "Øksendal (2003)",
       "title": "Stochastic Differential Equations: An Introduction with Applications",
-      "summary": "Itô 적분에서 확산, 경계값 문제, 확률제어 응용까지 이어지는 SDE 입문 교재.",
+      "summary": "Itô 적분과 공식에서 diffusion, 경계값 문제, 확률제어까지 이어지는 SDE 입문 교재.",
       "url": "references/oksendal2003sde/",
       "status": "",
       "priority": "now",
@@ -311,6 +568,30 @@
   ],
   "edges": [
     {
+      "source": "ref-dhariwal2021guided",
+      "target": "topic-conditional-diffusion",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-dhariwal2021guided",
+      "target": "topic-ddpm",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-dhariwal2021guided",
+      "target": "topic-diffusion-models",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
       "source": "ref-han2018deep",
       "target": "topic-high-dimensional-pde",
       "relation": "documents",
@@ -327,6 +608,46 @@
       "evidence": []
     },
     {
+      "source": "ref-ho2020ddpm",
+      "target": "topic-ddpm",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-ho2020ddpm",
+      "target": "topic-diffusion-models",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-ho2022cfg",
+      "target": "topic-classifier-free-guidance",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-ho2022cfg",
+      "target": "topic-conditional-diffusion",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-ho2022cfg",
+      "target": "topic-diffusion-models",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
       "source": "ref-oksendal2003sde",
       "target": "topic-sde",
       "relation": "documents",
@@ -335,8 +656,48 @@
       "evidence": []
     },
     {
+      "source": "ref-rombach2022ldm",
+      "target": "topic-conditional-diffusion",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-rombach2022ldm",
+      "target": "topic-diffusion-models",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-rombach2022ldm",
+      "target": "topic-latent-diffusion",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
       "source": "ref-song2021score",
       "target": "topic-diffusion-models",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-song2021score",
+      "target": "topic-fokker-planck",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-song2021score",
+      "target": "topic-score-sde",
       "relation": "documents",
       "directed": true,
       "note": "이 문헌이 연결된 지식 노드",
@@ -359,11 +720,72 @@
       "evidence": []
     },
     {
+      "source": "topic-classifier-free-guidance",
+      "target": "topic-conditional-diffusion",
+      "relation": "uses",
+      "directed": true,
+      "note": "Conditional score와 unconditional score의 차이를 implicit classifier 방향으로 사용한다.",
+      "evidence": [
+        "ho2022cfg"
+      ]
+    },
+    {
+      "source": "topic-classifier-free-guidance",
+      "target": "topic-diffusion-models",
+      "relation": "uses",
+      "directed": true,
+      "note": "공통 noise prediction과 score 관계를 사용한다.",
+      "evidence": [
+        "ho2022cfg"
+      ]
+    },
+    {
+      "source": "topic-conditional-diffusion",
+      "target": "topic-ddpm",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "Classifier guidance는 DDPM의 reverse Gaussian mean 또는 noise prediction을 수정하는 형태로 구현할 수 있다.",
+      "evidence": [
+        "dhariwal2021guided"
+      ]
+    },
+    {
+      "source": "topic-conditional-diffusion",
+      "target": "topic-diffusion-models",
+      "relation": "uses",
+      "directed": true,
+      "note": "Unconditional score를 조건부 score로 확장한다.",
+      "evidence": [
+        "dhariwal2021guided"
+      ]
+    },
+    {
+      "source": "topic-ddpm",
+      "target": "topic-diffusion-models",
+      "relation": "uses",
+      "directed": true,
+      "note": "DDPM은 diffusion의 공통 noise·score 표기를 이산 Gaussian Markov chain으로 구체화한다.",
+      "evidence": [
+        "ho2020ddpm"
+      ]
+    },
+    {
+      "source": "topic-ddpm",
+      "target": "topic-score-sde",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "이산 noise schedule은 연속시간 VP SDE와 연결되며 noise predictor는 score로 변환된다.",
+      "evidence": [
+        "ho2020ddpm",
+        "song2021score"
+      ]
+    },
+    {
       "source": "topic-diffusion-models",
       "target": "topic-fokker-planck",
       "relation": "connected-via",
       "directed": false,
-      "note": "Forward SDE가 만드는 주변분포의 변화는 Fokker-Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다.",
+      "note": "Forward SDE와 probability-flow ODE가 같은 주변분포를 갖는다는 사실은 Fokker-Planck 방정식으로 확인한다.",
       "evidence": [
         "song2021score"
       ]
@@ -373,7 +795,7 @@
       "target": "topic-schrodinger-bridge",
       "relation": "connected-via",
       "directed": false,
-      "note": "두 분야 모두 기준 확률 동역학과 분포의 연결을 다루지만 목적함수와 제약은 동일하지 않다. 직접적인 대응은 후속 문헌으로 검증한다.",
+      "note": "두 분야 모두 확률 동역학으로 분포를 연결하지만 목적함수와 제약은 같지 않다.",
       "evidence": []
     },
     {
@@ -381,7 +803,7 @@
       "target": "topic-sde",
       "relation": "connected-via",
       "directed": false,
-      "note": "연속시간 score-based diffusion은 forward 및 reverse-time SDE로 기술할 수 있다. 이는 diffusion model을 보는 한 관점이며 분야 전체의 계층을 뜻하지 않는다.",
+      "note": "연속시간 diffusion model은 forward 및 reverse-time SDE로 기술할 수 있다.",
       "evidence": [
         "song2021score"
       ]
@@ -391,7 +813,7 @@
       "target": "topic-sde",
       "relation": "connected-via",
       "directed": false,
-      "note": "SDE가 개별 표본 경로를 기술한다면 전방 Kolmogorov 방정식은 그 과정의 법칙 또는 밀도 변화를 기술한다.",
+      "note": "SDE가 표본 경로를 기술한다면 전방 Kolmogorov 방정식은 그 과정의 법칙을 기술한다.",
       "evidence": [
         "oksendal2003sde"
       ]
@@ -401,9 +823,29 @@
       "target": "topic-sde",
       "relation": "connected-via",
       "directed": false,
-      "note": "일부 반선형 포물형 PDE는 확률 과정과 BSDE를 이용해 표현할 수 있으며, 이를 수치 방법으로 활용할 수 있다.",
+      "note": "일부 반선형 포물형 PDE는 forward SDE와 BSDE로 표현할 수 있으며 이를 수치 방법으로 활용할 수 있다.",
       "evidence": [
         "han2018deep"
+      ]
+    },
+    {
+      "source": "topic-latent-diffusion",
+      "target": "topic-conditional-diffusion",
+      "relation": "uses",
+      "directed": true,
+      "note": "Text·class·layout 조건을 cross-attention이나 concatenation으로 주입한다.",
+      "evidence": [
+        "rombach2022ldm"
+      ]
+    },
+    {
+      "source": "topic-latent-diffusion",
+      "target": "topic-ddpm",
+      "relation": "uses",
+      "directed": true,
+      "note": "Pixel DDPM과 같은 Gaussian corruption과 noise-prediction objective를 latent에 적용한다.",
+      "evidence": [
+        "rombach2022ldm"
       ]
     },
     {
@@ -411,7 +853,7 @@
       "target": "topic-fokker-planck",
       "relation": "connected-via",
       "directed": false,
-      "note": "일부 Fokker-Planck 동역학은 Wasserstein 공간의 gradient-flow 관점에서 연구된다. 정확한 에너지와 가정은 문제별로 확인한다.",
+      "note": "일부 Fokker-Planck 동역학은 Wasserstein 공간의 gradient flow로 해석된다.",
       "evidence": [
         "villani2009ot"
       ]
@@ -421,8 +863,38 @@
       "target": "topic-schrodinger-bridge",
       "relation": "connected-via",
       "directed": false,
-      "note": "Schrödinger bridge를 entropic transport와 연결해 이해할 수 있으나, 고전적 최적수송과 동일한 문제는 아니다. 직접 근거는 후속 레퍼런스로 보강한다.",
+      "note": "Schrödinger bridge는 entropic transport와 연결되지만 고전적 최적수송과 동일한 문제는 아니다.",
       "evidence": []
+    },
+    {
+      "source": "topic-score-sde",
+      "target": "topic-diffusion-models",
+      "relation": "uses",
+      "directed": true,
+      "note": "Diffusion의 공통 score를 연속시간 역동역학에 사용한다.",
+      "evidence": [
+        "song2021score"
+      ]
+    },
+    {
+      "source": "topic-score-sde",
+      "target": "topic-fokker-planck",
+      "relation": "uses",
+      "directed": true,
+      "note": "Reverse SDE와 probability-flow ODE의 주변분포를 Fokker-Planck 방정식으로 비교한다.",
+      "evidence": [
+        "song2021score"
+      ]
+    },
+    {
+      "source": "topic-score-sde",
+      "target": "topic-sde",
+      "relation": "uses",
+      "directed": true,
+      "note": "Forward와 reverse process를 Itô SDE로 다룬다.",
+      "evidence": [
+        "song2021score"
+      ]
     }
   ]
 }

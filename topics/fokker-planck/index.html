@@ -327,9 +327,7 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#기본-형태" id="toc-기본-형태" class="nav-link active" data-scroll-target="#기본-형태">기본 형태</a></li>
-  <li><a href="#연결해서-볼-것" id="toc-연결해서-볼-것" class="nav-link" data-scroll-target="#연결해서-볼-것">연결해서 볼 것</a></li>
-  <li><a href="#확인할-질문" id="toc-확인할-질문" class="nav-link" data-scroll-target="#확인할-질문">확인할 질문</a></li>
+  <li><a href="#재사용되는-연결" id="toc-재사용되는-연결" class="nav-link active" data-scroll-target="#재사용되는-연결">재사용되는 연결</a></li>
   </ul>
 </nav>
     </div>
@@ -361,34 +359,56 @@ window.Quarto = {
 </header>
 
 
-<p>Fokker-Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 <span class="math inline">\(p_t(x)\)</span>가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.</p>
-<section id="기본-형태" class="level2">
-<h2 class="anchored" data-anchor-id="기본-형태">기본 형태</h2>
-<p>형식적으로 <span class="math inline">\(dX_t=b(X_t,t)dt+\sigma(X_t,t)dW_t\)</span>에 대응하는 방정식은 다음 꼴이다.</p>
+<p><span class="math inline">\(X_t\in\mathbb R^d\)</span>가</p>
+<p><span class="math display">\[
+dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
+\qquad a:=\sigma\sigma^\top
+\]</span></p>
+<p>를 만족하고 각 시각의 법칙이 밀도 <span class="math inline">\(p_t\)</span>를 가진다고 하자 <span class="citation" data-cites="oksendal2003sde">(<a href="#ref-oksendal2003sde" role="doc-biblioref">Øksendal 2003년</a>)</span>. Test function <span class="math inline">\(\varphi\in C_c^\infty(\mathbb R^d)\)</span>에 대한 생성자를</p>
+<p><span class="math display">\[
+(L_t\varphi)(x)
+:=b(t,x)\cdot\nabla\varphi(x)
++\frac12\sum_{i,j}a_{ij}(t,x)\partial_{ij}\varphi(x)
+\]</span></p>
+<p>로 정의한다. Itô 공식을 <span class="math inline">\(0\)</span>부터 <span class="math inline">\(t\)</span>까지 적분하고 기대값을 취하면 stochastic integral의 평균은 <span class="math inline">\(0\)</span>이므로 Dynkin identity</p>
+<p><span class="math display">\[
+\int \varphi(x)p_t(x)\,dx
+-\int \varphi(x)p_0(x)\,dx
+=\int_0^t\!\int (L_s\varphi)(x)p_s(x)\,dx\,ds
+\]</span></p>
+<p>를 얻는다. 생성자를 풀어 쓴</p>
+<p><span class="math display">\[
+\int \varphi(x)p_t(x)\,dx-\int\varphi(x)p_0(x)\,dx
+=\int_0^t\!\int
+\left[
+b\cdot\nabla\varphi
++\frac12\sum_{i,j}a_{ij}\partial_{ij}\varphi
+\right]p_s\,dx\,ds
+\]</span></p>
+<p>가 Fokker-Planck equation의 시간 적분형 weak formulation이다. 이 식은 <span class="math inline">\(p\)</span>의 고전적 미분을 미리 가정하지 않는다.</p>
+<p><span class="math inline">\(p\)</span>, <span class="math inline">\(b\)</span>, <span class="math inline">\(a\)</span>가 충분히 매끄럽고 무한원점에서 경계항이 사라질 만큼 감쇠하거나 적절한 경계조건을 만족한다고 하자. 위 식을 시간에 대해 미분하고 공간에서 부분적분하면 모든 test function에 대해</p>
+<p><span class="math display">\[
+\int\varphi\,\partial_t p_t\,dx
+=\int\varphi\left[
+-\nabla\!\cdot(bp_t)
++\frac12\sum_{i,j}\partial_{ij}(a_{ij}p_t)
+\right]dx.
+\]</span></p>
+<p>따라서 distributional sense에서</p>
 <p><span class="math display">\[
 \partial_t p_t
 =-\nabla\!\cdot(bp_t)
-+\frac12\sum_{i,j}\partial_{ij}\!\left(a_{ij}p_t\right),
-\qquad a=\sigma\sigma^\top.
++\frac12\sum_{i,j}\partial_{ij}(a_{ij}p_t)
+=:L_t^\ast p_t.
 \]</span></p>
-<p>이 식은 계수, 경계조건, 밀도의 존재 여부에 따라 해석이 달라질 수 있으므로 현재는 형식적 기준식으로만 사용한다 <span class="citation" data-cites="oksendal2003sde">(<a href="#ref-oksendal2003sde" role="doc-biblioref">Øksendal 2003년</a>)</span>.</p>
-</section>
-<section id="연결해서-볼-것" class="level2">
-<h2 class="anchored" data-anchor-id="연결해서-볼-것">연결해서 볼 것</h2>
+<p>오른쪽이 연속함수라면 이 등식은 pointwise PDE가 된다. 고전해, 약한 해, 경계조건, 질량 보존과 비음수성은 계수와 영역에 맞춰 따로 확인해야 한다.</p>
+<section id="재사용되는-연결" class="level2">
+<h2 class="anchored" data-anchor-id="재사용되는-연결">재사용되는 연결</h2>
 <ul>
-<li><a href="../sde/">SDE</a>: 생성자와 전방·후방 Kolmogorov 방정식</li>
-<li><a href="../diffusion-models/">Diffusion Models</a>: forward process와 reverse-time dynamics</li>
-<li><a href="../optimal-transport/">Optimal Transport</a>: Wasserstein gradient-flow 해석이 가능한 경우</li>
-<li><a href="../high-dimensional-pde/">High-dimensional PDE Solvers</a>: 상태 차원이 클 때의 계산 문제</li>
+<li><a href="../diffusion-models/">Diffusion Models</a>에서는 reverse-time drift와 probability-flow ODE를 이 방정식으로 검산한다.</li>
+<li><a href="../optimal-transport/">Optimal Transport</a>에서는 특정 에너지의 Wasserstein gradient flow가 이 방정식을 만드는 경우를 다룬다.</li>
+<li><a href="../high-dimensional-pde/">High-dimensional PDE Solvers</a>에서는 상태 차원이 클 때 이 PDE 자체를 계산하는 문제가 생긴다.</li>
 </ul>
-</section>
-<section id="확인할-질문" class="level2">
-<h2 class="anchored" data-anchor-id="확인할-질문">확인할 질문</h2>
-<ol type="1">
-<li>약한 해와 고전해 중 어떤 개념을 사용하고 있는가?</li>
-<li>질량 보존과 비음수성은 어떤 조건에서 보장되는가?</li>
-<li>정상분포는 언제 존재하며 유일한가?</li>
-</ol>
 
 
 

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽">
+<meta name="description" content="Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점">
 
-<title>Optimal Transport – All of My Future</title>
+<title>Score-based SDE &amp; Probability-flow ODE – All of My Future</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -327,11 +327,9 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#측도-pushforward-coupling" id="toc-측도-pushforward-coupling" class="nav-link active" data-scroll-target="#측도-pushforward-coupling">측도, pushforward, coupling</a></li>
-  <li><a href="#monge-문제와-kantorovich-완화" id="toc-monge-문제와-kantorovich-완화" class="nav-link" data-scroll-target="#monge-문제와-kantorovich-완화">Monge 문제와 Kantorovich 완화</a></li>
-  <li><a href="#wasserstein-거리" id="toc-wasserstein-거리" class="nav-link" data-scroll-target="#wasserstein-거리">Wasserstein 거리</a></li>
-  <li><a href="#kantorovich-duality와-변위-보간" id="toc-kantorovich-duality와-변위-보간" class="nav-link" data-scroll-target="#kantorovich-duality와-변위-보간">Kantorovich duality와 변위 보간</a></li>
-  <li><a href="#다음으로-분리해서-배울-구조" id="toc-다음으로-분리해서-배울-구조" class="nav-link" data-scroll-target="#다음으로-분리해서-배울-구조">다음으로 분리해서 배울 구조</a></li>
+  <li><a href="#noise-schedule을-sde로-표현하기" id="toc-noise-schedule을-sde로-표현하기" class="nav-link active" data-scroll-target="#noise-schedule을-sde로-표현하기">Noise schedule을 SDE로 표현하기</a></li>
+  <li><a href="#확률적-경로와-결정론적-경로" id="toc-확률적-경로와-결정론적-경로" class="nav-link" data-scroll-target="#확률적-경로와-결정론적-경로">확률적 경로와 결정론적 경로</a></li>
+  <li><a href="#이-개념의-경계" id="toc-이-개념의-경계" class="nav-link" data-scroll-target="#이-개념의-경계">이 개념의 경계</a></li>
   </ul>
 </nav>
     </div>
@@ -341,12 +339,12 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Optimal Transport</h1>
+<h1 class="title">Score-based SDE &amp; Probability-flow ODE</h1>
 </div>
 
 <div>
   <div class="description">
-    확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽
+    Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점
   </div>
 </div>
 
@@ -363,93 +361,201 @@ window.Quarto = {
 </header>
 
 
-<p>이 페이지가 OT 문헌에서 공유할 측도·coupling·Wasserstein 표기의 기준이다 <span class="citation" data-cites="villani2009ot">(<a href="#ref-villani2009ot" role="doc-biblioref">Villani 2009년</a>)</span>.</p>
-<section id="측도-pushforward-coupling" class="level2">
-<h2 class="anchored" data-anchor-id="측도-pushforward-coupling">측도, pushforward, coupling</h2>
-<p><span class="math inline">\((\mathcal X,\rho)\)</span>를 Polish metric space라고 하고 <span class="math inline">\(\mu,\nu\)</span>를 <span class="math inline">\(\mathcal X\)</span> 위의 확률측도라고 하자. 가측함수 <span class="math inline">\(T:\mathcal X\to\mathcal X\)</span>의 pushforward <span class="math inline">\(T_\#\mu\)</span>는</p>
+<div class="callout callout-style-default callout-note callout-titled" title="상위 공통 기반 · Diffusion Models">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">노트</span>상위 공통 기반 · Diffusion Models
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<section id="공통-대상과-표기" class="level2">
+<h2 class="anchored" data-anchor-id="공통-대상과-표기">공통 대상과 표기</h2>
+<p>데이터 한 개가 놓이는 공간을 <span class="math inline">\(\mathbb R^d\)</span>라고 하자. 여기서는 전개를 단순하게 하기 위해 깨끗한 데이터 <span class="math inline">\(X_0\)</span>가 밀도 <span class="math inline">\(p_{\mathrm{data}}\)</span>를 가진다고 가정하고 <span class="math inline">\(X_0\sim p_{\mathrm{data}}\)</span>라 쓴다. <span class="math inline">\(x_0\)</span>는 그 확률변수에서 관측한 <strong>값</strong>이다. 실제 데이터 법칙이 이산적이거나 특이하면 아래의 <span class="math inline">\(p_{\mathrm{data}}(x_0)\,dx_0\)</span>를 확률측도 <span class="math inline">\(P_{\mathrm{data}}(dx_0)\)</span>로 바꾸면 된다. 시각 <span class="math inline">\(t\)</span>에 노이즈가 섞인 확률변수와 그 실현값은 각각 <span class="math inline">\(X_t\)</span>와 <span class="math inline">\(x_t\)</span>로 쓴다. <span class="math inline">\(X_t\)</span>가 밀도 <span class="math inline">\(p_t\)</span>를 가진다는 말은 모든 적절한 집합 <span class="math inline">\(A\)</span>에 대해</p>
 <p><span class="math display">\[
-(T_\#\mu)(A):=\mu(T^{-1}(A))
+\mathbb P(X_t\in A)=\int_A p_t(x)\,dx
 \]</span></p>
-<p>로 정의한다. 즉 <span class="math inline">\(X\sim\mu\)</span>이면 <span class="math inline">\(T(X)\sim T_\#\mu\)</span>다.</p>
-<p>Coupling <span class="math inline">\(\pi\)</span>는 <span class="math inline">\(\mathcal X\times\mathcal X\)</span> 위의 확률측도로서 좌우 projection <span class="math inline">\(P_1,P_2\)</span>에 대해</p>
+<p>라는 뜻이다. 작은 부피 <span class="math inline">\(dx\)</span>에 대해서는 <span class="math inline">\(p_t(x)\,dx\)</span>를 <span class="math inline">\(X_t\)</span>가 <span class="math inline">\(x\)</span> 근처에 있을 확률로 읽을 수 있다.</p>
+<p>Forward process의 조건부 밀도는 <span class="math inline">\(q_{t\mid0}(x_t\mid x_0)\)</span>로 쓴다. 따라서 주변밀도는</p>
 <p><span class="math display">\[
-(P_1)_\#\pi=\mu,
-\qquad
-(P_2)_\#\pi=\nu
+p_t(x_t)
+=\int q_{t\mid0}(x_t\mid x_0)p_{\mathrm{data}}(x_0)\,dx_0
 \]</span></p>
-<p>를 만족한다. 모든 coupling의 집합을 <span class="math inline">\(\Pi(\mu,\nu)\)</span>라고 쓴다.</p>
+<p>다. 이 적분은 “각 데이터 <span class="math inline">\(x_0\)</span>에 노이즈를 넣은 분포”를 데이터 전체에 대해 섞는 과정이다.</p>
 </section>
-<section id="monge-문제와-kantorovich-완화" class="level2">
-<h2 class="anchored" data-anchor-id="monge-문제와-kantorovich-완화">Monge 문제와 Kantorovich 완화</h2>
-<p><span class="math inline">\(c(x,y)\)</span>가 <span class="math inline">\(x\)</span>의 질량 한 단위를 <span class="math inline">\(y\)</span>로 옮기는 비용이면 Monge 문제는</p>
+<section id="이산-gaussian-forward-process" class="level2">
+<h2 class="anchored" data-anchor-id="이산-gaussian-forward-process">이산 Gaussian forward process</h2>
+<p>이산 시각 <span class="math inline">\(k=1,\ldots,N\)</span>에서는 <span class="math inline">\(\beta_k\in(0,1)\)</span>, <span class="math inline">\(\alpha_k:=1-\beta_k\)</span>, <span class="math inline">\(\bar\alpha_0:=1\)</span>, <span class="math inline">\(\bar\alpha_k:=\prod_{j=1}^k\alpha_j\)</span>로 두고</p>
 <p><span class="math display">\[
-\inf_{T_\#\mu=\nu}
-\int_{\mathcal X}c(x,T(x))\,d\mu(x)
+q(x_k\mid x_{k-1})
+=\mathcal N\!\left(
+x_k;\sqrt{\alpha_k}x_{k-1},\beta_k I
+\right)
 \]</span></p>
-<p>다. 하나의 <span class="math inline">\(x\)</span>에서 출발한 질량을 여러 목적지로 나눌 수 없고, 원자 구조에 따라 조건 <span class="math inline">\(T_\#\mu=\nu\)</span>를 만족하는 map 자체가 없을 수도 있다.</p>
-<p>Kantorovich 문제는 map 대신 coupling을 최적화한다.</p>
+<p>처럼 조금씩 Gaussian noise를 더할 수 있다. 즉</p>
 <p><span class="math display">\[
-\inf_{\pi\in\Pi(\mu,\nu)}
-\int_{\mathcal X\times\mathcal X}c(x,y)\,d\pi(x,y).
+X_k=\sqrt{\alpha_k}X_{k-1}+\sqrt{\beta_k}\,\varepsilon_k,
+\qquad \varepsilon_k\sim\mathcal N(0,I).
 \]</span></p>
-<p>Monge map <span class="math inline">\(T\)</span>가 존재하면 <span class="math inline">\((\operatorname{Id},T)_\#\mu\in\Pi(\mu,\nu)\)</span>이므로 Kantorovich 문제는 Monge 문제의 선형 완화다.</p>
-</section>
-<section id="wasserstein-거리" class="level2">
-<h2 class="anchored" data-anchor-id="wasserstein-거리">Wasserstein 거리</h2>
-<p><span class="math inline">\(p\ge1\)</span>이고 기준점 <span class="math inline">\(x_\ast\in\mathcal X\)</span>에 대해</p>
+<p><span class="math inline">\(X_{k-1}\mid X_0=x_0\)</span>가 평균 <span class="math inline">\(\sqrt{\bar\alpha_{k-1}}x_0\)</span>, 공분산 <span class="math inline">\((1-\bar\alpha_{k-1})I\)</span>인 Gaussian이라고 가정하자. 독립 Gaussian의 선형결합은 다시 Gaussian이고</p>
 <p><span class="math display">\[
-\mathcal P_p(\mathcal X)
-:=\left\{
-\mu:\int \rho(x,x_\ast)^p\,d\mu(x)&lt;\infty
-\right\}
+\alpha_k(1-\bar\alpha_{k-1})+\beta_k
+=1-\alpha_k\bar\alpha_{k-1}
+=1-\bar\alpha_k
 \]</span></p>
-<p>라 하자. 이 조건은 기준점 선택에 의존하지 않는다. <span class="math inline">\(\mu,\nu\in\mathcal P_p(\mathcal X)\)</span>에 대해</p>
+<p>이므로 귀납적으로</p>
 <p><span class="math display">\[
-W_p(\mu,\nu)
-:=\left(
-\inf_{\pi\in\Pi(\mu,\nu)}
-\int \rho(x,y)^p\,d\pi(x,y)
-\right)^{1/p}
-\]</span></p>
-<p>는 <span class="math inline">\(p\)</span>-Wasserstein 거리다. 두 분포의 밀도값만 점별로 비교하지 않고 질량을 얼마나 멀리 옮겨야 하는지를 측정한다.</p>
-</section>
-<section id="kantorovich-duality와-변위-보간" class="level2">
-<h2 class="anchored" data-anchor-id="kantorovich-duality와-변위-보간">Kantorovich duality와 변위 보간</h2>
-<p>Polish spaces 위에서 <span class="math inline">\(c\)</span>가 lower semicontinuous이고 적절한 적분가능 하한을 갖는 등의 표준 조건 아래</p>
-<p><span class="math display">\[
-\inf_{\pi\in\Pi(\mu,\nu)}\int c\,d\pi
-=\sup_{\varphi(x)+\psi(y)\le c(x,y)}
-\left(
-\int\varphi\,d\mu+\int\psi\,d\nu
+q(x_k\mid x_0)
+=\mathcal N\!\left(
+x_k;\sqrt{\bar\alpha_k}x_0,(1-\bar\alpha_k)I
 \right).
 \]</span></p>
-<p>왼쪽은 질량의 공동 배치, 오른쪽은 모든 <span class="math inline">\((x,y)\)</span>에서 비용 제약을 만족하는 potential의 최적화다. 함수공간과 equality의 정확한 조건은 사용하는 비용과 공간에 맞춰 명시해야 한다.</p>
-<p><span class="math inline">\(\mathcal X=\mathbb R^n\)</span>, <span class="math inline">\(\mu,\nu\in\mathcal P_2(\mathbb R^n)\)</span>, <span class="math inline">\(c(x,y)=\|x-y\|^2\)</span>이고 <span class="math inline">\(\pi^\star\)</span>가 이 quadratic cost의 최적 coupling이라 하자. 선형 보간 map <span class="math inline">\(I_s(x,y):=(1-s)x+sy\)</span>를 이용하면</p>
+<p>따라서 중간 단계를 모두 시뮬레이션하지 않고도</p>
 <p><span class="math display">\[
-\mu_s:=(I_s)_\#\pi^\star,
-\qquad 0\le s\le1,
+X_k
+=\sqrt{\bar\alpha_k}X_0
++\sqrt{1-\bar\alpha_k}\,\varepsilon,
+\qquad \varepsilon\sim\mathcal N(0,I)
 \]</span></p>
-<p>을 정의할 수 있다. 이것이 질량을 최적 계획에 따라 움직이는 displacement interpolation이며, <span class="math inline">\(\mathcal P_2(\mathbb R^n)\)</span>에서 <span class="math inline">\(W_2\)</span>에 대한 constant-speed geodesic을 이룬다.</p>
+<p>로 임의 시각의 noisy sample을 한 번에 만들 수 있다. <span class="math inline">\(\bar\alpha_N\)</span>을 충분히 작게 잡으면 <span class="math inline">\(p_N\)</span>은 계산하기 쉬운 Gaussian prior에 가까워진다.</p>
 </section>
-<section id="다음으로-분리해서-배울-구조" class="level2">
-<h2 class="anchored" data-anchor-id="다음으로-분리해서-배울-구조">다음으로 분리해서 배울 구조</h2>
+<section id="score와-noise-prediction이-같은-정보를-담는-이유" class="level2">
+<h2 class="anchored" data-anchor-id="score와-noise-prediction이-같은-정보를-담는-이유">Score와 noise prediction이 같은 정보를 담는 이유</h2>
+<p>시각 <span class="math inline">\(t\)</span>의 score는</p>
+<p><span class="math display">\[
+s_t(x):=\nabla_x\log p_t(x)
+\]</span></p>
+<p>다. 이는 정규화 상수보다 “현재 점에서 밀도가 어느 방향으로 가장 빨리 증가하는가”를 나타내는 벡터장이다. Gaussian perturbation을</p>
+<p><span class="math display">\[
+X_t=a_tX_0+\sigma_t\varepsilon,
+\qquad \varepsilon\sim\mathcal N(0,I),\quad \sigma_t&gt;0
+\]</span></p>
+<p>로 쓰면 조건부 score는</p>
+<p><span class="math display">\[
+\nabla_x\log q_{t\mid0}(x\mid x_0)
+=-\frac{x-a_tx_0}{\sigma_t^2}
+=-\frac{\varepsilon}{\sigma_t}.
+\]</span></p>
+<p>조건부 score를 <span class="math inline">\(X_0\)</span>에 대해 평균내면 왜 주변 score가 되는지도 직접 계산할 수 있다.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbb E\!\left[
+\nabla_x\log q_{t\mid0}(x\mid X_0)
+\mid X_t=x
+\right]\\
+&amp;=\frac{
+\int \nabla_x q_{t\mid0}(x\mid x_0)
+p_{\mathrm{data}}(x_0)\,dx_0
+}{p_t(x)}
+=\nabla_x\log p_t(x).
+\end{aligned}
+\]</span></p>
+<p>한편 제곱오차 회귀 <span class="math inline">\(\mathbb E\|\varepsilon-\varepsilon_\theta(X_t,t)\|^2\)</span>의 점별 최적해는 <span class="math inline">\(\mathbb E[\varepsilon\mid X_t=x]\)</span>다. 따라서 최적으로 학습된 noise predictor와 score는</p>
+<p><span class="math display">\[
+s_t(x)
+=-\frac{\mathbb E[\varepsilon\mid X_t=x]}{\sigma_t}
+\approx-\frac{\varepsilon_\theta(x,t)}{\sigma_t}
+\]</span></p>
+<p>로 연결된다. 이 항등식이 DDPM의 <span class="math inline">\(\varepsilon\)</span>-prediction과 score-based model을 같은 언어로 묶는다.</p>
+</section>
+<section id="연속시간-sde와-역시간-생성" class="level2">
+<h2 class="anchored" data-anchor-id="연속시간-sde와-역시간-생성">연속시간 SDE와 역시간 생성</h2>
+<p>연속시간에서는 forward process를</p>
+<p><span class="math display">\[
+dX_t=f(t,X_t)\,dt+g(t)\,dW_t,
+\qquad X_0\sim p_{\mathrm{data}}
+\]</span></p>
+<p>로 쓸 수 있다. 여기서 <span class="math inline">\(W_t\in\mathbb R^d\)</span>는 Brownian motion이다. 역시간 식을 투명하게 쓰기 위해 <span class="math inline">\(g(t)&gt;0\)</span>가 상태 <span class="math inline">\(x\)</span>와 무관한 scalar라고 가정한다. 또한 <span class="math inline">\(t&gt;0\)</span>에서 <span class="math inline">\(p_t\)</span>가 양의 매끄러운 밀도이고 시간반전을 정당화할 정도로 <span class="math inline">\(f,p_t\)</span>가 정칙이라고 가정한다. 이때 forward density는</p>
+<p><span class="math display">\[
+\partial_t p_t
+=-\nabla\!\cdot(fp_t)+\frac12g(t)^2\Delta p_t
+\]</span></p>
+<p>를 만족한다.</p>
+<p>역방향 시계 <span class="math inline">\(\tau:=T-t\)</span>와 <span class="math inline">\(Y_\tau:=X_{T-\tau}\)</span>를 쓰자. 위 정칙성 가정 아래 diffusion의 시간반전 정리는 <span class="math inline">\(Y\)</span>의 경로법칙이 다음 SDE로 표현된다고 말한다 <span class="citation" data-cites="song2021score">(<a href="#ref-song2021score" role="doc-biblioref">Song 기타 2021년</a>)</span>.</p>
+<p><span class="math display">\[
+dY_\tau=
+\left[
+-f(T-\tau,Y_\tau)
++g(T-\tau)^2s_{T-\tau}(Y_\tau)
+\right]d\tau
++g(T-\tau)\,d\overline W_\tau.
+\]</span></p>
+<p>이 결론은 transition law와 역방향 Brownian motion까지 다루는 시간반전 정리를 사용한다. Fokker-Planck 방정식의 일치만으로 경로법칙을 증명할 수는 없지만, score가 붙는 drift의 주변분포 일관성은 직접 검산할 수 있다. <span class="math inline">\(q_\tau=p_{T-\tau}\)</span>이므로 <span class="math inline">\(\partial_\tau q_\tau=-\partial_t p_t\)</span>다. <span class="math inline">\(\Delta p=\nabla\!\cdot(p\nabla\log p)\)</span>를 이용해 forward 방정식의 부호를 바꾸면</p>
+<p><span class="math display">\[
+\partial_\tau q
+=-\nabla\!\cdot\left[
+\left(-f+g^2\nabla\log p\right)q
+\right]
++\frac12g^2\Delta q.
+\]</span></p>
+<p>실제로는 모르는 <span class="math inline">\(s_t\)</span>를 <span class="math inline">\(s_\theta\)</span>로 바꾸고 <span class="math inline">\(Y_0\sim p_T\)</span>에서 출발한다. State-dependent matrix diffusion에서는 추가 divergence 항이 생길 수 있으므로 위 식을 그대로 일반식으로 사용해서는 안 된다.</p>
+<p>확률항 없이도 같은 주변밀도를 만드는 probability-flow ODE가 있다. Forward 방정식을</p>
+<p><span class="math display">\[
+\partial_t p_t
+=-\nabla\!\cdot\left[
+\left(f-\frac12g^2\nabla\log p_t\right)p_t
+\right]
+\]</span></p>
+<p>로 다시 쓰면 되므로</p>
+<p><span class="math display">\[
+\frac{dX_t}{dt}
+=f(t,X_t)-\frac12g(t)^2s_t(X_t)
+\]</span></p>
+<p>의 continuity equation은 forward SDE의 Fokker-Planck equation과 같다. 즉 경로의 확률성은 다르지만 각 시각의 주변분포 <span class="math inline">\(p_t\)</span>는 같다.</p>
+</section>
+</div>
+</div>
+</div>
+<section id="noise-schedule을-sde로-표현하기" class="level2">
+<h2 class="anchored" data-anchor-id="noise-schedule을-sde로-표현하기">Noise schedule을 SDE로 표현하기</h2>
+<p>연속시간 표현은 이산 모델마다 달랐던 noise schedule을 drift <span class="math inline">\(f\)</span>와 diffusion amplitude <span class="math inline">\(g\)</span>로 바꾼다. 대표적으로 variance-preserving SDE는</p>
+<p><span class="math display">\[
+dX_t=-\frac12\beta(t)X_t\,dt+\sqrt{\beta(t)}\,dW_t
+\]</span></p>
+<p>이고, 신호를 감쇠시키면서 총분산을 제한한다. Variance-exploding SDE는 증가하는 <span class="math inline">\(\sigma(t)\)</span>에 대해</p>
+<p><span class="math display">\[
+dX_t=\sqrt{\frac{d\sigma(t)^2}{dt}}\,dW_t
+\]</span></p>
+<p>로 두어 원신호에 점점 큰 Gaussian noise를 더한다. 두 경우 모두 transition kernel을 알면 denoising score matching으로 <span class="math inline">\(s_\theta\)</span>를 학습할 수 있다 <span class="citation" data-cites="song2021score">(<a href="#ref-song2021score" role="doc-biblioref">Song 기타 2021년</a>)</span>.</p>
+</section>
+<section id="확률적-경로와-결정론적-경로" class="level2">
+<h2 class="anchored" data-anchor-id="확률적-경로와-결정론적-경로">확률적 경로와 결정론적 경로</h2>
 <ul>
-<li>최적계획의 존재성과 tightness/lower semicontinuity</li>
-<li><span class="math inline">\(c\)</span>-transform, dual attainment, complementary slackness</li>
-<li>Brenier map과 convex potential</li>
-<li>Benamou-Brenier의 동적 formulation</li>
-<li>Entropic regularization과 Schrödinger bridge</li>
-<li>Wasserstein gradient flow와 Fokker-Planck equation</li>
+<li><strong>Reverse SDE:</strong> <span class="math inline">\(s_\theta\)</span>가 들어간 drift와 Brownian noise를 함께 사용한다.</li>
+<li><strong>Probability-flow ODE:</strong> 같은 <span class="math inline">\(s_\theta\)</span>를 사용하지만 경로는 결정론적이다.</li>
 </ul>
-<p><a href="../sde/">SDE</a>가 개별 확률경로를 다룬다면 OT는 주로 확률측도 사이의 배치와 기하를 다룬다. 두 분야가 만난다는 주장에는 어떤 동역학, 비용, 에너지를 쓰는지까지 명시해야 한다.</p>
+<p>Learned ODE velocity를</p>
+<p><span class="math display">\[
+v_t^\theta(x):=f(t,x)-\frac12g(t)^2s_\theta(x,t)
+\]</span></p>
+<p>라 하고, 이 velocity와 terminal prior가 정의하는 model density를 <span class="math inline">\(p_t^\theta\)</span>라 하자. ODE trajectory <span class="math inline">\(\dot X_t=v_t^\theta(X_t)\)</span>를 따라 continuity equation은</p>
+<p><span class="math display">\[
+\frac d{dt}\log p_t^\theta(X_t)
+=-\nabla\!\cdot v_t^\theta(X_t)
+\]</span></p>
+<p>를 준다. 따라서 <span class="math inline">\(X_0=x_0\)</span>를 <span class="math inline">\(T\)</span>까지 보내 얻은 <span class="math inline">\(X_T\)</span>에 대해</p>
+<p><span class="math display">\[
+\log p_0^\theta(x_0)
+=\log p_T^\theta(X_T)
++\int_0^T\nabla\!\cdot v_t^\theta(X_t)\,dt.
+\]</span></p>
+<p>Exact score이고 terminal law도 일치할 때만 <span class="math inline">\(p_t^\theta=p_t\)</span>다. Approximate score에서는 model density와 true forward marginal을 구분해야 하며, divergence trace와 ODE 적분도 수치적으로 근사한다.</p>
+</section>
+<section id="이-개념의-경계" class="level2">
+<h2 class="anchored" data-anchor-id="이-개념의-경계">이 개념의 경계</h2>
+<p>상위 Diffusion Models는 score/noise identity와 reverse drift가 생기는 이유를 담당한다. 이 개념은 SDE family 선택, stochastic·deterministic sampler, ODE likelihood처럼 연속시간 formulation에서 생기는 선택을 담당한다.</p>
 
 
 
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">참고문헌</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
-<div id="ref-villani2009ot" class="csl-entry" role="listitem">
-Villani, Cédric. 2009년. <em>Optimal Transport: Old and New</em>. Vol 338. Grundlehren der mathematischen Wissenschaften. Springer Berlin, Heidelberg. <a href="https://doi.org/10.1007/978-3-540-71050-9">https://doi.org/10.1007/978-3-540-71050-9</a>.
+<div id="ref-song2021score" class="csl-entry" role="listitem">
+Song, Yang, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, 와/과 Ben Poole. 2021년. <span>“Score-Based Generative Modeling through Stochastic Differential Equations”</span>. <em>International Conference on Learning Representations</em>. <a href="https://openreview.net/forum?id=PxTIG12RRHS">https://openreview.net/forum?id=PxTIG12RRHS</a>.
 </div>
 </div></section></div></main> <!-- /main -->
 <script>

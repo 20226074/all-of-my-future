@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="노이즈를 더하는 과정과 역시간 확률 동역학을 이용하는 생성 모델">
+<meta name="description" content="노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학">
 
 <title>Diffusion Models – All of My Future</title>
 <style>
@@ -327,8 +327,12 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#공통-표기" id="toc-공통-표기" class="nav-link active" data-scroll-target="#공통-표기">공통 표기</a></li>
-  <li><a href="#생성이-가능한-이유" id="toc-생성이-가능한-이유" class="nav-link" data-scroll-target="#생성이-가능한-이유">생성이 가능한 이유</a></li>
+  <li><a href="#공통-대상과-표기" id="toc-공통-대상과-표기" class="nav-link active" data-scroll-target="#공통-대상과-표기">공통 대상과 표기</a></li>
+  <li><a href="#이산-gaussian-forward-process" id="toc-이산-gaussian-forward-process" class="nav-link" data-scroll-target="#이산-gaussian-forward-process">이산 Gaussian forward process</a></li>
+  <li><a href="#score와-noise-prediction이-같은-정보를-담는-이유" id="toc-score와-noise-prediction이-같은-정보를-담는-이유" class="nav-link" data-scroll-target="#score와-noise-prediction이-같은-정보를-담는-이유">Score와 noise prediction이 같은 정보를 담는 이유</a></li>
+  <li><a href="#연속시간-sde와-역시간-생성" id="toc-연속시간-sde와-역시간-생성" class="nav-link" data-scroll-target="#연속시간-sde와-역시간-생성">연속시간 SDE와 역시간 생성</a></li>
+  <li><a href="#학습과-생성의-전체-흐름" id="toc-학습과-생성의-전체-흐름" class="nav-link" data-scroll-target="#학습과-생성의-전체-흐름">학습과 생성의 전체 흐름</a></li>
+  <li><a href="#이-개념에서-갈라지는-표준-경로" id="toc-이-개념에서-갈라지는-표준-경로" class="nav-link" data-scroll-target="#이-개념에서-갈라지는-표준-경로">이 개념에서 갈라지는 표준 경로</a></li>
   </ul>
 </nav>
     </div>
@@ -343,7 +347,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    노이즈를 더하는 과정과 역시간 확률 동역학을 이용하는 생성 모델
+    노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학
   </div>
 </div>
 
@@ -360,45 +364,172 @@ window.Quarto = {
 </header>
 
 
-<section id="공통-표기" class="level2">
-<h2 class="anchored" data-anchor-id="공통-표기">공통 표기</h2>
-<p>시간은 <span class="math inline">\(t\in[0,T]\)</span>로 두고, <span class="math inline">\(X_t\in\mathbb{R}^d\)</span>는 시각 <span class="math inline">\(t\)</span>의 <strong>확률 상태</strong>를 뜻한다. 대문자 <span class="math inline">\(X_t\)</span>는 아직 값이 정해지지 않은 확률변수이고, 소문자 <span class="math inline">\(x_t\)</span>는 그 확률변수에서 실제로 얻은 한 상태값이다. 한 표본의 변화는</p>
+<p>이 페이지가 diffusion 계열 문헌의 <strong>공통 수학 계약</strong>이다. 아래에서 정의한 <span class="math inline">\(X_t,x_t,p_t,q_{t\mid0},s_t,\varepsilon_\theta\)</span>는 DDPM, score SDE, guidance, latent diffusion 문헌에서 같은 뜻으로 사용한다. 각 논문 노트는 이 블록을 다시 작성하지 않고 동일한 원본을 접힌 형태로 불러온다. 이산 Gaussian formulation은 <span class="citation" data-cites="ho2020ddpm">(<a href="#ref-ho2020ddpm" role="doc-biblioref">Ho 기타 2020년</a>)</span>, 연속시간 reverse SDE와 probability-flow ODE는 <span class="citation" data-cites="song2021score">(<a href="#ref-song2021score" role="doc-biblioref">Song 기타 2021년</a>)</span>를 기준으로 표기를 통일했다.</p>
+<section id="공통-대상과-표기" class="level2">
+<h2 class="anchored" data-anchor-id="공통-대상과-표기">공통 대상과 표기</h2>
+<p>데이터 한 개가 놓이는 공간을 <span class="math inline">\(\mathbb R^d\)</span>라고 하자. 여기서는 전개를 단순하게 하기 위해 깨끗한 데이터 <span class="math inline">\(X_0\)</span>가 밀도 <span class="math inline">\(p_{\mathrm{data}}\)</span>를 가진다고 가정하고 <span class="math inline">\(X_0\sim p_{\mathrm{data}}\)</span>라 쓴다. <span class="math inline">\(x_0\)</span>는 그 확률변수에서 관측한 <strong>값</strong>이다. 실제 데이터 법칙이 이산적이거나 특이하면 아래의 <span class="math inline">\(p_{\mathrm{data}}(x_0)\,dx_0\)</span>를 확률측도 <span class="math inline">\(P_{\mathrm{data}}(dx_0)\)</span>로 바꾸면 된다. 시각 <span class="math inline">\(t\)</span>에 노이즈가 섞인 확률변수와 그 실현값은 각각 <span class="math inline">\(X_t\)</span>와 <span class="math inline">\(x_t\)</span>로 쓴다. <span class="math inline">\(X_t\)</span>가 밀도 <span class="math inline">\(p_t\)</span>를 가진다는 말은 모든 적절한 집합 <span class="math inline">\(A\)</span>에 대해</p>
 <p><span class="math display">\[
-x_0\longrightarrow x_t\longrightarrow x_T
+\mathbb P(X_t\in A)=\int_A p_t(x)\,dx
 \]</span></p>
-<p>처럼 읽는다. <span class="math inline">\(X_t\)</span>의 법칙이 밀도를 가지면 그 밀도를 <span class="math inline">\(p_t(x)\)</span>라고 쓴다. 따라서 <span class="math inline">\(p_t(x)\,dx\)</span>는 <span class="math inline">\(X_t\)</span>가 <span class="math inline">\(x\)</span> 근처의 작은 부피 <span class="math inline">\(dx\)</span> 안에 있을 확률이다.</p>
-<p>Diffusion model에서는 보통</p>
-<p><span class="math display">\[
-X_0\sim p_{\mathrm{data}},
-\qquad
-p_T\approx p_{\mathrm{prior}}
-\]</span></p>
-<p>가 되도록 forward process와 충분히 큰 종료 시각 <span class="math inline">\(T\)</span>를 정한다. <span class="math inline">\(p_{\mathrm{data}}\)</span>는 학습 데이터의 분포이고, <span class="math inline">\(p_{\mathrm{prior}}\)</span>는 표본을 쉽게 만들 수 있는 단순한 분포—대개 가우시안—다. <span class="math inline">\(q_{t\mid 0}(x_t\mid x_0)\)</span>가 <span class="math inline">\(x_0\)</span>에서 출발해 시각 <span class="math inline">\(t\)</span>에 <span class="math inline">\(x_t\)</span>가 될 조건부 밀도라면</p>
+<p>라는 뜻이다. 작은 부피 <span class="math inline">\(dx\)</span>에 대해서는 <span class="math inline">\(p_t(x)\,dx\)</span>를 <span class="math inline">\(X_t\)</span>가 <span class="math inline">\(x\)</span> 근처에 있을 확률로 읽을 수 있다.</p>
+<p>Forward process의 조건부 밀도는 <span class="math inline">\(q_{t\mid0}(x_t\mid x_0)\)</span>로 쓴다. 따라서 주변밀도는</p>
 <p><span class="math display">\[
 p_t(x_t)
-=\int q_{t\mid 0}(x_t\mid x_0)
-      p_{\mathrm{data}}(x_0)\,dx_0.
+=\int q_{t\mid0}(x_t\mid x_0)p_{\mathrm{data}}(x_0)\,dx_0
 \]</span></p>
-<p>즉 <span class="math inline">\(p_t\)</span>는 모든 깨끗한 데이터 <span class="math inline">\(x_0\)</span>에 노이즈를 더한 결과를 섞은 주변분포다. 연속시간 forward process는 흔히</p>
+<p>다. 이 적분은 “각 데이터 <span class="math inline">\(x_0\)</span>에 노이즈를 넣은 분포”를 데이터 전체에 대해 섞는 과정이다.</p>
+</section>
+<section id="이산-gaussian-forward-process" class="level2">
+<h2 class="anchored" data-anchor-id="이산-gaussian-forward-process">이산 Gaussian forward process</h2>
+<p>이산 시각 <span class="math inline">\(k=1,\ldots,N\)</span>에서는 <span class="math inline">\(\beta_k\in(0,1)\)</span>, <span class="math inline">\(\alpha_k:=1-\beta_k\)</span>, <span class="math inline">\(\bar\alpha_0:=1\)</span>, <span class="math inline">\(\bar\alpha_k:=\prod_{j=1}^k\alpha_j\)</span>로 두고</p>
 <p><span class="math display">\[
-dX_t=f(t,X_t)\,dt+g(t)\,dW_t
+q(x_k\mid x_{k-1})
+=\mathcal N\!\left(
+x_k;\sqrt{\alpha_k}x_{k-1},\beta_k I
+\right)
 \]</span></p>
-<p>로 쓴다. 여기서 <span class="math inline">\(W_t\)</span>는 표준 Brownian motion, <span class="math inline">\(f\)</span>는 평균적인 이동을 정하는 drift, <span class="math inline">\(g\)</span>는 주입되는 노이즈의 크기다. 시각 <span class="math inline">\(t\)</span>의 score는</p>
+<p>처럼 조금씩 Gaussian noise를 더할 수 있다. 즉</p>
+<p><span class="math display">\[
+X_k=\sqrt{\alpha_k}X_{k-1}+\sqrt{\beta_k}\,\varepsilon_k,
+\qquad \varepsilon_k\sim\mathcal N(0,I).
+\]</span></p>
+<p><span class="math inline">\(X_{k-1}\mid X_0=x_0\)</span>가 평균 <span class="math inline">\(\sqrt{\bar\alpha_{k-1}}x_0\)</span>, 공분산 <span class="math inline">\((1-\bar\alpha_{k-1})I\)</span>인 Gaussian이라고 가정하자. 독립 Gaussian의 선형결합은 다시 Gaussian이고</p>
+<p><span class="math display">\[
+\alpha_k(1-\bar\alpha_{k-1})+\beta_k
+=1-\alpha_k\bar\alpha_{k-1}
+=1-\bar\alpha_k
+\]</span></p>
+<p>이므로 귀납적으로</p>
+<p><span class="math display">\[
+q(x_k\mid x_0)
+=\mathcal N\!\left(
+x_k;\sqrt{\bar\alpha_k}x_0,(1-\bar\alpha_k)I
+\right).
+\]</span></p>
+<p>따라서 중간 단계를 모두 시뮬레이션하지 않고도</p>
+<p><span class="math display">\[
+X_k
+=\sqrt{\bar\alpha_k}X_0
++\sqrt{1-\bar\alpha_k}\,\varepsilon,
+\qquad \varepsilon\sim\mathcal N(0,I)
+\]</span></p>
+<p>로 임의 시각의 noisy sample을 한 번에 만들 수 있다. <span class="math inline">\(\bar\alpha_N\)</span>을 충분히 작게 잡으면 <span class="math inline">\(p_N\)</span>은 계산하기 쉬운 Gaussian prior에 가까워진다.</p>
+</section>
+<section id="score와-noise-prediction이-같은-정보를-담는-이유" class="level2">
+<h2 class="anchored" data-anchor-id="score와-noise-prediction이-같은-정보를-담는-이유">Score와 noise prediction이 같은 정보를 담는 이유</h2>
+<p>시각 <span class="math inline">\(t\)</span>의 score는</p>
 <p><span class="math display">\[
 s_t(x):=\nabla_x\log p_t(x)
 \]</span></p>
-<p>이며, 현재 상태 <span class="math inline">\(x\)</span>를 그 시각의 고밀도 방향으로 얼마나 움직여야 하는지를 나타내는 벡터장이다. 신경망 <span class="math inline">\(s_\theta(x,t)\)</span>는 이 <span class="math inline">\(s_t(x)\)</span>를 근사하도록 학습한다.</p>
+<p>다. 이는 정규화 상수보다 “현재 점에서 밀도가 어느 방향으로 가장 빨리 증가하는가”를 나타내는 벡터장이다. Gaussian perturbation을</p>
+<p><span class="math display">\[
+X_t=a_tX_0+\sigma_t\varepsilon,
+\qquad \varepsilon\sim\mathcal N(0,I),\quad \sigma_t&gt;0
+\]</span></p>
+<p>로 쓰면 조건부 score는</p>
+<p><span class="math display">\[
+\nabla_x\log q_{t\mid0}(x\mid x_0)
+=-\frac{x-a_tx_0}{\sigma_t^2}
+=-\frac{\varepsilon}{\sigma_t}.
+\]</span></p>
+<p>조건부 score를 <span class="math inline">\(X_0\)</span>에 대해 평균내면 왜 주변 score가 되는지도 직접 계산할 수 있다.</p>
+<p><span class="math display">\[
+\begin{aligned}
+&amp;\mathbb E\!\left[
+\nabla_x\log q_{t\mid0}(x\mid X_0)
+\mid X_t=x
+\right]\\
+&amp;=\frac{
+\int \nabla_x q_{t\mid0}(x\mid x_0)
+p_{\mathrm{data}}(x_0)\,dx_0
+}{p_t(x)}
+=\nabla_x\log p_t(x).
+\end{aligned}
+\]</span></p>
+<p>한편 제곱오차 회귀 <span class="math inline">\(\mathbb E\|\varepsilon-\varepsilon_\theta(X_t,t)\|^2\)</span>의 점별 최적해는 <span class="math inline">\(\mathbb E[\varepsilon\mid X_t=x]\)</span>다. 따라서 최적으로 학습된 noise predictor와 score는</p>
+<p><span class="math display">\[
+s_t(x)
+=-\frac{\mathbb E[\varepsilon\mid X_t=x]}{\sigma_t}
+\approx-\frac{\varepsilon_\theta(x,t)}{\sigma_t}
+\]</span></p>
+<p>로 연결된다. 이 항등식이 DDPM의 <span class="math inline">\(\varepsilon\)</span>-prediction과 score-based model을 같은 언어로 묶는다.</p>
 </section>
-<section id="생성이-가능한-이유" class="level2">
-<h2 class="anchored" data-anchor-id="생성이-가능한-이유">생성이 가능한 이유</h2>
-<p>Forward process는 <span class="math inline">\(p_0=p_{\mathrm{data}}\)</span>를 점차 단순한 <span class="math inline">\(p_T=p_{\mathrm{prior}}\)</span>로 보낸다. 생성에서는 반대로 <span class="math inline">\(X_T\sim p_T\)</span>를 먼저 뽑고, 학습한 score <span class="math inline">\(s_\theta(x,t)\approx\nabla_x\log p_t(x)\)</span>를 사용해 <span class="math inline">\(T\)</span>에서 <span class="math inline">\(0\)</span> 방향으로 분포를 되돌린다. 중요한 것은 한 데이터의 노이즈를 제거하는 규칙 하나가 아니라, <strong>모든 시각의 주변분포 <span class="math inline">\(p_t\)</span>를 잇는 벡터장</strong>을 학습한다는 점이다 <span class="citation" data-cites="song2021score">(<a href="#ref-song2021score" role="doc-biblioref">Song 기타 2021년</a>)</span>.</p>
-<p>Reverse dynamics의 정확한 식은 forward SDE, 시간 방향, 밀도의 존재와 정칙성에 의존한다. 따라서 이후 문헌 노트에서도 <span class="math inline">\(X_t\)</span>, <span class="math inline">\(p_t\)</span>, <span class="math inline">\(s_t\)</span>의 뜻은 위 표기를 그대로 사용하고, reverse-time 식의 가정과 시간 부호는 각 문헌에서 따로 명시한다.</p>
+<section id="연속시간-sde와-역시간-생성" class="level2">
+<h2 class="anchored" data-anchor-id="연속시간-sde와-역시간-생성">연속시간 SDE와 역시간 생성</h2>
+<p>연속시간에서는 forward process를</p>
+<p><span class="math display">\[
+dX_t=f(t,X_t)\,dt+g(t)\,dW_t,
+\qquad X_0\sim p_{\mathrm{data}}
+\]</span></p>
+<p>로 쓸 수 있다. 여기서 <span class="math inline">\(W_t\in\mathbb R^d\)</span>는 Brownian motion이다. 역시간 식을 투명하게 쓰기 위해 <span class="math inline">\(g(t)&gt;0\)</span>가 상태 <span class="math inline">\(x\)</span>와 무관한 scalar라고 가정한다. 또한 <span class="math inline">\(t&gt;0\)</span>에서 <span class="math inline">\(p_t\)</span>가 양의 매끄러운 밀도이고 시간반전을 정당화할 정도로 <span class="math inline">\(f,p_t\)</span>가 정칙이라고 가정한다. 이때 forward density는</p>
+<p><span class="math display">\[
+\partial_t p_t
+=-\nabla\!\cdot(fp_t)+\frac12g(t)^2\Delta p_t
+\]</span></p>
+<p>를 만족한다.</p>
+<p>역방향 시계 <span class="math inline">\(\tau:=T-t\)</span>와 <span class="math inline">\(Y_\tau:=X_{T-\tau}\)</span>를 쓰자. 위 정칙성 가정 아래 diffusion의 시간반전 정리는 <span class="math inline">\(Y\)</span>의 경로법칙이 다음 SDE로 표현된다고 말한다 <span class="citation" data-cites="song2021score">(<a href="#ref-song2021score" role="doc-biblioref">Song 기타 2021년</a>)</span>.</p>
+<p><span class="math display">\[
+dY_\tau=
+\left[
+-f(T-\tau,Y_\tau)
++g(T-\tau)^2s_{T-\tau}(Y_\tau)
+\right]d\tau
++g(T-\tau)\,d\overline W_\tau.
+\]</span></p>
+<p>이 결론은 transition law와 역방향 Brownian motion까지 다루는 시간반전 정리를 사용한다. Fokker-Planck 방정식의 일치만으로 경로법칙을 증명할 수는 없지만, score가 붙는 drift의 주변분포 일관성은 직접 검산할 수 있다. <span class="math inline">\(q_\tau=p_{T-\tau}\)</span>이므로 <span class="math inline">\(\partial_\tau q_\tau=-\partial_t p_t\)</span>다. <span class="math inline">\(\Delta p=\nabla\!\cdot(p\nabla\log p)\)</span>를 이용해 forward 방정식의 부호를 바꾸면</p>
+<p><span class="math display">\[
+\partial_\tau q
+=-\nabla\!\cdot\left[
+\left(-f+g^2\nabla\log p\right)q
+\right]
++\frac12g^2\Delta q.
+\]</span></p>
+<p>실제로는 모르는 <span class="math inline">\(s_t\)</span>를 <span class="math inline">\(s_\theta\)</span>로 바꾸고 <span class="math inline">\(Y_0\sim p_T\)</span>에서 출발한다. State-dependent matrix diffusion에서는 추가 divergence 항이 생길 수 있으므로 위 식을 그대로 일반식으로 사용해서는 안 된다.</p>
+<p>확률항 없이도 같은 주변밀도를 만드는 probability-flow ODE가 있다. Forward 방정식을</p>
+<p><span class="math display">\[
+\partial_t p_t
+=-\nabla\!\cdot\left[
+\left(f-\frac12g^2\nabla\log p_t\right)p_t
+\right]
+\]</span></p>
+<p>로 다시 쓰면 되므로</p>
+<p><span class="math display">\[
+\frac{dX_t}{dt}
+=f(t,X_t)-\frac12g(t)^2s_t(X_t)
+\]</span></p>
+<p>의 continuity equation은 forward SDE의 Fokker-Planck equation과 같다. 즉 경로의 확률성은 다르지만 각 시각의 주변분포 <span class="math inline">\(p_t\)</span>는 같다.</p>
+</section>
+<section id="학습과-생성의-전체-흐름" class="level2">
+<h2 class="anchored" data-anchor-id="학습과-생성의-전체-흐름">학습과 생성의 전체 흐름</h2>
+<ol type="1">
+<li><span class="math inline">\(X_0\sim p_{\mathrm{data}}\)</span>에 알려진 noise process를 적용해 임의의 <span class="math inline">\(X_t\)</span>를 만든다.</li>
+<li><span class="math inline">\(\varepsilon_\theta\)</span> 또는 <span class="math inline">\(s_\theta\)</span>가 noisy state에서 noise 또는 score를 예측하도록 학습한다.</li>
+<li>쉬운 <span class="math inline">\(p_T\)</span>에서 표본을 뽑고, 학습한 벡터장을 reverse SDE, DDPM transition, 또는 ODE sampler에 넣어 <span class="math inline">\(p_0\)</span> 방향으로 이동한다.</li>
+</ol>
+<p>유한한 종료시각에서는 보통 <span class="math inline">\(p_T\approx p_{\mathrm{prior}}\)</span>이지 정확한 equality는 아니다. 생성 오차에는 terminal approximation, score approximation, time discretization이 모두 들어간다.</p>
+</section>
+<section id="이-개념에서-갈라지는-표준-경로" class="level2">
+<h2 class="anchored" data-anchor-id="이-개념에서-갈라지는-표준-경로">이 개념에서 갈라지는 표준 경로</h2>
+<ul>
+<li><a href="../ddpm/">DDPM</a>: 이산 Gaussian Markov chain, variational bound, <span class="math inline">\(\varepsilon\)</span>-prediction</li>
+<li><a href="../score-based-sde/">Score-based SDE &amp; Probability-flow ODE</a>: 연속시간 reverse SDE, deterministic flow, likelihood</li>
+<li><a href="../conditional-diffusion/">Conditional Diffusion &amp; Guidance</a>: 조건부 score와 classifier gradient</li>
+<li><a href="../classifier-free-guidance/">Classifier-Free Guidance</a>: conditional/unconditional predictor의 선형결합</li>
+<li><a href="../latent-diffusion/">Latent Diffusion</a>: pixel 대신 압축 latent에서 수행하는 diffusion</li>
+</ul>
+<p>이 경로들은 서로 배타적인 분류가 아니다. 예를 들어 latent diffusion은 DDPM식 forward process, text conditioning, classifier-free guidance를 동시에 사용할 수 있다 <span class="citation" data-cites="rombach2022ldm">(<a href="#ref-rombach2022ldm" role="doc-biblioref">Rombach 기타 2022년</a>)</span>.</p>
 
 
 
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">참고문헌</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-ho2020ddpm" class="csl-entry" role="listitem">
+Ho, Jonathan, Ajay Jain, 와/과 Pieter Abbeel. 2020년. <span>“Denoising Diffusion Probabilistic Models”</span>. <em>Advances in Neural Information Processing Systems</em> 33: 6840–51. <a href="https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html">https://proceedings.neurips.cc/paper/2020/hash/4c5bcfec8584af0d967f1ab10179ca4b-Abstract.html</a>.
+</div>
+<div id="ref-rombach2022ldm" class="csl-entry" role="listitem">
+Rombach, Robin, Andreas Blattmann, Dominik Lorenz, Patrick Esser, 와/과 Björn Ommer. 2022년. <span>“High-Resolution Image Synthesis with Latent Diffusion Models”</span>. <em>Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition</em>, 10684–95. <a href="https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html">https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html</a>.
+</div>
 <div id="ref-song2021score" class="csl-entry" role="listitem">
 Song, Yang, Jascha Sohl-Dickstein, Diederik P. Kingma, Abhishek Kumar, Stefano Ermon, 와/과 Ben Poole. 2021년. <span>“Score-Based Generative Modeling through Stochastic Differential Equations”</span>. <em>International Conference on Learning Representations</em>. <a href="https://openreview.net/forum?id=PxTIG12RRHS">https://openreview.net/forum?id=PxTIG12RRHS</a>.
 </div>

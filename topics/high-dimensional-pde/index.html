@@ -82,6 +82,35 @@ div.csl-indent {
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../assets/styles.css">
 </head>
@@ -298,8 +327,9 @@ div.csl-indent {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#우선-다룰-범위" id="toc-우선-다룰-범위" class="nav-link active" data-scroll-target="#우선-다룰-범위">우선 다룰 범위</a></li>
-  <li><a href="#읽을-때-확인할-질문" id="toc-읽을-때-확인할-질문" class="nav-link" data-scroll-target="#읽을-때-확인할-질문">읽을 때 확인할 질문</a></li>
+  <li><a href="#반선형-pde와-bsde의-공통-표기" id="toc-반선형-pde와-bsde의-공통-표기" class="nav-link active" data-scroll-target="#반선형-pde와-bsde의-공통-표기">반선형 PDE와 BSDE의 공통 표기</a></li>
+  <li><a href="#itô-공식으로-pde를-bsde로-바꾸기" id="toc-itô-공식으로-pde를-bsde로-바꾸기" class="nav-link" data-scroll-target="#itô-공식으로-pde를-bsde로-바꾸기">Itô 공식으로 PDE를 BSDE로 바꾸기</a></li>
+  <li><a href="#계산법으로-바뀌는-지점" id="toc-계산법으로-바뀌는-지점" class="nav-link" data-scroll-target="#계산법으로-바뀌는-지점">계산법으로 바뀌는 지점</a></li>
   </ul>
 </nav>
     </div>
@@ -331,39 +361,79 @@ div.csl-indent {
 </header>
 
 
-<p>고차원 PDE에서는 격자점의 수가 차원에 따라 급격히 늘어나는 문제가 핵심 장애물이다. 이 토픽은 확률적 표현과 샘플 기반 계산뿐 아니라 저랭크·희소 근사, operator learning 등 서로 다른 방법군으로 독립적으로 확장될 수 있다. 현재 연결된 SDE/BSDE 접근은 그중 한 경로이며 전체 분야의 상위 구조가 아니다.</p>
-<section id="우선-다룰-범위" class="level2">
-<h2 class="anchored" data-anchor-id="우선-다룰-범위">우선 다룰 범위</h2>
-<ul>
-<li>Feynman–Kac 표현과 그 적용 조건</li>
-<li>Forward–Backward SDE와 반선형 포물형 PDE의 관계</li>
-<li>Monte Carlo 방식의 차원 의존성</li>
-<li>Deep BSDE 방법의 목적함수와 시간 이산화</li>
-<li>오차의 출처: 표현, 이산화, 최적화, 일반화</li>
-</ul>
-<p><span class="citation" data-cites="han2018deep">(<a href="#ref-han2018deep" role="doc-biblioref">Han 기타 2018년</a>)</span>은 이 경로의 대표적인 출발점이지만, 논문에 포함된 예제가 전체 고차원 PDE를 대표하지는 않는다.</p>
+<p><span class="math inline">\(d\)</span>차원 영역의 각 축을 <span class="math inline">\(M\)</span>개 점으로 나누는 tensor grid는 대략 <span class="math inline">\(M^d\)</span>개의 상태를 요구한다. 이 지수적 증가는 고차원 PDE에서 말하는 차원의 저주의 가장 직접적인 형태다. 확률표현은 전체 grid 대신 무작위 경로를 사용하지만, 모든 PDE가 같은 확률표현을 갖거나 차원 의존성이 자동으로 사라지는 것은 아니다.</p>
+<p>아래는 deep BSDE 계열 문헌이 공유하는 반선형 PDE 표기와 PDE-BSDE 대응이다.</p>
+<section id="반선형-pde와-bsde의-공통-표기" class="level2">
+<h2 class="anchored" data-anchor-id="반선형-pde와-bsde의-공통-표기">반선형 PDE와 BSDE의 공통 표기</h2>
+<p><span class="math inline">\(W_t\in\mathbb R^m\)</span>를 Brownian motion이라 하고</p>
+<p><span class="math display">\[
+\mu:[0,T]\times\mathbb R^d\to\mathbb R^d,
+\qquad
+\sigma:[0,T]\times\mathbb R^d\to\mathbb R^{d\times m}
+\]</span></p>
+<p>라 두자. Terminal payoff는 <span class="math inline">\(G:\mathbb R^d\to\mathbb R\)</span>, nonlinear driver는</p>
+<p><span class="math display">\[
+f:[0,T]\times\mathbb R^d\times\mathbb R\times\mathbb R^m
+\to\mathbb R
+\]</span></p>
+<p>로 쓴다. 여기서 <span class="math inline">\(u:[0,T]\times\mathbb R^d\to\mathbb R\)</span>가</p>
+<p><span class="math display">\[
+\partial_tu
++\mu\cdot\nabla_xu
++\frac12\operatorname{Tr}
+\left(\sigma\sigma^\top D_x^2u\right)
++f\!\left(t,x,u,\sigma^\top\nabla_xu\right)=0,
+\qquad
+u(T,x)=G(x)
+\]</span></p>
+<p>를 만족한다고 하자. 같은 <span class="math inline">\(\mu,\sigma\)</span>로 forward state를</p>
+<p><span class="math display">\[
+dX_t=\mu(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
+\qquad X_0=\xi
+\]</span></p>
+<p>로 정의한다. 여기서 <span class="math inline">\(\xi\in L^2(\Omega,\mathcal F_0;\mathbb R^d)\)</span>라 가정한다. 이어서</p>
+<p><span class="math display">\[
+Y_t:=u(t,X_t),
+\qquad
+Z_t:=\sigma(t,X_t)^\top\nabla_xu(t,X_t)\in\mathbb R^m
+\]</span></p>
+<p>라 둔다.</p>
 </section>
-<section id="읽을-때-확인할-질문" class="level2">
-<h2 class="anchored" data-anchor-id="읽을-때-확인할-질문">읽을 때 확인할 질문</h2>
+<section id="itô-공식으로-pde를-bsde로-바꾸기" class="level2">
+<h2 class="anchored" data-anchor-id="itô-공식으로-pde를-bsde로-바꾸기">Itô 공식으로 PDE를 BSDE로 바꾸기</h2>
+<p><span class="math inline">\(u\in C^{1,2}\)</span>라고 가정하고 Itô 공식을 그대로 대입하면</p>
+<p><span class="math display">\[
+\begin{aligned}
+dY_t
+={}&amp;d\,u(t,X_t)\\
+={}&amp;\left(
+\partial_tu+\mu\cdot\nabla_xu
++\frac12\operatorname{Tr}(\sigma\sigma^\top D_x^2u)
+\right)(t,X_t)dt\\
+&amp;+\nabla_xu(t,X_t)^\top\sigma(t,X_t)\,dW_t\\
+={}&amp;-f(t,X_t,Y_t,Z_t)\,dt+Z_t^\top dW_t.
+\end{aligned}
+\]</span></p>
+<p>마지막 등호에서 PDE와 <span class="math inline">\(Z_t\)</span>의 정의를 사용했다. <span class="math inline">\(t\)</span>부터 <span class="math inline">\(T\)</span>까지 적분하면</p>
+<p><span class="math display">\[
+Y_t
+=G(X_T)
++\int_t^T f(s,X_s,Y_s,Z_s)\,ds
+-\int_t^T Z_s^\top dW_s.
+\]</span></p>
+<p>Terminal value <span class="math inline">\(Y_T=G(X_T)\)</span>가 주어지고 더 이른 <span class="math inline">\(Y_t\)</span>를 찾아간다는 의미에서 이것을 backward SDE라고 부른다.</p>
+<p>위의 pointwise 식별은 고전해의 정칙성을 가정한 설명이다. 보통 <span class="math inline">\(\mu,\sigma\)</span>에는 Lipschitz·선형성장 조건, <span class="math inline">\(f\)</span>에는 <span class="math inline">\((y,z)\)</span>에 대한 Lipschitz 조건, <span class="math inline">\(G(X_T)\in L^2\)</span> 같은 조건이 사용된다. 더 약한 조건에서는 viscosity solution과 BSDE의 대응을 별도로 정식화해야 한다.</p>
+</section>
+<section id="계산법으로-바뀌는-지점" class="level2">
+<h2 class="anchored" data-anchor-id="계산법으로-바뀌는-지점">계산법으로 바뀌는 지점</h2>
+<p>연속시간 표현은 아직 해법이 아니다. 계산하려면 <span class="math inline">\(X,Y,Z\)</span>를 시간격자에 이산화하고, <span class="math inline">\(x\mapsto Z_{t_k}(x)\)</span> 또는 <span class="math inline">\(x\mapsto\nabla u(t_k,x)\)</span>를 어떤 함수족으로 근사하며, terminal mismatch를 유한 표본으로 최적화해야 한다. 따라서 오차를 최소한 다음 네 층으로 나눈다.</p>
 <ol type="1">
-<li>대상 PDE가 선형·반선형·완전 비선형 중 어디에 속하는가?</li>
-<li>확률 표현에 필요한 계수와 해의 정칙성 가정은 무엇인가?</li>
-<li>보고된 수치 오차는 기준해와 어떻게 비교되었는가?</li>
-<li>차원이 증가할 때 계산량과 실패 양상이 실제로 어떻게 변하는가?</li>
+<li>PDE와 BSDE를 식별할 때 필요한 표현·정칙성 오차</li>
+<li>SDE/BSDE의 시간 이산화 오차</li>
+<li>신경망 또는 다른 함수족의 근사 오차</li>
+<li>Monte Carlo와 최적화 오차</li>
 </ol>
-<div class="callout callout-style-default callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">경고</span>경계
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>“신경망을 쓰면 차원의 저주를 해결한다”는 식의 일반화는 아직 이 노트의 결론이 아니다. 문제 구조와 평가 방식별로 근거를 분리한다.</p>
-</div>
-</div>
+<p><span class="citation" data-cites="han2018deep">(<a href="#ref-han2018deep" role="doc-biblioref">Han 기타 2018년</a>)</span>의 deep BSDE 방법은 이 가운데 하나의 경로다. 저랭크 근사, sparse grid, branching, operator learning은 별개의 구조를 사용할 수 있다.</p>
 
 
 

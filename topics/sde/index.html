@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="잡음이 있는 연속시간 동역학을 기술하는 확률해석의 한 분야">
+<meta name="description" content="잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반">
 
 <title>Stochastic Differential Equations – All of My Future</title>
 <style>
@@ -327,9 +327,11 @@ window.Quarto = {
     <h2 id="toc-title">목차</h2>
    
   <ul>
-  <li><a href="#최소-문제-설정" id="toc-최소-문제-설정" class="nav-link active" data-scroll-target="#최소-문제-설정">최소 문제 설정</a></li>
+  <li><a href="#확률공간과-itô-적분" id="toc-확률공간과-itô-적분" class="nav-link active" data-scroll-target="#확률공간과-itô-적분">확률공간과 Itô 적분</a></li>
+  <li><a href="#sde의-해" id="toc-sde의-해" class="nav-link" data-scroll-target="#sde의-해">SDE의 해</a></li>
+  <li><a href="#itô-공식과-생성자" id="toc-itô-공식과-생성자" class="nav-link" data-scroll-target="#itô-공식과-생성자">Itô 공식과 생성자</a></li>
+  <li><a href="#서로-다른-질문을-구분하기" id="toc-서로-다른-질문을-구분하기" class="nav-link" data-scroll-target="#서로-다른-질문을-구분하기">서로 다른 질문을 구분하기</a></li>
   <li><a href="#다른-노드와-만나는-지점" id="toc-다른-노드와-만나는-지점" class="nav-link" data-scroll-target="#다른-노드와-만나는-지점">다른 노드와 만나는 지점</a></li>
-  <li><a href="#다음-학습-질문" id="toc-다음-학습-질문" class="nav-link" data-scroll-target="#다음-학습-질문">다음 학습 질문</a></li>
   </ul>
 </nav>
     </div>
@@ -344,7 +346,7 @@ window.Quarto = {
 
 <div>
   <div class="description">
-    잡음이 있는 연속시간 동역학을 기술하는 확률해석의 한 분야
+    잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반
   </div>
 </div>
 
@@ -361,44 +363,92 @@ window.Quarto = {
 </header>
 
 
-<p>SDE는 잡음이 있는 연속시간 계의 경로를 기술하는 독립적인 연구 주제다. 다른 분야와 만나는 지점은 많지만, 그 연결이 다른 주제를 SDE의 하위 분야로 만들지는 않는다.</p>
-<section id="최소-문제-설정" class="level2">
-<h2 class="anchored" data-anchor-id="최소-문제-설정">최소 문제 설정</h2>
-<p>대표적인 Itô SDE는 다음처럼 쓸 수 있다.</p>
+<p>SDE는 다른 응용의 보조도구이기 전에 확률경로 자체를 연구하는 독립적인 분야다. 아래 블록이 이 사이트에서 SDE를 사용하는 모든 페이지의 공통 차원·적분·생성자 표기다 <span class="citation" data-cites="oksendal2003sde">(<a href="#ref-oksendal2003sde" role="doc-biblioref">Øksendal 2003년</a>)</span>.</p>
+<section id="확률공간과-itô-적분" class="level2">
+<h2 class="anchored" data-anchor-id="확률공간과-itô-적분">확률공간과 Itô 적분</h2>
+<p>확률공간 <span class="math inline">\((\Omega,\mathcal F,\mathbb P)\)</span>와 시간에 따라 이용 가능한 정보가 증가하는 filtration <span class="math inline">\((\mathcal F_t)_{0\le t\le T}\)</span>를 둔다. <span class="math inline">\(m\)</span>차원 Brownian motion <span class="math inline">\(W_t\in\mathbb R^m\)</span>는 이 filtration에 adapted이고, <span class="math inline">\(W_0=0\)</span>이며 연속 경로를 가지고, <span class="math inline">\(0\le s&lt;t\)</span>에서 증분 <span class="math inline">\(W_t-W_s\)</span>가 <span class="math inline">\(\mathcal F_s\)</span>와 독립이고 <span class="math inline">\(\mathcal N(0,(t-s)I_m)\)</span>를 따른다.</p>
+<p><span class="math inline">\(H_t\in\mathbb R^{d\times m}\)</span>가 progressively measurable이고</p>
 <p><span class="math display">\[
-dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t.
+\mathbb E\int_0^T\|H_t\|_F^2\,dt&lt;\infty
 \]</span></p>
-<p>여기서 우선 확인할 것은 해의 존재와 유일성, Itô 적분의 의미, 생성자, 그리고 해의 분포가 어떻게 변하는가이다. 계수의 조건에 따라 결론이 달라지므로 일반적인 형태만 보고 성질을 단정하지 않는다. 표준 입문 경로는 <span class="citation" data-cites="oksendal2003sde">(<a href="#ref-oksendal2003sde" role="doc-biblioref">Øksendal 2003년</a>)</span>를 기준점으로 삼는다.</p>
+<p>이면 Itô 적분 <span class="math inline">\(\int_0^tH_s\,dW_s\)</span>를 정의할 수 있다. 이는 보통 경로별 Riemann-Stieltjes 적분이 아니며</p>
+<p><span class="math display">\[
+\mathbb E\left\|\int_0^tH_s\,dW_s\right\|^2
+=\mathbb E\int_0^t\|H_s\|_F^2\,ds
+\]</span></p>
+<p>라는 Itô isometry를 만족한다.</p>
+</section>
+<section id="sde의-해" class="level2">
+<h2 class="anchored" data-anchor-id="sde의-해">SDE의 해</h2>
+<p><span class="math inline">\(X_t\in\mathbb R^d\)</span>, <span class="math inline">\(b:[0,T]\times\mathbb R^d\to\mathbb R^d\)</span>, <span class="math inline">\(\sigma:[0,T]\times\mathbb R^d\to\mathbb R^{d\times m}\)</span>라 하자. 표기</p>
+<p><span class="math display">\[
+dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
+\qquad X_0=\xi
+\]</span></p>
+<p>는 적분식</p>
+<p><span class="math display">\[
+X_t=\xi+\int_0^t b(s,X_s)\,ds
++\int_0^t\sigma(s,X_s)\,dW_s
+\]</span></p>
+<p>을 줄여 쓴 것이다. Strong solution은 주어진 <span class="math inline">\(W\)</span>와 filtration에 적응되고 연속 경로를 가지며, 필요한 적분 가능성을 만족하고 위 식이 거의 확실하게 모든 <span class="math inline">\(t\)</span>에 대해 성립하는 과정이다.</p>
+<p>예를 들어 <span class="math inline">\(b,\sigma\)</span>가 jointly Borel measurable이고 <span class="math inline">\(\xi\)</span>가 <span class="math inline">\(\mathcal F_0\)</span>-measurable이라고 하자. 어떤 <span class="math inline">\(L,C&gt;0\)</span>에 대해 모든 <span class="math inline">\(t,x,y\)</span>에서</p>
+<p><span class="math display">\[
+\|b(t,x)-b(t,y)\|+\|\sigma(t,x)-\sigma(t,y)\|_F
+\le L\|x-y\|,
+\]</span></p>
+<p><span class="math display">\[
+\|b(t,x)\|^2+\|\sigma(t,x)\|_F^2
+\le C(1+\|x\|^2)
+\]</span></p>
+<p>이고 <span class="math inline">\(\mathbb E\|\xi\|^2&lt;\infty\)</span>이면 표준 정리로 유일한 strong solution이 존재한다. 이는 널리 쓰이는 충분조건이지 필요한 조건은 아니다.</p>
+</section>
+<section id="itô-공식과-생성자" class="level2">
+<h2 class="anchored" data-anchor-id="itô-공식과-생성자">Itô 공식과 생성자</h2>
+<p><span class="math inline">\(\varphi\in C^{1,2}([0,T]\times\mathbb R^d)\)</span>이면</p>
+<p><span class="math display">\[
+\begin{aligned}
+d\varphi(t,X_t)
+={}&amp;\left(
+\partial_t\varphi
++b\cdot\nabla\varphi
++\frac12\operatorname{Tr}
+\bigl(\sigma\sigma^\top D^2\varphi\bigr)
+\right)(t,X_t)dt\\
+&amp;+\nabla\varphi(t,X_t)^\top
+\sigma(t,X_t)\,dW_t.
+\end{aligned}
+\]</span></p>
+<p>시간 의존 생성자를</p>
+<p><span class="math display">\[
+(L_t\varphi)(x)
+:=b(t,x)\cdot\nabla\varphi(x)
++\frac12\operatorname{Tr}
+\left(\sigma\sigma^\top(t,x)D^2\varphi(x)\right)
+\]</span></p>
+<p>로 쓰면 drift는 <span class="math inline">\((\partial_t+L_t)\varphi\)</span>다. 적절한 적분 가능성 아래</p>
+<p><span class="math display">\[
+M_t:=\varphi(t,X_t)-\varphi(0,X_0)
+-\int_0^t(\partial_s+L_s)\varphi(s,X_s)\,ds
+\]</span></p>
+<p>는 martingale이다. 이 식에 기대값을 취하면 backward Kolmogorov equation과 Feynman-Kac 표현으로, 생성자의 adjoint를 취하면 Fokker-Planck equation으로 이어진다.</p>
+</section>
+<section id="서로-다른-질문을-구분하기" class="level2">
+<h2 class="anchored" data-anchor-id="서로-다른-질문을-구분하기">서로 다른 질문을 구분하기</h2>
+<ul>
+<li><strong>경로의 문제:</strong> 주어진 Brownian motion 위에서 strong solution이 존재하고 유일한가?</li>
+<li><strong>법칙의 문제:</strong> 해의 분포가 유일한가? 다른 확률공간 위의 weak solution도 허용하는가?</li>
+<li><strong>분포의 진화:</strong> <span class="math inline">\(p_t\)</span>가 존재할 때 어떤 Fokker-Planck equation을 만족하는가?</li>
+<li><strong>함수의 기대값:</strong> <span class="math inline">\(u(t,x)=\mathbb E[\Phi(X_T)\mid X_t=x]\)</span>가 어떤 backward PDE를 만족하는가?</li>
+</ul>
+<p>같은 <span class="math inline">\(dX_t=b\,dt+\sigma\,dW_t\)</span> 표기라도 어떤 해 개념과 가정을 쓰는지 먼저 확인해야 한다.</p>
 </section>
 <section id="다른-노드와-만나는-지점" class="level2">
 <h2 class="anchored" data-anchor-id="다른-노드와-만나는-지점">다른 노드와 만나는 지점</h2>
 <ul>
-<li><a href="../high-dimensional-pde/">High-dimensional PDE Solvers</a>에서는 확률 표현과 BSDE가 계산법으로 바뀌는 과정을 본다.</li>
-<li><a href="../diffusion-models/">Diffusion Models</a>에서는 forward/reverse-time SDE와 score가 어떤 역할을 하는지 본다.</li>
-<li><a href="../fokker-planck/">Fokker-Planck Equation</a>에서는 개별 경로가 아니라 분포의 시간 변화를 본다.</li>
-<li><a href="../optimal-transport/">Optimal Transport</a>와는 필요할 때 <a href="../fokker-planck/">Fokker-Planck Equation</a> 같은 더 구체적인 연결을 통해 비교한다.</li>
+<li><a href="../high-dimensional-pde/">High-dimensional PDE Solvers</a>는 PDE-BSDE 표현을 계산법으로 바꾼다.</li>
+<li><a href="../diffusion-models/">Diffusion Models</a>는 forward/reverse-time SDE와 score를 이용해 생성한다.</li>
+<li><a href="../fokker-planck/">Fokker-Planck Equation</a>은 개별 경로가 아니라 법칙의 시간 변화를 기술한다.</li>
 </ul>
-</section>
-<section id="다음-학습-질문" class="level2">
-<h2 class="anchored" data-anchor-id="다음-학습-질문">다음 학습 질문</h2>
-<ol type="1">
-<li>강해와 약해의 차이가 계산 및 모델링 선택에 어떤 영향을 주는가?</li>
-<li>생성자와 Feynman–Kac 표현은 어떤 PDE 클래스에서 정확히 사용할 수 있는가?</li>
-<li>reverse-time SDE의 성립 조건은 무엇이며 실제 근사에서는 무엇이 손실되는가?</li>
-</ol>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">노트</span>초안 상태
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>현재 내용은 학습 지도의 골격이다. 정리 수준의 주장에는 이후 가정과 원문 위치를 추가한다.</p>
-</div>
-</div>
 
 
 

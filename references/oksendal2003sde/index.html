@@ -355,49 +355,111 @@ window.Quarto = {
 
 
 <div class="reference-note-content">
-<section id="공통-표기" class="level2">
-<h2 class="anchored" data-anchor-id="공통-표기">공통 표기</h2>
-<p>확률공간 <span class="math inline">\((\Omega,\mathcal F,\mathbb P)\)</span>와 정보의 증가를 나타내는 filtration <span class="math inline">\((\mathcal F_t)_{t\ge0}\)</span>를 둔다. <span class="math inline">\(W_t\)</span>는 <span class="math inline">\((\mathcal F_t)\)</span>에 적응된 Brownian motion이다. 과정 <span class="math inline">\(H_t\)</span>가 시각 <span class="math inline">\(t\)</span>까지의 정보만 사용한다면 적응되었다고 하며, 적절한 제곱적분 조건 아래 Itô 적분</p>
+<div class="callout callout-style-default callout-note callout-titled" title="공통 기반 · Stochastic Differential Equations">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">노트</span>공통 기반 · Stochastic Differential Equations
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<section id="확률공간과-itô-적분" class="level2">
+<h2 class="anchored" data-anchor-id="확률공간과-itô-적분">확률공간과 Itô 적분</h2>
+<p>확률공간 <span class="math inline">\((\Omega,\mathcal F,\mathbb P)\)</span>와 시간에 따라 이용 가능한 정보가 증가하는 filtration <span class="math inline">\((\mathcal F_t)_{0\le t\le T}\)</span>를 둔다. <span class="math inline">\(m\)</span>차원 Brownian motion <span class="math inline">\(W_t\in\mathbb R^m\)</span>는 이 filtration에 adapted이고, <span class="math inline">\(W_0=0\)</span>이며 연속 경로를 가지고, <span class="math inline">\(0\le s&lt;t\)</span>에서 증분 <span class="math inline">\(W_t-W_s\)</span>가 <span class="math inline">\(\mathcal F_s\)</span>와 독립이고 <span class="math inline">\(\mathcal N(0,(t-s)I_m)\)</span>를 따른다.</p>
+<p><span class="math inline">\(H_t\in\mathbb R^{d\times m}\)</span>가 progressively measurable이고</p>
 <p><span class="math display">\[
-\int_0^t H_s\,dW_s
+\mathbb E\int_0^T\|H_t\|_F^2\,dt&lt;\infty
 \]</span></p>
-<p>을 정의할 수 있다. 이 적분은 보통 경로별 Riemann–Stieltjes 적분이 아니며, 평균이 <span class="math inline">\(0\)</span>이고</p>
+<p>이면 Itô 적분 <span class="math inline">\(\int_0^tH_s\,dW_s\)</span>를 정의할 수 있다. 이는 보통 경로별 Riemann-Stieltjes 적분이 아니며</p>
 <p><span class="math display">\[
-\mathbb E\left|\int_0^t H_s\,dW_s\right|^2
-=\mathbb E\int_0^t |H_s|^2\,ds
+\mathbb E\left\|\int_0^tH_s\,dW_s\right\|^2
+=\mathbb E\int_0^t\|H_s\|_F^2\,ds
 \]</span></p>
 <p>라는 Itô isometry를 만족한다.</p>
 </section>
-<section id="핵심-아이디어" class="level2">
-<h2 class="anchored" data-anchor-id="핵심-아이디어">핵심 아이디어</h2>
-<p>Itô SDE</p>
+<section id="sde의-해" class="level2">
+<h2 class="anchored" data-anchor-id="sde의-해">SDE의 해</h2>
+<p><span class="math inline">\(X_t\in\mathbb R^d\)</span>, <span class="math inline">\(b:[0,T]\times\mathbb R^d\to\mathbb R^d\)</span>, <span class="math inline">\(\sigma:[0,T]\times\mathbb R^d\to\mathbb R^{d\times m}\)</span>라 하자. 표기</p>
 <p><span class="math display">\[
 dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
 \qquad X_0=\xi
 \]</span></p>
-<p>의 해란 적분식</p>
+<p>는 적분식</p>
 <p><span class="math display">\[
 X_t=\xi+\int_0^t b(s,X_s)\,ds
 +\int_0^t\sigma(s,X_s)\,dW_s
 \]</span></p>
-<p>을 만족하는 적응 과정이다. <span class="math inline">\(b\)</span>는 평균적 이동, <span class="math inline">\(\sigma\)</span>는 무작위 변동의 방향과 크기를 정한다.</p>
-<p>매끄러운 함수 <span class="math inline">\(\varphi(t,x)\)</span>에 대해 Itô 공식은</p>
+<p>을 줄여 쓴 것이다. Strong solution은 주어진 <span class="math inline">\(W\)</span>와 filtration에 적응되고 연속 경로를 가지며, 필요한 적분 가능성을 만족하고 위 식이 거의 확실하게 모든 <span class="math inline">\(t\)</span>에 대해 성립하는 과정이다.</p>
+<p>예를 들어 <span class="math inline">\(b,\sigma\)</span>가 jointly Borel measurable이고 <span class="math inline">\(\xi\)</span>가 <span class="math inline">\(\mathcal F_0\)</span>-measurable이라고 하자. 어떤 <span class="math inline">\(L,C&gt;0\)</span>에 대해 모든 <span class="math inline">\(t,x,y\)</span>에서</p>
 <p><span class="math display">\[
+\|b(t,x)-b(t,y)\|+\|\sigma(t,x)-\sigma(t,y)\|_F
+\le L\|x-y\|,
+\]</span></p>
+<p><span class="math display">\[
+\|b(t,x)\|^2+\|\sigma(t,x)\|_F^2
+\le C(1+\|x\|^2)
+\]</span></p>
+<p>이고 <span class="math inline">\(\mathbb E\|\xi\|^2&lt;\infty\)</span>이면 표준 정리로 유일한 strong solution이 존재한다. 이는 널리 쓰이는 충분조건이지 필요한 조건은 아니다.</p>
+</section>
+<section id="itô-공식과-생성자" class="level2">
+<h2 class="anchored" data-anchor-id="itô-공식과-생성자">Itô 공식과 생성자</h2>
+<p><span class="math inline">\(\varphi\in C^{1,2}([0,T]\times\mathbb R^d)\)</span>이면</p>
+<p><span class="math display">\[
+\begin{aligned}
 d\varphi(t,X_t)
-=\left(
+={}&amp;\left(
 \partial_t\varphi
 +b\cdot\nabla\varphi
-+\frac12\operatorname{Tr}(\sigma\sigma^\top D^2\varphi)
-\right)dt
-+\nabla\varphi^\top\sigma\,dW_t
++\frac12\operatorname{Tr}
+\bigl(\sigma\sigma^\top D^2\varphi\bigr)
+\right)(t,X_t)dt\\
+&amp;+\nabla\varphi(t,X_t)^\top
+\sigma(t,X_t)\,dW_t.
+\end{aligned}
 \]</span></p>
-<p>를 준다. 괄호 안의 공간 미분 연산자</p>
+<p>시간 의존 생성자를</p>
 <p><span class="math display">\[
-L\varphi
-=b\cdot\nabla\varphi
-+\frac12\operatorname{Tr}(\sigma\sigma^\top D^2\varphi)
+(L_t\varphi)(x)
+:=b(t,x)\cdot\nabla\varphi(x)
++\frac12\operatorname{Tr}
+\left(\sigma\sigma^\top(t,x)D^2\varphi(x)\right)
 \]</span></p>
-<p>가 diffusion의 generator다. 이 하나의 공식에서 마팅게일 성질, Kolmogorov 방정식, Feynman–Kac 표현, 확률제어로 이어지는 공통 언어가 나온다.</p>
+<p>로 쓰면 drift는 <span class="math inline">\((\partial_t+L_t)\varphi\)</span>다. 적절한 적분 가능성 아래</p>
+<p><span class="math display">\[
+M_t:=\varphi(t,X_t)-\varphi(0,X_0)
+-\int_0^t(\partial_s+L_s)\varphi(s,X_s)\,ds
+\]</span></p>
+<p>는 martingale이다. 이 식에 기대값을 취하면 backward Kolmogorov equation과 Feynman-Kac 표현으로, 생성자의 adjoint를 취하면 Fokker-Planck equation으로 이어진다.</p>
+</section>
+</div>
+</div>
+</div>
+<section id="이-책이-공통-틀에-추가하는-경로" class="level2">
+<h2 class="anchored" data-anchor-id="이-책이-공통-틀에-추가하는-경로">이 책이 공통 틀에 추가하는 경로</h2>
+<p>공통 블록의 Itô 적분, strong solution, Itô formula, generator는 여러 문헌에서 재사용한다. 이 책은 그 기반을 Brownian motion에서 시작해 diffusion의 경계값 문제와 stochastic control로 단계적으로 확장하는 입문 경로를 제공한다 <span class="citation" data-cites="oksendal2003sde">(<a href="#ref-oksendal2003sde" role="doc-biblioref">Øksendal 2003년</a>)</span>.</p>
+</section>
+<section id="존재유일성-증명의-핵심-반복" class="level2">
+<h2 class="anchored" data-anchor-id="존재유일성-증명의-핵심-반복">존재·유일성 증명의 핵심 반복</h2>
+<p>Global Lipschitz와 linear growth 조건 아래에는 Picard iteration을</p>
+<p><span class="math display">\[
+X_t^{(0)}:=\xi,
+\]</span></p>
+<p><span class="math display">\[
+X_t^{(n+1)}
+:=\xi+
+\int_0^t b(s,X_s^{(n)})\,ds
++\int_0^t\sigma(s,X_s^{(n)})\,dW_s
+\]</span></p>
+<p>로 정의할 수 있다. Lipschitz bound, Cauchy-Schwarz inequality, Itô isometry를 사용하면 연속한 두 반복의 차이를 앞선 차이의 시간적분으로 제어한다. 반복하면 factorial decay가 생겨 적절한 <span class="math inline">\(L^2\)</span> path norm에서 <span class="math inline">\((X^{(n)})\)</span>이 Cauchy가 되고, 극한이 적분식을 만족한다. 두 해의 차이에 같은 추정을 적용하고 Grönwall inequality를 쓰면 pathwise uniqueness가 나온다.</p>
+<p>이 증명은 단순히 “계수가 매끄럽다”가 아니라 어떤 norm과 적분 가능성이 필요한지를 보여준다. Local Lipschitz, 폭발 가능성, 약한 해에서는 별도의 정리가 필요하다.</p>
+</section>
+<section id="생성자에서-pde로-넘어가는-공통-장치" class="level2">
+<h2 class="anchored" data-anchor-id="생성자에서-pde로-넘어가는-공통-장치">생성자에서 PDE로 넘어가는 공통 장치</h2>
+<p>공통 블록의 martingale <span class="math inline">\(M_t\)</span>에 stopping time을 적용하고 기대값을 취하면 exit probability와 harmonic measure 같은 경계값 문제를 표현할 수 있다. Discounted payoff에 같은 계산을 적용하면 Feynman-Kac representation이 나오고, control이 drift나 diffusion에 들어가면 Hamilton-Jacobi-Bellman equation으로 확장된다.</p>
 </section>
 <section id="원문" class="level2">
 <h2 class="anchored" data-anchor-id="원문">원문</h2>
