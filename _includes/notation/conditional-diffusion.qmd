@@ -1,0 +1,32 @@
+## 조건부 생성의 공통 표기
+
+$C$를 class label, text embedding, segmentation map처럼 생성을 제어하는 확률변수라 하고 그 관측값을 $c$라고 쓰자. Forward corruption은 $X_0$에만 작용한다고 두면
+
+$$
+p_t(x,c)
+=\int q_{t\mid0}(x\mid x_0)p_0(x_0,c)\,dx_0.
+$$
+
+조건 $C=c$에 맞는 표본을 만들 때 필요한 벡터장은 conditional score
+
+$$
+s_t(x\mid c):=\nabla_x\log p_t(x\mid c)
+$$
+
+다. 직접 조건부 모델을 학습한다면 $s_\theta(x,t,c)$ 또는 noise predictor $\varepsilon_\theta(x,t,c)$가 이 정보를 근사한다.
+
+Bayes 공식
+
+$$
+\log p_t(x\mid c)
+=\log p_t(x)+\log p_t(c\mid x)-\log p(c)
+$$
+
+를 $x$로 미분하면
+
+$$
+s_t(x\mid c)
+=s_t(x)+\nabla_x\log p_t(c\mid x)
+$$
+
+를 얻는다. 마지막 항은 현재 noisy state $x$가 조건 $c$에 더 잘 맞아지는 방향이다. 이 한 식에서 외부 classifier의 gradient를 쓰는 classifier guidance와, conditional/unconditional denoiser의 차이를 쓰는 classifier-free guidance가 갈라진다.

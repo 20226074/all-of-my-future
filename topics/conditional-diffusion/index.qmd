@@ -1,0 +1,39 @@
+---
+title: "Conditional Diffusion & Guidance"
+short-title: "Conditional Diffusion"
+description: "조건부 score와 classifier gradient로 생성분포를 원하는 조건 쪽으로 바꾸는 방법"
+node-id: topic-conditional-diffusion
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 3
+search-aliases:
+  - conditional diffusion
+  - classifier guidance
+  - guided diffusion
+  - 조건부 확산
+tags:
+  - diffusion-models
+  - conditional-generation
+  - classifier-guidance
+relations:
+  - target: topic-diffusion-models
+    type: uses
+    note: "Unconditional score를 조건부 score로 확장한다."
+    evidence:
+      - dhariwal2021guided
+  - target: topic-ddpm
+    type: connected-via
+    note: "Classifier guidance는 DDPM의 reverse Gaussian mean 또는 noise prediction을 수정하는 형태로 구현할 수 있다."
+    evidence:
+      - dhariwal2021guided
+---
+
+::: {.callout-note collapse="true" title="상위 공통 기반 · Diffusion Models"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+:::
+
+{{< include ../../_includes/notation/conditional-diffusion.qmd >}}
+
+{{< include ../../_includes/concepts/conditional-guidance-core.qmd >}}

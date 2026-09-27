@@ -2,7 +2,7 @@
 title: "Optimal Transport: Old and New"
 short-title: "Villani (2009)"
 author: "Cédric Villani"
-graph-summary: "결합, Kantorovich 쌍대성, Wasserstein 거리에서 수송기하까지 폭넓게 다루는 최적수송 참고서."
+graph-summary: "결합, Kantorovich 쌍대성, Wasserstein 거리에서 수송기하까지 폭넓게 전개하는 참고서."
 node-id: ref-villani2009ot
 node-type: reference
 reference-type: book
@@ -15,7 +15,7 @@ reading-status: queued
 note-status: ai-draft
 source-checked: false
 priority: now
-last-reviewed: 2026-09-26
+last-reviewed: 2026-09-27
 tags:
   - monge-kantorovich
   - wasserstein-distance
@@ -23,44 +23,42 @@ tags:
 ---
 
 ::: {.reference-note-content}
-## 문제 설정과 표기
+::: {.callout-note collapse="true" title="공통 기반 · Optimal Transport"}
+{{< include ../../_includes/notation/optimal-transport-core.qmd >}}
+:::
 
-$\mu$와 $\nu$를 각각 공간 $\mathcal X$와 $\mathcal Y$ 위의 확률측도라고 하자. 결합(coupling) $\pi$는 $\mathcal X\times\mathcal Y$ 위의 확률측도로서 첫 번째 주변분포가 $\mu$, 두 번째 주변분포가 $\nu$인 것이다. 모든 결합의 집합을 $\Pi(\mu,\nu)$라고 쓴다.
+## 이 책이 공통 틀에 추가하는 범위
 
-$c(x,y)$가 질량 한 단위를 $x$에서 $y$로 옮기는 비용이면 Kantorovich 문제는
+공통 블록은 coupling, Kantorovich problem, Wasserstein distance, duality와 displacement interpolation의 기준 표기를 담당한다. 이 책은 여기에 최적계획의 존재, $c$-cyclical monotonicity, optimal map의 정칙성, Wasserstein geometry와 gradient flow를 연결한다 [@villani2009ot].
 
-$$
-\inf_{\pi\in\Pi(\mu,\nu)}
-\int_{\mathcal X\times\mathcal Y}c(x,y)\,d\pi(x,y)
-$$
+## 최적계획 존재의 증명 구조
 
-이다. $\pi$는 $x$의 질량을 여러 $y$로 나눌 수 있기 때문에, 하나의 사상 $T(x)$만 허용하는 Monge 문제를 선형 최적화 문제로 완화한다.
-
-## 핵심 아이디어
-
-비용이 $c(x,y)=d(x,y)^p$이고 두 측도가 유한한 $p$차 적률을 가지면 $p$-Wasserstein 거리는
+$c$가 lower semicontinuous이고 아래로 적절히 제어된다고 하자. Minimizing sequence $(\pi_n)\subset\Pi(\mu,\nu)$를 잡는다. Marginal이 고정되어 있으므로 $(\pi_n)$은 tight하고, Prokhorov compactness로 약수렴 부분열 $\pi_{n_j}\Rightarrow\pi$를 얻는다. Marginal projection은 약수렴과 양립하므로 $\pi\in\Pi(\mu,\nu)$다. 마지막으로 lower semicontinuity를 사용하면
 
 $$
-W_p(\mu,\nu)
-=\left(
-\inf_{\pi\in\Pi(\mu,\nu)}
-\int d(x,y)^p\,d\pi(x,y)
-\right)^{1/p}
+\int c\,d\pi
+\le\liminf_{j\to\infty}\int c\,d\pi_{n_j},
 $$
 
-로 정의된다. 이 값은 두 분포의 차이를 각 위치의 확률값만 비교하지 않고, 질량을 실제로 얼마나 멀리 옮겨야 하는지로 측정한다.
+따라서 $\pi$가 infimum을 달성한다. 각 단계에는 공간과 비용에 맞는 tightness·integrability 조건이 필요하다.
 
-Kantorovich duality는 결합 $\pi$를 직접 최적화하는 문제를 potential 함수의 최적화로 바꾼다. 일반 비용에서는
+## Dual potential과 최적계획이 만나는 조건
+
+Feasible potential이 $\varphi(x)+\psi(y)\le c(x,y)$를 만족하면 모든 coupling에 대해
 
 $$
-\inf_{\pi\in\Pi(\mu,\nu)}\int c\,d\pi
-=\sup_{\varphi(x)+\psi(y)\le c(x,y)}
-\left(
 \int\varphi\,d\mu+\int\psi\,d\nu
-\right)
+\le\int c\,d\pi.
 $$
 
-꼴이다. Primal의 수송계획과 dual의 potential을 함께 보면 최적성 조건, Wasserstein 공간의 지오데식, 변위 보간으로 이어지는 구조를 설명할 수 있다.
+따라서 dual value는 항상 primal value의 하한이다. Duality equality가 성립하고 최적 $\pi^\star,\varphi^\star,\psi^\star$가 존재하면
+
+$$
+\varphi^\star(x)+\psi^\star(y)=c(x,y)
+\qquad \pi^\star\text{-a.e.}
+$$
+
+가 되어 최적계획의 support를 제한한다. Quadratic cost에서는 이 구조가 convex potential과 Brenier map으로 이어진다. 단, map의 존재와 유일성에는 $\mu$의 absolute continuity 같은 추가 가정이 필요하다.
 
 ## 원문
 

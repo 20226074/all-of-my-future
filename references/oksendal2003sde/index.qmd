@@ -2,7 +2,7 @@
 title: "Stochastic Differential Equations: An Introduction with Applications"
 short-title: "Øksendal (2003)"
 author: "Bernt Øksendal"
-graph-summary: "Itô 적분에서 확산, 경계값 문제, 확률제어 응용까지 이어지는 SDE 입문 교재."
+graph-summary: "Itô 적분과 공식에서 diffusion, 경계값 문제, 확률제어까지 이어지는 SDE 입문 교재."
 node-id: ref-oksendal2003sde
 node-type: reference
 reference-type: book
@@ -15,7 +15,7 @@ reading-status: queued
 note-status: ai-draft
 source-checked: false
 priority: now
-last-reviewed: 2026-09-26
+last-reviewed: 2026-09-27
 tags:
   - stochastic-calculus
   - ito-calculus
@@ -23,62 +23,36 @@ tags:
 ---
 
 ::: {.reference-note-content}
-## 공통 표기
+::: {.callout-note collapse="true" title="공통 기반 · Stochastic Differential Equations"}
+{{< include ../../_includes/notation/sde-core.qmd >}}
+:::
 
-확률공간 $(\Omega,\mathcal F,\mathbb P)$와 정보의 증가를 나타내는 filtration $(\mathcal F_t)_{t\ge0}$를 둔다. $W_t$는 $(\mathcal F_t)$에 적응된 Brownian motion이다. 과정 $H_t$가 시각 $t$까지의 정보만 사용한다면 적응되었다고 하며, 적절한 제곱적분 조건 아래 Itô 적분
+## 이 책이 공통 틀에 추가하는 경로
 
-$$
-\int_0^t H_s\,dW_s
-$$
+공통 블록의 Itô 적분, strong solution, Itô formula, generator는 여러 문헌에서 재사용한다. 이 책은 그 기반을 Brownian motion에서 시작해 diffusion의 경계값 문제와 stochastic control로 단계적으로 확장하는 입문 경로를 제공한다 [@oksendal2003sde].
 
-을 정의할 수 있다. 이 적분은 보통 경로별 Riemann–Stieltjes 적분이 아니며, 평균이 $0$이고
+## 존재·유일성 증명의 핵심 반복
 
-$$
-\mathbb E\left|\int_0^t H_s\,dW_s\right|^2
-=\mathbb E\int_0^t |H_s|^2\,ds
-$$
-
-라는 Itô isometry를 만족한다.
-
-## 핵심 아이디어
-
-Itô SDE
+Global Lipschitz와 linear growth 조건 아래에는 Picard iteration을
 
 $$
-dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
-\qquad X_0=\xi
+X_t^{(0)}:=\xi,
 $$
 
-의 해란 적분식
-
 $$
-X_t=\xi+\int_0^t b(s,X_s)\,ds
-+\int_0^t\sigma(s,X_s)\,dW_s
-$$
-
-을 만족하는 적응 과정이다. $b$는 평균적 이동, $\sigma$는 무작위 변동의 방향과 크기를 정한다.
-
-매끄러운 함수 $\varphi(t,x)$에 대해 Itô 공식은
-
-$$
-d\varphi(t,X_t)
-=\left(
-\partial_t\varphi
-+b\cdot\nabla\varphi
-+\frac12\operatorname{Tr}(\sigma\sigma^\top D^2\varphi)
-\right)dt
-+\nabla\varphi^\top\sigma\,dW_t
+X_t^{(n+1)}
+:=\xi+
+\int_0^t b(s,X_s^{(n)})\,ds
++\int_0^t\sigma(s,X_s^{(n)})\,dW_s
 $$
 
-를 준다. 괄호 안의 공간 미분 연산자
+로 정의할 수 있다. Lipschitz bound, Cauchy-Schwarz inequality, Itô isometry를 사용하면 연속한 두 반복의 차이를 앞선 차이의 시간적분으로 제어한다. 반복하면 factorial decay가 생겨 적절한 $L^2$ path norm에서 $(X^{(n)})$이 Cauchy가 되고, 극한이 적분식을 만족한다. 두 해의 차이에 같은 추정을 적용하고 Grönwall inequality를 쓰면 pathwise uniqueness가 나온다.
 
-$$
-L\varphi
-=b\cdot\nabla\varphi
-+\frac12\operatorname{Tr}(\sigma\sigma^\top D^2\varphi)
-$$
+이 증명은 단순히 “계수가 매끄럽다”가 아니라 어떤 norm과 적분 가능성이 필요한지를 보여준다. Local Lipschitz, 폭발 가능성, 약한 해에서는 별도의 정리가 필요하다.
 
-가 diffusion의 generator다. 이 하나의 공식에서 마팅게일 성질, Kolmogorov 방정식, Feynman–Kac 표현, 확률제어로 이어지는 공통 언어가 나온다.
+## 생성자에서 PDE로 넘어가는 공통 장치
+
+공통 블록의 martingale $M_t$에 stopping time을 적용하고 기대값을 취하면 exit probability와 harmonic measure 같은 경계값 문제를 표현할 수 있다. Discounted payoff에 같은 계산을 적용하면 Feynman-Kac representation이 나오고, control이 drift나 diffusion에 들어가면 Hamilton-Jacobi-Bellman equation으로 확장된다.
 
 ## 원문
 

@@ -1,0 +1,66 @@
+---
+title: "Classifier-Free Diffusion Guidance"
+short-title: "Ho & Salimans (2022)"
+author:
+  - "Jonathan Ho"
+  - "Tim Salimans"
+graph-summary: "조건부·무조건부 denoiser를 공동 학습하고 그 차이로 별도 classifier 없는 guidance를 구성한다."
+node-id: ref-ho2022cfg
+node-type: reference
+reference-type: paper
+citekey: ho2022cfg
+year: 2022
+attached-to:
+  - topic-classifier-free-guidance
+  - topic-conditional-diffusion
+  - topic-diffusion-models
+primary-node: topic-classifier-free-guidance
+reading-status: queued
+note-status: ai-draft
+source-checked: false
+priority: now
+last-reviewed: 2026-09-27
+tags:
+  - classifier-free-guidance
+  - conditional-generation
+  - guidance-scale
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="공통 개념 · Diffusion Models → Conditional Diffusion → CFG"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+
+{{< include ../../_includes/notation/conditional-diffusion.qmd >}}
+
+{{< include ../../_includes/concepts/classifier-free-guidance-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+Classifier guidance는 별도의 noisy classifier를 요구한다. 이 논문은 한 denoiser를 conditional·unconditional 양쪽으로 공동 학습하고 두 prediction의 차이로 같은 종류의 sampling-time trade-off를 만드는 방법을 제안했다 [@ho2022cfg].
+
+## 논문의 공동 학습 절차
+
+$(X_0,C)$를 뽑은 뒤 확률 $p_{\mathrm{uncond}}$로 $C\leftarrow\varnothing$를 적용한다. $X_t=a_tX_0+\sigma_t\varepsilon$에 대해
+
+$$
+\mathcal L(\theta)
+=\mathbb E\left[
+\|\varepsilon-\varepsilon_\theta(X_t,t,C')\|^2
+\right],
+\qquad
+C'=\begin{cases}
+\varnothing,&\text{with probability }p_{\mathrm{uncond}},\\
+C,&\text{otherwise}
+\end{cases}
+$$
+
+를 최소화한다. 한 parameter set이 두 predictor를 모두 만들므로 sampling 때 별도 classifier와 그 noisy-data 학습과정이 필요하지 않다.
+
+논문의 $w$와 구현에서 흔한 scale $s_{\mathrm{impl}}=1+w$는 기준점이 다르다. 또한 근사 denoiser의 차이는 일반적으로 conservative vector field가 아니므로, 이를 실제 scalar classifier의 정확한 gradient라고 해석해서는 안 된다.
+
+## 원문
+
+- 서지정보: [@ho2022cfg]
+- [공개 원문](https://arxiv.org/abs/2207.12598)
+:::

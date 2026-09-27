@@ -1,0 +1,59 @@
+---
+title: "Diffusion Models Beat GANs on Image Synthesis"
+short-title: "Dhariwal & Nichol (2021)"
+author:
+  - "Prafulla Dhariwal"
+  - "Alexander Nichol"
+graph-summary: "Noisy classifier의 gradient로 reverse diffusion을 조정해 fidelity와 diversity를 교환하는 classifier guidance."
+node-id: ref-dhariwal2021guided
+node-type: reference
+reference-type: paper
+citekey: dhariwal2021guided
+year: 2021
+attached-to:
+  - topic-conditional-diffusion
+  - topic-diffusion-models
+  - topic-ddpm
+primary-node: topic-conditional-diffusion
+reading-status: queued
+note-status: ai-draft
+source-checked: false
+priority: now
+last-reviewed: 2026-09-27
+tags:
+  - classifier-guidance
+  - guided-diffusion
+  - conditional-generation
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="공통 개념 · Diffusion Models → Conditional Diffusion & Guidance"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+
+{{< include ../../_includes/notation/conditional-diffusion.qmd >}}
+
+{{< include ../../_includes/concepts/conditional-guidance-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+이 논문은 unconditional DDPM의 architecture를 개선하는 동시에, 별도로 학습한 noisy classifier의 gradient를 sampling에 넣는 classifier guidance를 제안했다 [@dhariwal2021guided].
+
+## 원문에서 구분해야 할 두 알고리즘
+
+논문은 guidance를 한 식으로만 취급하지 않는다.
+
+- Stochastic reverse transition에서는 Gaussian log-density를 국소적으로 전개해 covariance를 유지하고 mean을 classifier gradient 방향으로 옮긴다.
+- Score/DDIM 관점에서는 noisy marginal의 score에 $\nabla_x\log p_t(c\mid x)$를 더한 뒤 noise prediction을 수정한다.
+
+첫 번째 근사는 deterministic DDIM에 그대로 적용되지 않으며, 일반 reverse variance에서 두 수정이 자동으로 같은 mean shift를 만들지도 않는다. 이 차이가 위 공통 개념 블록에서 두 구성을 따로 둔 이유다.
+
+Classifier는 clean image만이 아니라 모든 noise level의 $x_k$와 timestep $k$를 입력받도록 학습된다. Sampling-time scale을 높여 fidelity와 precision을 강화할 수 있지만 diversity와 recall이 줄 수 있으므로, 결과는 scale과 sampler를 함께 기록해야 한다.
+
+## 원문
+
+- 서지정보: [@dhariwal2021guided]
+- [NeurIPS 공식 페이지](https://proceedings.neurips.cc/paper/2021/hash/49ad23d1ec9fa4bd8d77d02681df5cfa4-Abstract.html)
+- [공개 원문](https://arxiv.org/abs/2105.05233)
+- [저자 공식 구현](https://github.com/openai/guided-diffusion)
+:::

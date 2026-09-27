@@ -1,0 +1,85 @@
+## 측도, pushforward, coupling
+
+$(\mathcal X,\rho)$를 Polish metric space라고 하고 $\mu,\nu$를 $\mathcal X$ 위의 확률측도라고 하자. 가측함수 $T:\mathcal X\to\mathcal X$의 pushforward $T_\#\mu$는
+
+$$
+(T_\#\mu)(A):=\mu(T^{-1}(A))
+$$
+
+로 정의한다. 즉 $X\sim\mu$이면 $T(X)\sim T_\#\mu$다.
+
+Coupling $\pi$는 $\mathcal X\times\mathcal X$ 위의 확률측도로서 좌우 projection $P_1,P_2$에 대해
+
+$$
+(P_1)_\#\pi=\mu,
+\qquad
+(P_2)_\#\pi=\nu
+$$
+
+를 만족한다. 모든 coupling의 집합을 $\Pi(\mu,\nu)$라고 쓴다.
+
+## Monge 문제와 Kantorovich 완화
+
+$c(x,y)$가 $x$의 질량 한 단위를 $y$로 옮기는 비용이면 Monge 문제는
+
+$$
+\inf_{T_\#\mu=\nu}
+\int_{\mathcal X}c(x,T(x))\,d\mu(x)
+$$
+
+다. 하나의 $x$에서 출발한 질량을 여러 목적지로 나눌 수 없고, 원자 구조에 따라 조건 $T_\#\mu=\nu$를 만족하는 map 자체가 없을 수도 있다.
+
+Kantorovich 문제는 map 대신 coupling을 최적화한다.
+
+$$
+\inf_{\pi\in\Pi(\mu,\nu)}
+\int_{\mathcal X\times\mathcal X}c(x,y)\,d\pi(x,y).
+$$
+
+Monge map $T$가 존재하면 $(\operatorname{Id},T)_\#\mu\in\Pi(\mu,\nu)$이므로 Kantorovich 문제는 Monge 문제의 선형 완화다.
+
+## Wasserstein 거리
+
+$p\ge1$이고 기준점 $x_\ast\in\mathcal X$에 대해
+
+$$
+\mathcal P_p(\mathcal X)
+:=\left\{
+\mu:\int \rho(x,x_\ast)^p\,d\mu(x)<\infty
+\right\}
+$$
+
+라 하자. 이 조건은 기준점 선택에 의존하지 않는다. $\mu,\nu\in\mathcal P_p(\mathcal X)$에 대해
+
+$$
+W_p(\mu,\nu)
+:=\left(
+\inf_{\pi\in\Pi(\mu,\nu)}
+\int \rho(x,y)^p\,d\pi(x,y)
+\right)^{1/p}
+$$
+
+는 $p$-Wasserstein 거리다. 두 분포의 밀도값만 점별로 비교하지 않고 질량을 얼마나 멀리 옮겨야 하는지를 측정한다.
+
+## Kantorovich duality와 변위 보간
+
+Polish spaces 위에서 $c$가 lower semicontinuous이고 적절한 적분가능 하한을 갖는 등의 표준 조건 아래
+
+$$
+\inf_{\pi\in\Pi(\mu,\nu)}\int c\,d\pi
+=\sup_{\varphi(x)+\psi(y)\le c(x,y)}
+\left(
+\int\varphi\,d\mu+\int\psi\,d\nu
+\right).
+$$
+
+왼쪽은 질량의 공동 배치, 오른쪽은 모든 $(x,y)$에서 비용 제약을 만족하는 potential의 최적화다. 함수공간과 equality의 정확한 조건은 사용하는 비용과 공간에 맞춰 명시해야 한다.
+
+$\mathcal X=\mathbb R^n$, $\mu,\nu\in\mathcal P_2(\mathbb R^n)$, $c(x,y)=\|x-y\|^2$이고 $\pi^\star$가 이 quadratic cost의 최적 coupling이라 하자. 선형 보간 map $I_s(x,y):=(1-s)x+sy$를 이용하면
+
+$$
+\mu_s:=(I_s)_\#\pi^\star,
+\qquad 0\le s\le1,
+$$
+
+을 정의할 수 있다. 이것이 질량을 최적 계획에 따라 움직이는 displacement interpolation이며, $\mathcal P_2(\mathbb R^n)$에서 $W_2$에 대한 constant-speed geodesic을 이룬다.

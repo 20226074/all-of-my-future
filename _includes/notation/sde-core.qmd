@@ -1,0 +1,86 @@
+## 확률공간과 Itô 적분
+
+확률공간 $(\Omega,\mathcal F,\mathbb P)$와 시간에 따라 이용 가능한 정보가 증가하는 filtration $(\mathcal F_t)_{0\le t\le T}$를 둔다. $m$차원 Brownian motion $W_t\in\mathbb R^m$는 이 filtration에 adapted이고, $W_0=0$이며 연속 경로를 가지고, $0\le s<t$에서 증분 $W_t-W_s$가 $\mathcal F_s$와 독립이고 $\mathcal N(0,(t-s)I_m)$를 따른다.
+
+$H_t\in\mathbb R^{d\times m}$가 progressively measurable이고
+
+$$
+\mathbb E\int_0^T\|H_t\|_F^2\,dt<\infty
+$$
+
+이면 Itô 적분 $\int_0^tH_s\,dW_s$를 정의할 수 있다. 이는 보통 경로별 Riemann-Stieltjes 적분이 아니며
+
+$$
+\mathbb E\left\|\int_0^tH_s\,dW_s\right\|^2
+=\mathbb E\int_0^t\|H_s\|_F^2\,ds
+$$
+
+라는 Itô isometry를 만족한다.
+
+## SDE의 해
+
+$X_t\in\mathbb R^d$, $b:[0,T]\times\mathbb R^d\to\mathbb R^d$, $\sigma:[0,T]\times\mathbb R^d\to\mathbb R^{d\times m}$라 하자. 표기
+
+$$
+dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
+\qquad X_0=\xi
+$$
+
+는 적분식
+
+$$
+X_t=\xi+\int_0^t b(s,X_s)\,ds
++\int_0^t\sigma(s,X_s)\,dW_s
+$$
+
+을 줄여 쓴 것이다. Strong solution은 주어진 $W$와 filtration에 적응되고 연속 경로를 가지며, 필요한 적분 가능성을 만족하고 위 식이 거의 확실하게 모든 $t$에 대해 성립하는 과정이다.
+
+예를 들어 $b,\sigma$가 jointly Borel measurable이고 $\xi$가 $\mathcal F_0$-measurable이라고 하자. 어떤 $L,C>0$에 대해 모든 $t,x,y$에서
+
+$$
+\|b(t,x)-b(t,y)\|+\|\sigma(t,x)-\sigma(t,y)\|_F
+\le L\|x-y\|,
+$$
+
+$$
+\|b(t,x)\|^2+\|\sigma(t,x)\|_F^2
+\le C(1+\|x\|^2)
+$$
+
+이고 $\mathbb E\|\xi\|^2<\infty$이면 표준 정리로 유일한 strong solution이 존재한다. 이는 널리 쓰이는 충분조건이지 필요한 조건은 아니다.
+
+## Itô 공식과 생성자
+
+$\varphi\in C^{1,2}([0,T]\times\mathbb R^d)$이면
+
+$$
+\begin{aligned}
+d\varphi(t,X_t)
+={}&\left(
+\partial_t\varphi
++b\cdot\nabla\varphi
++\frac12\operatorname{Tr}
+\bigl(\sigma\sigma^\top D^2\varphi\bigr)
+\right)(t,X_t)dt\\
+&+\nabla\varphi(t,X_t)^\top
+\sigma(t,X_t)\,dW_t.
+\end{aligned}
+$$
+
+시간 의존 생성자를
+
+$$
+(L_t\varphi)(x)
+:=b(t,x)\cdot\nabla\varphi(x)
++\frac12\operatorname{Tr}
+\left(\sigma\sigma^\top(t,x)D^2\varphi(x)\right)
+$$
+
+로 쓰면 drift는 $(\partial_t+L_t)\varphi$다. 적절한 적분 가능성 아래
+
+$$
+M_t:=\varphi(t,X_t)-\varphi(0,X_0)
+-\int_0^t(\partial_s+L_s)\varphi(s,X_s)\,ds
+$$
+
+는 martingale이다. 이 식에 기대값을 취하면 backward Kolmogorov equation과 Feynman-Kac 표현으로, 생성자의 adjoint를 취하면 Fokker-Planck equation으로 이어진다.

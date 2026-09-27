@@ -1354,6 +1354,16 @@ section.section-kicker > h2 {
   padding-bottom: 0.1rem;
 }
 
+.reference-detail-topics-label {
+  align-self: center;
+  color: var(--atlas-muted);
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  margin-right: 0.1rem;
+}
+
 .reference-topic-chip {
   background: transparent;
   border: 1px solid var(--atlas-line);

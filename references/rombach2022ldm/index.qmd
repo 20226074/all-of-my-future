@@ -1,0 +1,61 @@
+---
+title: "High-Resolution Image Synthesis with Latent Diffusion Models"
+short-title: "Rombach et al. (2022)"
+author:
+  - "Robin Rombach"
+  - "Andreas Blattmann"
+  - "Dominik Lorenz"
+  - "Patrick Esser"
+  - "Björn Ommer"
+graph-summary: "Perceptual autoencoder의 latent에서 diffusion을 학습하고 cross-attention으로 다양한 조건을 주입한다."
+node-id: ref-rombach2022ldm
+node-type: reference
+reference-type: paper
+citekey: rombach2022ldm
+year: 2022
+attached-to:
+  - topic-latent-diffusion
+  - topic-diffusion-models
+  - topic-conditional-diffusion
+primary-node: topic-latent-diffusion
+reading-status: queued
+note-status: ai-draft
+source-checked: false
+priority: next
+last-reviewed: 2026-09-27
+tags:
+  - latent-diffusion
+  - autoencoder
+  - cross-attention
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="공통 개념 · Diffusion Models + Conditional Diffusion → Latent Diffusion"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+
+{{< include ../../_includes/notation/conditional-diffusion.qmd >}}
+
+{{< include ../../_includes/concepts/latent-diffusion-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+이 논문은 Gaussian corruption과 noise-prediction 목적을 유지하면서 계산을 perceptually compressed latent space로 옮겼고, cross-attention으로 text·class·layout 조건을 U-Net feature에 주입하는 일반 인터페이스를 제시했다 [@rombach2022ldm].
+
+## 논문의 두 단계 설계
+
+먼저 perceptual compression을 담당하는 autoencoder를 학습한 뒤 그 모델을 고정하고 latent diffusion을 학습한다. 이 분리는 최종 오차도 두 층으로 나눈다.
+
+- First stage가 보존하지 않은 정보는 완벽한 latent denoiser도 복구하지 못한다.
+- 압축이 약하면 pixel-space 계산을 충분히 줄이지 못한다.
+- 압축이 강하면 reconstruction bottleneck이 생성 품질의 상한이 된다.
+
+논문은 여러 downsampling factor와 regularized autoencoder를 비교해 이 경계를 실험하고, 조건 encoder의 출력을 cross-attention의 key와 value로 사용하는 구체적인 architecture를 구현한다. 결과를 읽을 때는 diffusion error와 first-stage reconstruction error를 분리해야 한다.
+
+## 원문
+
+- 서지정보: [@rombach2022ldm]
+- [CVPR 공식 페이지](https://openaccess.thecvf.com/content/CVPR2022/html/Rombach_High-Resolution_Image_Synthesis_With_Latent_Diffusion_Models_CVPR_2022_paper.html)
+- [공개 원문](https://arxiv.org/abs/2112.10752)
+- [저자 공식 구현](https://github.com/CompVis/latent-diffusion)
+:::

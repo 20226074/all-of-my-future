@@ -5,7 +5,7 @@ author:
   - "Jiequn Han"
   - "Arnulf Jentzen"
   - "Weinan E"
-graph-summary: "반선형 포물형 PDE를 BSDE로 바꾸고 해의 공간 기울기를 신경망으로 근사하는 deep BSDE 접근."
+graph-summary: "반선형 포물형 PDE의 BSDE 표현에서 control Z=σᵀ∇u를 신경망으로 근사하는 deep BSDE 알고리즘."
 node-id: ref-han2018deep
 node-type: reference
 reference-type: paper
@@ -19,7 +19,7 @@ reading-status: queued
 note-status: ai-draft
 source-checked: false
 priority: now
-last-reviewed: 2026-09-26
+last-reviewed: 2026-09-27
 tags:
   - deep-bsde
   - semilinear-parabolic-pde
@@ -27,63 +27,63 @@ tags:
 ---
 
 ::: {.reference-note-content}
-## 문제 설정과 표기
+::: {.callout-note collapse="true" title="공통 기반 · Semilinear PDE와 BSDE"}
+{{< include ../../_includes/notation/semilinear-pde-bsde.qmd >}}
+:::
 
-$u:[0,T]\times\mathbb R^d\to\mathbb R$가 다음 terminal-value PDE의 해라고 하자.
+## 이 문헌이 공통 틀에 추가한 것
 
-$$
-\partial_tu
-+\frac12\operatorname{Tr}\!\left(\sigma\sigma^\top D_x^2u\right)
-+\mu\cdot\nabla_xu
-+f\!\left(t,x,u,\sigma^\top\nabla_xu\right)=0,
-\qquad
-u(T,x)=g(x).
-$$
+PDE-BSDE 대응 자체는 공통 concept에 속한다. 이 논문의 핵심은 고정 초기점 $X_0=x_0$에서 미지의 $Y_0=u(0,x_0)$를 scalar parameter로 두고, 각 시각의 BSDE control $Z_t=\sigma(t,X_t)^\top\nabla_xu(t,X_t)$를 neural network로 근사해 terminal condition을 loss로 바꾼 것이다 [@han2018deep].
 
-여기서 $\mu(t,x)\in\mathbb R^d$는 drift, $\sigma(t,x)\in\mathbb R^{d\times d}$는 diffusion matrix, $D_x^2u$는 Hessian이다. $f$가 $u$와 $\nabla u$에 의존하므로 일반적으로 반선형 포물형 PDE가 된다.
+## 시간 이산화
 
-같은 계수로 forward state process를
+$0=t_0<\cdots<t_N=T$, $\Delta t_n=t_{n+1}-t_n$, $\Delta W_n\sim\mathcal N(0,\Delta t_nI_m)$라 하자. Forward Euler step은
 
 $$
-dX_t=\mu(t,X_t)\,dt+\sigma(t,X_t)\,dW_t
+X_{n+1}
+=X_n+\mu(t_n,X_n)\Delta t_n
++\sigma(t_n,X_n)\Delta W_n.
 $$
 
-라 두고
+각 time step의 subnetwork $\widehat Z_{\theta_n}:\mathbb R^d\to\mathbb R^m$를
 
 $$
-Y_t:=u(t,X_t),
-\qquad
-Z_t:=\sigma(t,X_t)^\top\nabla_xu(t,X_t)
+\widehat Z_{\theta_n}(x)
+\approx \sigma(t_n,x)^\top\nabla_xu(t_n,x)
 $$
 
-를 정의한다. Itô 공식을 적용하면 PDE는 다음 backward stochastic differential equation과 연결된다.
+로 두고, simulated state에서
 
 $$
-dY_t=-f(t,X_t,Y_t,Z_t)\,dt+Z_t^\top dW_t,
-\qquad
-Y_T=g(X_T).
+Z_n^\theta:=\widehat Z_{\theta_n}(X_n)
 $$
 
-## 핵심 아이디어
-
-시간격자 $0=t_0<\cdots<t_N=T$에서 forward SDE와 BSDE를 함께 이산화한다. 미지 함수 $Z_{t_n}=\sigma^\top\nabla u(t_n,X_{t_n})$를 각 시점의 신경망 $Z_{\theta_n}(X_{t_n})$으로 근사하고, 미지 초기값 $Y_0=u(0,X_0)$도 학습 변수로 둔다.
-
-한 단계의 Euler 근사는 대략
+로 평가한다. BSDE의 Euler step은
 
 $$
 Y_{n+1}
-=Y_n-f(t_n,X_n,Y_n,Z_{\theta_n}(X_n))\,\Delta t_n
-+Z_{\theta_n}(X_n)^\top\Delta W_n
+=Y_n-f(t_n,X_n,Y_n,Z_n^\theta)\Delta t_n
++(Z_n^\theta)^\top\Delta W_n.
 $$
 
-이다. 이렇게 얻은 마지막 값 $Y_N$이 terminal condition $g(X_N)$과 일치하도록
+$Y_0$와 모든 $\theta_n$을 정하면 한 Brownian path마다 $(X_N,Y_N)$이 계산된다.
+
+## Terminal condition을 학습목적으로 바꾸기
+
+정확한 해라면 $Y_N=G(X_N)$이어야 하므로
 
 $$
-\mathcal L(\theta,Y_0)
-=\mathbb E\left[\left|Y_N-g(X_N)\right|^2\right]
+\mathcal L(Y_0,\theta_0,\ldots,\theta_{N-1})
+=\mathbb E\left[|Y_N-G(X_N)|^2\right]
 $$
 
-를 최소화한다. 즉 고차원 공간 전체에서 $u$를 격자로 표현하는 대신, 무작위 경로 위에서 필요한 gradient 정보 $Z_t$를 신경망으로 표현하는 것이 계산상의 핵심이다.
+를 Monte Carlo minibatch로 최소화한다. Grid 전체의 $u(t,x)$를 저장하는 대신 무작위 경로가 방문한 $X_n$에서 gradient를 평가한다는 점이 고차원 계산상의 변화다.
+
+$X_0$가 랜덤한 문제라면 $Y_0=u(0,X_0)$도 일반적으로 scalar가 아니므로 별도의 함수 근사가 필요하다. 이 논문의 scalar $Y_0$ 설명은 고정 초기점 설정에 해당한다.
+
+## 작은 terminal loss가 곧 정확한 PDE 해는 아닌 이유
+
+관측한 loss에는 적어도 forward/BSDE 시간 이산화, gradient network의 표현력, finite-sample estimation, non-convex optimization이 섞인다. 또한 PDE-BSDE 식별 자체의 가정이 깨지면 loss가 작아도 원래 PDE의 고전해를 근사한다는 결론은 자동으로 나오지 않는다.
 
 ## 원문
 

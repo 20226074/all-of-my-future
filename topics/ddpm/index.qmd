@@ -1,0 +1,37 @@
+---
+title: "Denoising Diffusion Probabilistic Models"
+short-title: "DDPM"
+description: "이산 Gaussian Markov chain과 noise prediction으로 역과정을 학습하는 diffusion formulation"
+node-id: topic-ddpm
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 3
+search-aliases:
+  - DDPM
+  - denoising diffusion probabilistic model
+  - discrete diffusion
+tags:
+  - diffusion-models
+  - variational-inference
+  - denoising
+relations:
+  - target: topic-diffusion-models
+    type: uses
+    note: "DDPM은 diffusion의 공통 noise·score 표기를 이산 Gaussian Markov chain으로 구체화한다."
+    evidence:
+      - ho2020ddpm
+  - target: topic-score-sde
+    type: connected-via
+    note: "이산 noise schedule은 연속시간 VP SDE와 연결되며 noise predictor는 score로 변환된다."
+    evidence:
+      - ho2020ddpm
+      - song2021score
+---
+
+::: {.callout-note collapse="true" title="상위 공통 기반 · Diffusion Models"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+:::
+
+{{< include ../../_includes/concepts/ddpm-core.qmd >}}

@@ -1,0 +1,43 @@
+---
+title: "Score-based SDE & Probability-flow ODE"
+short-title: "Score SDE / ODE"
+description: "Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점"
+node-id: topic-score-sde
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 3
+search-aliases:
+  - score SDE
+  - reverse-time SDE
+  - probability flow ODE
+  - score-based generative modeling
+tags:
+  - diffusion-models
+  - stochastic-differential-equations
+  - score-matching
+  - ordinary-differential-equations
+relations:
+  - target: topic-diffusion-models
+    type: uses
+    note: "Diffusion의 공통 score를 연속시간 역동역학에 사용한다."
+    evidence:
+      - song2021score
+  - target: topic-sde
+    type: uses
+    note: "Forward와 reverse process를 Itô SDE로 다룬다."
+    evidence:
+      - song2021score
+  - target: topic-fokker-planck
+    type: uses
+    note: "Reverse SDE와 probability-flow ODE의 주변분포를 Fokker-Planck 방정식으로 비교한다."
+    evidence:
+      - song2021score
+---
+
+::: {.callout-note collapse="true" title="상위 공통 기반 · Diffusion Models"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+:::
+
+{{< include ../../_includes/concepts/score-sde-core.qmd >}}

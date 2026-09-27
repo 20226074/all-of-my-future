@@ -1,0 +1,47 @@
+## Noise schedule을 SDE로 표현하기
+
+연속시간 표현은 이산 모델마다 달랐던 noise schedule을 drift $f$와 diffusion amplitude $g$로 바꾼다. 대표적으로 variance-preserving SDE는
+
+$$
+dX_t=-\frac12\beta(t)X_t\,dt+\sqrt{\beta(t)}\,dW_t
+$$
+
+이고, 신호를 감쇠시키면서 총분산을 제한한다. Variance-exploding SDE는 증가하는 $\sigma(t)$에 대해
+
+$$
+dX_t=\sqrt{\frac{d\sigma(t)^2}{dt}}\,dW_t
+$$
+
+로 두어 원신호에 점점 큰 Gaussian noise를 더한다. 두 경우 모두 transition kernel을 알면 denoising score matching으로 $s_\theta$를 학습할 수 있다 [@song2021score].
+
+## 확률적 경로와 결정론적 경로
+
+- **Reverse SDE:** $s_\theta$가 들어간 drift와 Brownian noise를 함께 사용한다.
+- **Probability-flow ODE:** 같은 $s_\theta$를 사용하지만 경로는 결정론적이다.
+
+Learned ODE velocity를
+
+$$
+v_t^\theta(x):=f(t,x)-\frac12g(t)^2s_\theta(x,t)
+$$
+
+라 하고, 이 velocity와 terminal prior가 정의하는 model density를 $p_t^\theta$라 하자. ODE trajectory $\dot X_t=v_t^\theta(X_t)$를 따라 continuity equation은
+
+$$
+\frac d{dt}\log p_t^\theta(X_t)
+=-\nabla\!\cdot v_t^\theta(X_t)
+$$
+
+를 준다. 따라서 $X_0=x_0$를 $T$까지 보내 얻은 $X_T$에 대해
+
+$$
+\log p_0^\theta(x_0)
+=\log p_T^\theta(X_T)
++\int_0^T\nabla\!\cdot v_t^\theta(X_t)\,dt.
+$$
+
+Exact score이고 terminal law도 일치할 때만 $p_t^\theta=p_t$다. Approximate score에서는 model density와 true forward marginal을 구분해야 하며, divergence trace와 ODE 적분도 수치적으로 근사한다.
+
+## 이 개념의 경계
+
+상위 Diffusion Models는 score/noise identity와 reverse drift가 생기는 이유를 담당한다. 이 개념은 SDE family 선택, stochastic·deterministic sampler, ODE likelihood처럼 연속시간 formulation에서 생기는 선택을 담당한다.

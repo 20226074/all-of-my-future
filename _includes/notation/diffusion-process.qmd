@@ -1,39 +1,172 @@
-## 공통 표기
+## 공통 대상과 표기
 
-시간은 $t\in[0,T]$로 두고, $X_t\in\mathbb{R}^d$는 시각 $t$의 **확률 상태**를 뜻한다. 대문자 $X_t$는 아직 값이 정해지지 않은 확률변수이고, 소문자 $x_t$는 그 확률변수에서 실제로 얻은 한 상태값이다. 한 표본의 변화는
-
-$$
-x_0\longrightarrow x_t\longrightarrow x_T
-$$
-
-처럼 읽는다. $X_t$의 법칙이 밀도를 가지면 그 밀도를 $p_t(x)$라고 쓴다. 따라서 $p_t(x)\,dx$는 $X_t$가 $x$ 근처의 작은 부피 $dx$ 안에 있을 확률이다.
-
-Diffusion model에서는 보통
+데이터 한 개가 놓이는 공간을 $\mathbb R^d$라고 하자. 여기서는 전개를 단순하게 하기 위해 깨끗한 데이터 $X_0$가 밀도 $p_{\mathrm{data}}$를 가진다고 가정하고 $X_0\sim p_{\mathrm{data}}$라 쓴다. $x_0$는 그 확률변수에서 관측한 **값**이다. 실제 데이터 법칙이 이산적이거나 특이하면 아래의 $p_{\mathrm{data}}(x_0)\,dx_0$를 확률측도 $P_{\mathrm{data}}(dx_0)$로 바꾸면 된다. 시각 $t$에 노이즈가 섞인 확률변수와 그 실현값은 각각 $X_t$와 $x_t$로 쓴다. $X_t$가 밀도 $p_t$를 가진다는 말은 모든 적절한 집합 $A$에 대해
 
 $$
-X_0\sim p_{\mathrm{data}},
-\qquad
-p_T\approx p_{\mathrm{prior}}
+\mathbb P(X_t\in A)=\int_A p_t(x)\,dx
 $$
 
-가 되도록 forward process와 충분히 큰 종료 시각 $T$를 정한다. $p_{\mathrm{data}}$는 학습 데이터의 분포이고, $p_{\mathrm{prior}}$는 표본을 쉽게 만들 수 있는 단순한 분포—대개 가우시안—다. $q_{t\mid 0}(x_t\mid x_0)$가 $x_0$에서 출발해 시각 $t$에 $x_t$가 될 조건부 밀도라면
+라는 뜻이다. 작은 부피 $dx$에 대해서는 $p_t(x)\,dx$를 $X_t$가 $x$ 근처에 있을 확률로 읽을 수 있다.
+
+Forward process의 조건부 밀도는 $q_{t\mid0}(x_t\mid x_0)$로 쓴다. 따라서 주변밀도는
 
 $$
 p_t(x_t)
-=\int q_{t\mid 0}(x_t\mid x_0)
-      p_{\mathrm{data}}(x_0)\,dx_0.
+=\int q_{t\mid0}(x_t\mid x_0)p_{\mathrm{data}}(x_0)\,dx_0
 $$
 
-즉 $p_t$는 모든 깨끗한 데이터 $x_0$에 노이즈를 더한 결과를 섞은 주변분포다. 연속시간 forward process는 흔히
+다. 이 적분은 “각 데이터 $x_0$에 노이즈를 넣은 분포”를 데이터 전체에 대해 섞는 과정이다.
+
+## 이산 Gaussian forward process
+
+이산 시각 $k=1,\ldots,N$에서는 $\beta_k\in(0,1)$, $\alpha_k:=1-\beta_k$, $\bar\alpha_0:=1$, $\bar\alpha_k:=\prod_{j=1}^k\alpha_j$로 두고
 
 $$
-dX_t=f(t,X_t)\,dt+g(t)\,dW_t
+q(x_k\mid x_{k-1})
+=\mathcal N\!\left(
+x_k;\sqrt{\alpha_k}x_{k-1},\beta_k I
+\right)
 $$
 
-로 쓴다. 여기서 $W_t$는 표준 Brownian motion, $f$는 평균적인 이동을 정하는 drift, $g$는 주입되는 노이즈의 크기다. 시각 $t$의 score는
+처럼 조금씩 Gaussian noise를 더할 수 있다. 즉
+
+$$
+X_k=\sqrt{\alpha_k}X_{k-1}+\sqrt{\beta_k}\,\varepsilon_k,
+\qquad \varepsilon_k\sim\mathcal N(0,I).
+$$
+
+$X_{k-1}\mid X_0=x_0$가 평균 $\sqrt{\bar\alpha_{k-1}}x_0$, 공분산 $(1-\bar\alpha_{k-1})I$인 Gaussian이라고 가정하자. 독립 Gaussian의 선형결합은 다시 Gaussian이고
+
+$$
+\alpha_k(1-\bar\alpha_{k-1})+\beta_k
+=1-\alpha_k\bar\alpha_{k-1}
+=1-\bar\alpha_k
+$$
+
+이므로 귀납적으로
+
+$$
+q(x_k\mid x_0)
+=\mathcal N\!\left(
+x_k;\sqrt{\bar\alpha_k}x_0,(1-\bar\alpha_k)I
+\right).
+$$
+
+따라서 중간 단계를 모두 시뮬레이션하지 않고도
+
+$$
+X_k
+=\sqrt{\bar\alpha_k}X_0
++\sqrt{1-\bar\alpha_k}\,\varepsilon,
+\qquad \varepsilon\sim\mathcal N(0,I)
+$$
+
+로 임의 시각의 noisy sample을 한 번에 만들 수 있다. $\bar\alpha_N$을 충분히 작게 잡으면 $p_N$은 계산하기 쉬운 Gaussian prior에 가까워진다.
+
+## Score와 noise prediction이 같은 정보를 담는 이유
+
+시각 $t$의 score는
 
 $$
 s_t(x):=\nabla_x\log p_t(x)
 $$
 
-이며, 현재 상태 $x$를 그 시각의 고밀도 방향으로 얼마나 움직여야 하는지를 나타내는 벡터장이다. 신경망 $s_\theta(x,t)$는 이 $s_t(x)$를 근사하도록 학습한다.
+다. 이는 정규화 상수보다 “현재 점에서 밀도가 어느 방향으로 가장 빨리 증가하는가”를 나타내는 벡터장이다. Gaussian perturbation을
+
+$$
+X_t=a_tX_0+\sigma_t\varepsilon,
+\qquad \varepsilon\sim\mathcal N(0,I),\quad \sigma_t>0
+$$
+
+로 쓰면 조건부 score는
+
+$$
+\nabla_x\log q_{t\mid0}(x\mid x_0)
+=-\frac{x-a_tx_0}{\sigma_t^2}
+=-\frac{\varepsilon}{\sigma_t}.
+$$
+
+조건부 score를 $X_0$에 대해 평균내면 왜 주변 score가 되는지도 직접 계산할 수 있다.
+
+$$
+\begin{aligned}
+&\mathbb E\!\left[
+\nabla_x\log q_{t\mid0}(x\mid X_0)
+\mid X_t=x
+\right]\\
+&=\frac{
+\int \nabla_x q_{t\mid0}(x\mid x_0)
+p_{\mathrm{data}}(x_0)\,dx_0
+}{p_t(x)}
+=\nabla_x\log p_t(x).
+\end{aligned}
+$$
+
+한편 제곱오차 회귀 $\mathbb E\|\varepsilon-\varepsilon_\theta(X_t,t)\|^2$의 점별 최적해는 $\mathbb E[\varepsilon\mid X_t=x]$다. 따라서 최적으로 학습된 noise predictor와 score는
+
+$$
+s_t(x)
+=-\frac{\mathbb E[\varepsilon\mid X_t=x]}{\sigma_t}
+\approx-\frac{\varepsilon_\theta(x,t)}{\sigma_t}
+$$
+
+로 연결된다. 이 항등식이 DDPM의 $\varepsilon$-prediction과 score-based model을 같은 언어로 묶는다.
+
+## 연속시간 SDE와 역시간 생성
+
+연속시간에서는 forward process를
+
+$$
+dX_t=f(t,X_t)\,dt+g(t)\,dW_t,
+\qquad X_0\sim p_{\mathrm{data}}
+$$
+
+로 쓸 수 있다. 여기서 $W_t\in\mathbb R^d$는 Brownian motion이다. 역시간 식을 투명하게 쓰기 위해 $g(t)>0$가 상태 $x$와 무관한 scalar라고 가정한다. 또한 $t>0$에서 $p_t$가 양의 매끄러운 밀도이고 시간반전을 정당화할 정도로 $f,p_t$가 정칙이라고 가정한다. 이때 forward density는
+
+$$
+\partial_t p_t
+=-\nabla\!\cdot(fp_t)+\frac12g(t)^2\Delta p_t
+$$
+
+를 만족한다.
+
+역방향 시계 $\tau:=T-t$와 $Y_\tau:=X_{T-\tau}$를 쓰자. 위 정칙성 가정 아래 diffusion의 시간반전 정리는 $Y$의 경로법칙이 다음 SDE로 표현된다고 말한다 [@song2021score].
+
+$$
+dY_\tau=
+\left[
+-f(T-\tau,Y_\tau)
++g(T-\tau)^2s_{T-\tau}(Y_\tau)
+\right]d\tau
++g(T-\tau)\,d\overline W_\tau.
+$$
+
+이 결론은 transition law와 역방향 Brownian motion까지 다루는 시간반전 정리를 사용한다. Fokker-Planck 방정식의 일치만으로 경로법칙을 증명할 수는 없지만, score가 붙는 drift의 주변분포 일관성은 직접 검산할 수 있다. $q_\tau=p_{T-\tau}$이므로 $\partial_\tau q_\tau=-\partial_t p_t$다. $\Delta p=\nabla\!\cdot(p\nabla\log p)$를 이용해 forward 방정식의 부호를 바꾸면
+
+$$
+\partial_\tau q
+=-\nabla\!\cdot\left[
+\left(-f+g^2\nabla\log p\right)q
+\right]
++\frac12g^2\Delta q.
+$$
+
+실제로는 모르는 $s_t$를 $s_\theta$로 바꾸고 $Y_0\sim p_T$에서 출발한다. State-dependent matrix diffusion에서는 추가 divergence 항이 생길 수 있으므로 위 식을 그대로 일반식으로 사용해서는 안 된다.
+
+확률항 없이도 같은 주변밀도를 만드는 probability-flow ODE가 있다. Forward 방정식을
+
+$$
+\partial_t p_t
+=-\nabla\!\cdot\left[
+\left(f-\frac12g^2\nabla\log p_t\right)p_t
+\right]
+$$
+
+로 다시 쓰면 되므로
+
+$$
+\frac{dX_t}{dt}
+=f(t,X_t)-\frac12g(t)^2s_t(X_t)
+$$
+
+의 continuity equation은 forward SDE의 Fokker-Planck equation과 같다. 즉 경로의 확률성은 다르지만 각 시각의 주변분포 $p_t$는 같다.

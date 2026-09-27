@@ -1,0 +1,38 @@
+---
+title: "Latent Diffusion"
+description: "압축된 latent representation에서 diffusion을 수행하고 decoder로 데이터 공간에 복원하는 방법"
+node-id: topic-latent-diffusion
+node-type: topic
+status: active
+maturity: developing
+priority: next
+importance: 3
+search-aliases:
+  - latent diffusion model
+  - LDM
+  - stable diffusion foundation
+tags:
+  - diffusion-models
+  - latent-variable-models
+  - autoencoders
+  - cross-attention
+relations:
+  - target: topic-ddpm
+    type: uses
+    note: "Pixel DDPM과 같은 Gaussian corruption과 noise-prediction objective를 latent에 적용한다."
+    evidence:
+      - rombach2022ldm
+  - target: topic-conditional-diffusion
+    type: uses
+    note: "Text·class·layout 조건을 cross-attention이나 concatenation으로 주입한다."
+    evidence:
+      - rombach2022ldm
+---
+
+::: {.callout-note collapse="true" title="상위 공통 기반 · Diffusion Models와 Conditional Diffusion"}
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
+
+{{< include ../../_includes/notation/conditional-diffusion.qmd >}}
+:::
+
+{{< include ../../_includes/concepts/latent-diffusion-core.qmd >}}

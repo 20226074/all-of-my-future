@@ -3,8 +3,8 @@ title: "Optimal Transport"
 description: "확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽"
 node-id: topic-optimal-transport
 node-type: topic
-status: exploratory
-maturity: seed
+status: active
+maturity: developing
 priority: next
 importance: 3
 search-aliases:
@@ -20,31 +20,26 @@ tags:
 relations:
   - target: topic-fokker-planck
     type: connected-via
-    note: "일부 Fokker-Planck 동역학은 Wasserstein 공간의 gradient-flow 관점에서 연구된다. 정확한 에너지와 가정은 문제별로 확인한다."
+    note: "일부 Fokker-Planck 동역학은 Wasserstein 공간의 gradient flow로 해석된다."
     evidence:
       - villani2009ot
   - target: topic-schrodinger-bridge
     type: connected-via
-    note: "Schrödinger bridge를 entropic transport와 연결해 이해할 수 있으나, 고전적 최적수송과 동일한 문제는 아니다. 직접 근거는 후속 레퍼런스로 보강한다."
+    note: "Schrödinger bridge는 entropic transport와 연결되지만 고전적 최적수송과 동일한 문제는 아니다."
     evidence: []
 ---
 
-Optimal Transport(OT)는 한 확률분포를 다른 확률분포로 옮기는 결합 또는 사상을 비용 최소화 관점에서 다룬다. 이 노트에서는 정적 Monge/Kantorovich 문제에서 시작해 Wasserstein 거리와 동적 관점으로 확장한다 [@villani2009ot].
+이 페이지가 OT 문헌에서 공유할 측도·coupling·Wasserstein 표기의 기준이다 [@villani2009ot].
 
-## 우선 배울 것
+{{< include ../../_includes/notation/optimal-transport-core.qmd >}}
 
-1. Monge 문제와 Kantorovich 완화의 차이
-2. Coupling, transport plan, pushforward의 정의
-3. 이중 문제와 잠재함수
-4. Wasserstein 거리의 성립 조건
-5. 분포의 곡선과 gradient flow라는 관점
+## 다음으로 분리해서 배울 구조
 
-## SDE와의 연결 가설
+- 최적계획의 존재성과 tightness/lower semicontinuity
+- $c$-transform, dual attainment, complementary slackness
+- Brenier map과 convex potential
+- Benamou-Brenier의 동적 formulation
+- Entropic regularization과 Schrödinger bridge
+- Wasserstein gradient flow와 Fokker-Planck equation
 
-개별 확률 경로를 다루는 SDE와 분포 공간의 기하를 다루는 OT는 [Fokker-Planck Equation](../fokker-planck/)을 매개로 만날 수 있다. 다만 모든 SDE 동역학이 곧바로 Wasserstein gradient flow가 되는 것은 아니므로, drift·diffusion과 에너지 함수의 형태를 명시해야 한다.
-
-## 다음 질문
-
-- 정적 OT와 동적 OT는 어떤 가정 아래 동치인가?
-- Entropic regularization은 계산 편의 외에 어떤 확률적 해석을 갖는가?
-- [Schrödinger Bridge](../schrodinger-bridge/)의 small-noise limit와 OT의 관계는 어떤 의미에서 성립하는가?
+[SDE](../sde/)가 개별 확률경로를 다룬다면 OT는 주로 확률측도 사이의 배치와 기하를 다룬다. 두 분야가 만난다는 주장에는 어떤 동역학, 비용, 에너지를 쓰는지까지 명시해야 한다.

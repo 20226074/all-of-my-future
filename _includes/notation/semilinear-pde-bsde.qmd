@@ -1,0 +1,75 @@
+## 반선형 PDE와 BSDE의 공통 표기
+
+$W_t\in\mathbb R^m$를 Brownian motion이라 하고
+
+$$
+\mu:[0,T]\times\mathbb R^d\to\mathbb R^d,
+\qquad
+\sigma:[0,T]\times\mathbb R^d\to\mathbb R^{d\times m}
+$$
+
+라 두자. Terminal payoff는 $G:\mathbb R^d\to\mathbb R$, nonlinear driver는
+
+$$
+f:[0,T]\times\mathbb R^d\times\mathbb R\times\mathbb R^m
+\to\mathbb R
+$$
+
+로 쓴다. 여기서 $u:[0,T]\times\mathbb R^d\to\mathbb R$가
+
+$$
+\partial_tu
++\mu\cdot\nabla_xu
++\frac12\operatorname{Tr}
+\left(\sigma\sigma^\top D_x^2u\right)
++f\!\left(t,x,u,\sigma^\top\nabla_xu\right)=0,
+\qquad
+u(T,x)=G(x)
+$$
+
+를 만족한다고 하자. 같은 $\mu,\sigma$로 forward state를
+
+$$
+dX_t=\mu(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
+\qquad X_0=\xi
+$$
+
+로 정의한다. 여기서 $\xi\in L^2(\Omega,\mathcal F_0;\mathbb R^d)$라 가정한다. 이어서
+
+$$
+Y_t:=u(t,X_t),
+\qquad
+Z_t:=\sigma(t,X_t)^\top\nabla_xu(t,X_t)\in\mathbb R^m
+$$
+
+라 둔다.
+
+## Itô 공식으로 PDE를 BSDE로 바꾸기
+
+$u\in C^{1,2}$라고 가정하고 Itô 공식을 그대로 대입하면
+
+$$
+\begin{aligned}
+dY_t
+={}&d\,u(t,X_t)\\
+={}&\left(
+\partial_tu+\mu\cdot\nabla_xu
++\frac12\operatorname{Tr}(\sigma\sigma^\top D_x^2u)
+\right)(t,X_t)dt\\
+&+\nabla_xu(t,X_t)^\top\sigma(t,X_t)\,dW_t\\
+={}&-f(t,X_t,Y_t,Z_t)\,dt+Z_t^\top dW_t.
+\end{aligned}
+$$
+
+마지막 등호에서 PDE와 $Z_t$의 정의를 사용했다. $t$부터 $T$까지 적분하면
+
+$$
+Y_t
+=G(X_T)
++\int_t^T f(s,X_s,Y_s,Z_s)\,ds
+-\int_t^T Z_s^\top dW_s.
+$$
+
+Terminal value $Y_T=G(X_T)$가 주어지고 더 이른 $Y_t$를 찾아간다는 의미에서 이것을 backward SDE라고 부른다.
+
+위의 pointwise 식별은 고전해의 정칙성을 가정한 설명이다. 보통 $\mu,\sigma$에는 Lipschitz·선형성장 조건, $f$에는 $(y,z)$에 대한 Lipschitz 조건, $G(X_T)\in L^2$ 같은 조건이 사용된다. 더 약한 조건에서는 viscosity solution과 BSDE의 대응을 별도로 정식화해야 한다.

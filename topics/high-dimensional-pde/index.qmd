@@ -4,7 +4,7 @@ description: "차원의 저주 아래에서 PDE를 계산하기 위한 수치·�
 node-id: topic-high-dimensional-pde
 node-type: topic
 status: active
-maturity: seed
+maturity: developing
 priority: now
 importance: 3
 search-aliases:
@@ -20,32 +20,24 @@ tags:
 relations:
   - target: topic-sde
     type: connected-via
-    note: "일부 반선형 포물형 PDE는 확률 과정과 BSDE를 이용해 표현할 수 있으며, 이를 수치 방법으로 활용할 수 있다."
+    note: "일부 반선형 포물형 PDE는 forward SDE와 BSDE로 표현할 수 있으며 이를 수치 방법으로 활용할 수 있다."
     evidence:
       - han2018deep
 ---
 
-고차원 PDE에서는 격자점의 수가 차원에 따라 급격히 늘어나는 문제가 핵심 장애물이다. 이 토픽은 확률적 표현과 샘플 기반 계산뿐 아니라 저랭크·희소 근사, operator learning 등 서로 다른 방법군으로 독립적으로 확장될 수 있다. 현재 연결된 SDE/BSDE 접근은 그중 한 경로이며 전체 분야의 상위 구조가 아니다.
+$d$차원 영역의 각 축을 $M$개 점으로 나누는 tensor grid는 대략 $M^d$개의 상태를 요구한다. 이 지수적 증가는 고차원 PDE에서 말하는 차원의 저주의 가장 직접적인 형태다. 확률표현은 전체 grid 대신 무작위 경로를 사용하지만, 모든 PDE가 같은 확률표현을 갖거나 차원 의존성이 자동으로 사라지는 것은 아니다.
 
-## 우선 다룰 범위
+아래는 deep BSDE 계열 문헌이 공유하는 반선형 PDE 표기와 PDE-BSDE 대응이다.
 
-- Feynman--Kac 표현과 그 적용 조건
-- Forward--Backward SDE와 반선형 포물형 PDE의 관계
-- Monte Carlo 방식의 차원 의존성
-- Deep BSDE 방법의 목적함수와 시간 이산화
-- 오차의 출처: 표현, 이산화, 최적화, 일반화
+{{< include ../../_includes/notation/semilinear-pde-bsde.qmd >}}
 
-[@han2018deep]은 이 경로의 대표적인 출발점이지만, 논문에 포함된 예제가 전체 고차원 PDE를 대표하지는 않는다.
+## 계산법으로 바뀌는 지점
 
-## 읽을 때 확인할 질문
+연속시간 표현은 아직 해법이 아니다. 계산하려면 $X,Y,Z$를 시간격자에 이산화하고, $x\mapsto Z_{t_k}(x)$ 또는 $x\mapsto\nabla u(t_k,x)$를 어떤 함수족으로 근사하며, terminal mismatch를 유한 표본으로 최적화해야 한다. 따라서 오차를 최소한 다음 네 층으로 나눈다.
 
-1. 대상 PDE가 선형·반선형·완전 비선형 중 어디에 속하는가?
-2. 확률 표현에 필요한 계수와 해의 정칙성 가정은 무엇인가?
-3. 보고된 수치 오차는 기준해와 어떻게 비교되었는가?
-4. 차원이 증가할 때 계산량과 실패 양상이 실제로 어떻게 변하는가?
+1. PDE와 BSDE를 식별할 때 필요한 표현·정칙성 오차
+2. SDE/BSDE의 시간 이산화 오차
+3. 신경망 또는 다른 함수족의 근사 오차
+4. Monte Carlo와 최적화 오차
 
-::: {.callout-warning}
-## 경계
-
-“신경망을 쓰면 차원의 저주를 해결한다”는 식의 일반화는 아직 이 노트의 결론이 아니다. 문제 구조와 평가 방식별로 근거를 분리한다.
-:::
+[@han2018deep]의 deep BSDE 방법은 이 가운데 하나의 경로다. 저랭크 근사, sparse grid, branching, operator learning은 별개의 구조를 사용할 수 있다.

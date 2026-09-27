@@ -8,21 +8,23 @@ author:
   - "Abhishek Kumar"
   - "Stefano Ermon"
   - "Ben Poole"
-graph-summary: "확산형 생성모델을 연속시간 SDE로 통합하고 역시간 SDE를 이용해 표본을 생성하는 틀."
+graph-summary: "여러 diffusion formulation을 연속시간 SDE로 통합하고 reverse SDE와 probability-flow ODE를 제시한다."
 node-id: ref-song2021score
 node-type: reference
 reference-type: paper
 citekey: song2021score
 year: 2021
 attached-to:
+  - topic-score-sde
   - topic-diffusion-models
   - topic-sde
-primary-node: topic-diffusion-models
+  - topic-fokker-planck
+primary-node: topic-score-sde
 reading-status: queued
 note-status: ai-draft
 source-checked: false
 priority: now
-last-reviewed: 2026-09-26
+last-reviewed: 2026-09-27
 tags:
   - score-based-models
   - reverse-time-sde
@@ -30,50 +32,41 @@ tags:
 ---
 
 ::: {.reference-note-content}
+::: {.callout-note collapse="true" title="공통 개념 · Diffusion Models → Score SDE / ODE"}
 {{< include ../../_includes/notation/diffusion-process.qmd >}}
 
-## 핵심 아이디어
+{{< include ../../_includes/concepts/score-sde-core.qmd >}}
+:::
 
-논문은 여러 이산 diffusion model을 하나의 forward SDE로 표현한다.
+## 이 문헌이 공통 틀에 추가한 것
 
-$$
-dX_t=f(t,X_t)\,dt+g(t)\,dW_t,
-\qquad X_0\sim p_{\mathrm{data}}.
-$$
+이 논문은 기존 score model과 diffusion probabilistic model을 하나의 forward SDE family로 통합하고, 같은 $s_\theta$로 stochastic sampler, deterministic ODE sampler, likelihood 계산을 구성했다 [@song2021score].
 
-$p_t$의 정확한 score $\nabla_x\log p_t(x)$를 안다고 하자. 역방향 시간을 $\tau=T-t$로 두고 $Y_\tau=X_{T-\tau}$라 쓰면, 생성 과정은 형식적으로
+## 연속시간 denoising score matching
 
-$$
-dY_\tau=
-\left[-f(T-\tau,Y_\tau)
-+g(T-\tau)^2\nabla_y\log p_{T-\tau}(Y_\tau)\right]d\tau
-+g(T-\tau)\,d\overline W_\tau
-$$
-
-가 된다. 따라서 알 수 없는 score만 $s_\theta(y,T-\tau)$로 바꾸면 $Y_0\sim p_T$에서 출발해 $Y_T\sim p_0$에 가까운 표본을 만들 수 있다. 역시간 공식이 단순히 $t$의 부호를 바꾼 것이 아니라 score 보정항을 포함한다는 점이 핵심이다.
-
-Score network는 조건부 perturbation kernel을 이용한 denoising score matching으로 학습한다. 대표적인 목적함수는
+시간을 양의 밀도 $\rho(t)$에서 뽑고 $X_t\sim q_{t\mid0}(\cdot\mid X_0)$라 하면 논문의 학습목적은
 
 $$
-\mathbb E_{t,X_0,X_t}
+\mathcal L(\theta)
+=\mathbb E_{\substack{t\sim\rho,\,X_0\sim p_{\mathrm{data}}\\
+X_t\sim q_{t\mid0}(\cdot\mid X_0)}}
 \left[
 \lambda(t)
 \left\|s_\theta(X_t,t)
 -\nabla_{x_t}\log q_{t\mid0}(X_t\mid X_0)
 \right\|^2
-\right]
+\right],
 $$
 
-꼴이다. 조건부 score를 회귀하지만, 적절한 조건 아래 최적해는 주변분포의 score $\nabla_x\log p_t(x)$와 연결된다.
+여기서 $\lambda(t)>0$는 noise level별 가중치다. Diffusion Models의 conditional-to-marginal identity 때문에 이 회귀의 점별 최적해가 $\nabla\log p_t$다.
 
-같은 주변분포 $p_t$를 갖는 deterministic probability-flow ODE도 얻는다.
+## 논문이 결합한 계산 경로
 
-$$
-dX_t=
-\left[f(t,X_t)-\frac12g(t)^2\nabla_x\log p_t(X_t)\right]dt.
-$$
+- VP, VE, sub-VP SDE를 같은 표기로 기술한다.
+- Reverse SDE의 수치 적분을 predictor로, 같은 noise level의 Langevin MCMC를 corrector로 조합한다.
+- Probability-flow ODE의 instantaneous change of variables를 이용해 model likelihood를 계산한다.
 
-역시간 SDE는 확률적 경로를, probability-flow ODE는 결정론적 경로를 사용하지만 각 시각의 주변분포는 같도록 구성된다. 실제 알고리즘에서는 score를 $s_\theta$로 대체하고 SDE/ODE를 수치적으로 이산화한다.
+세 계산은 같은 learned score를 공유하지만, score approximation, time discretization 또는 ODE tolerance, divergence trace estimation은 서로 다른 오차를 만든다.
 
 ## 원문
 

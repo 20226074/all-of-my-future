@@ -1,0 +1,88 @@
+## 데이터 공간과 latent 공간
+
+Encoder와 decoder를
+
+$$
+\mathcal E:\mathcal X\to\mathcal Z,
+\qquad
+\mathcal D:\mathcal Z\to\mathcal X
+$$
+
+라 하고
+
+$$
+Z_0=\mathcal E(X_0),
+\qquad
+\widetilde X_0=\mathcal D(Z_0)
+$$
+
+로 둔다. Latent diffusion은 pixel $X_k$ 대신
+
+$$
+Z_k
+=\sqrt{\bar\alpha_k}Z_0
++\sqrt{1-\bar\alpha_k}\,\varepsilon
+$$
+
+에 diffusion을 적용하고
+
+$$
+\mathcal L_{\mathrm{LDM}}
+=\mathbb E\left[
+\|\varepsilon-\varepsilon_\theta(Z_k,k)\|_2^2
+\right]
+$$
+
+를 학습한다. DDPM 구조는 같고 상태공간만 바뀐다 [@rombach2022ldm].
+
+학습된 latent 분포를 $p_\theta^Z$라 하면 실제 생성분포는 decoder pushforward
+
+$$
+P_\theta^X=(\mathcal D)_\#P_\theta^Z
+$$
+
+다. 따라서 최종 오차는 latent diffusion뿐 아니라 $\mathcal D(\mathcal E(x))$의 reconstruction error에도 의존한다.
+
+## 조건을 주입하는 방법
+
+조건 $c$를 encoder $\tau_\theta$로 표현하면
+
+$$
+\mathcal L_{\mathrm{cond}}
+=\mathbb E\left[
+\|\varepsilon-
+\varepsilon_\theta(Z_k,k,\tau_\theta(c))\|_2^2
+\right].
+$$
+
+Cross-attention에서는 noisy latent feature $\phi_i(Z_k)$를 query로, condition representation을 key와 value로 사용한다. Spatial position 수를 $M$, condition token 수를 $L$이라 하고 $\phi_i(Z_k)\in\mathbb R^{M\times d_i}$, $\tau_\theta(c)\in\mathbb R^{L\times d_c}$라 두자. 한 attention head의 query/key 차원이 $d_h$일 때
+
+$$
+\operatorname{Attn}(Q,K,V)
+=\operatorname{softmax}\!\left(
+\frac{QK^\top}{\sqrt{d_h}}
+\right)V,
+$$
+
+$$
+Q=\phi_i(Z_k)W_Q,
+\qquad
+K=\tau_\theta(c)W_K,
+\qquad
+V=\tau_\theta(c)W_V,
+$$
+
+$$
+W_Q\in\mathbb R^{d_i\times d_h},
+\qquad
+W_K,W_V\in\mathbb R^{d_c\times d_h}.
+$$
+
+따라서 $QK^\top\in\mathbb R^{M\times L}$의 각 행이 한 spatial position에서 condition token들에 줄 attention weight를 만든다.
+
+## 압축의 trade-off
+
+- 압축이 약하면 pixel diffusion보다 계산량을 적게 줄인다.
+- 압축이 너무 강하면 decoder가 잃은 세부정보를 diffusion model이 복원할 수 없다.
+- 조건 주입과 CFG는 latent diffusion과 별개의 축이므로 함께 또는 따로 사용할 수 있다.
+- Pixel-level 정확성이 중요한 문제에서는 autoencoder가 주된 병목이 될 수 있다.

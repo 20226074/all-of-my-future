@@ -1,0 +1,89 @@
+## Exact forward posterior
+
+Diffusion Models의 forward chain에서 $x_0$까지 알면 $k\ge2$인 한 단계 전 상태의 posterior도 비퇴화 Gaussian이다.
+
+$$
+q(x_{k-1}\mid x_k,x_0)
+\propto q(x_k\mid x_{k-1})q(x_{k-1}\mid x_0).
+$$
+
+$x_{k-1}$에 의존하는 지수만 모으면
+
+$$
+\exp\!\left[
+-\frac{\|x_k-\sqrt{\alpha_k}x_{k-1}\|^2}{2\beta_k}
+-\frac{\|x_{k-1}-\sqrt{\bar\alpha_{k-1}}x_0\|^2}
+{2(1-\bar\alpha_{k-1})}
+\right].
+$$
+
+이 이차식을 $x_{k-1}$에 대해 완전제곱하면
+
+$$
+q(x_{k-1}\mid x_k,x_0)
+=\mathcal N(x_{k-1};\widetilde\mu_k,\widetilde\beta_kI),
+$$
+
+$$
+\widetilde\mu_k
+=\frac{\sqrt{\bar\alpha_{k-1}}\beta_k}{1-\bar\alpha_k}x_0
++\frac{\sqrt{\alpha_k}(1-\bar\alpha_{k-1})}{1-\bar\alpha_k}x_k,
+\qquad
+\widetilde\beta_k
+=\frac{1-\bar\alpha_{k-1}}{1-\bar\alpha_k}\beta_k.
+$$
+
+$k=1$에서는 $x_{k-1}=x_0$를 이미 조건으로 주었으므로 posterior가 $x_0$에 놓인 point mass가 되고, 위 식에서도 $\widetilde\beta_1=0$이다.
+
+Forward posterior는 생성 시 알 수 없는 $x_0$에 의존한다. 따라서 reverse model을
+
+$$
+p_\theta(x_{k-1}\mid x_k)
+=\mathcal N(x_{k-1};\mu_\theta(x_k,k),v_kI),
+\qquad v_k>0,
+$$
+
+로 두어 이 posterior를 근사한다 [@ho2020ddpm].
+
+## 왜 noise를 예측하는가
+
+공통 forward sample
+
+$$
+x_k=\sqrt{\bar\alpha_k}x_0
++\sqrt{1-\bar\alpha_k}\,\varepsilon
+$$
+
+을 $x_0$에 대해 풀어 $\widetilde\mu_k$에 대입하면 reverse mean을
+
+$$
+\mu_\theta(x_k,k)
+=\frac1{\sqrt{\alpha_k}}
+\left(
+x_k-\frac{\beta_k}{\sqrt{1-\bar\alpha_k}}
+\varepsilon_\theta(x_k,k)
+\right)
+$$
+
+로 매개화할 수 있다. Variational bound의 Gaussian KL 항은 시간별 가중치가 붙은 noise-prediction error가 된다. DDPM의 단순화된 목적함수는 그 가중치를 제거한
+
+$$
+\mathcal L_{\mathrm{simple}}
+=\mathbb E_{k,x_0,\varepsilon}
+\left\|
+\varepsilon-
+\varepsilon_\theta\!\left(
+\sqrt{\bar\alpha_k}x_0
++\sqrt{1-\bar\alpha_k}\varepsilon,k
+\right)
+\right\|^2
+$$
+
+이다. 기대값은 $x_0\sim p_{\mathrm{data}}$, $k\sim\operatorname{Unif}\{1,\ldots,N\}$, $\varepsilon\sim\mathcal N(0,I)$에 대해 취한다. 생성에서는 $x_N\sim\mathcal N(0,I)$에서 시작해 reverse Gaussian을 $N$번 적용한다.
+
+## 구분할 오차
+
+- $q(x_N\mid x_0)$가 prior와 정확히 같지 않은 terminal approximation
+- Gaussian reverse transition과 신경망 평균의 model error
+- $\mathcal L_{\mathrm{simple}}$이 variational bound의 시간별 가중치를 바꾼 데서 오는 목적함수 차이
+- 유한 step 수와 sampling variance 선택

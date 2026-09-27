@@ -1,0 +1,66 @@
+## 직접 conditioning과 guidance
+
+직접 conditioning은 네트워크가 $c$를 입력받아 $s_t(x\mid c)$ 또는 $\varepsilon_\theta(x,t,c)$를 곧바로 학습하는 방식이다. Guidance는 sampling time에 조건 방향을 별도로 강화한다. Classifier guidance에는 서로 관련되지만 일반적으로 동일하지 않은 두 구성이 있다 [@dhariwal2021guided].
+
+## 구성 A: stochastic Gaussian transition의 mean shift
+
+한 reverse step이
+
+$$
+p_\theta(x_{k-1}\mid x_k)
+=\mathcal N(x_{k-1};\mu,\Sigma)
+$$
+
+이고 noisy input에도 작동하는 classifier가 $p_\phi(c\mid x_{k-1},k-1)$를 준다고 하자. 조건 likelihood를 $\gamma\ge0$배 기울인 transition은
+
+$$
+\widetilde p_\gamma(x_{k-1}\mid x_k,c)
+\propto p_\theta(x_{k-1}\mid x_k)
+p_\phi(c\mid x_{k-1},k-1)^\gamma.
+$$
+
+이상적으로 $\gamma=1$일 때 실제 conditional transition을 근사하고, $\gamma\ne1$은 의도적으로 기울인 distribution이다. 다음 gradient를 정의하자.
+
+$$
+h:=\nabla_x\log p_\phi(c\mid x,k-1)\big|_{x=\mu}.
+$$
+
+$\log p_\phi$를 $\mu$에서 일차 전개하면 $x=x_{k-1}$에 의존하는 log-density는
+
+$$
+-\frac12(x-\mu)^\top\Sigma^{-1}(x-\mu)
++\gamma h^\top(x-\mu).
+$$
+
+완전제곱하면
+
+$$
+\widetilde p_\gamma(x_{k-1}\mid x_k,c)
+\approx\mathcal N(\mu+\gamma\Sigma h,\Sigma).
+$$
+
+이 결과는 stochastic Gaussian reverse transition에 대한 local approximation이다.
+
+## 구성 B: score를 바꾸는 guidance
+
+Bayes identity를 score 수준에서 사용하면 guided score를
+
+$$
+\widetilde s_{t,\gamma}(x\mid c)
+:=s_t(x)+\gamma\nabla_x\log p_t(c\mid x)
+$$
+
+로 둘 수 있다. $\gamma=1$이면 exact conditional score이고, 다른 값은 조건 방향을 약화하거나 강화한다. DDPM/VP perturbation에서 $\sigma_k=\sqrt{1-\bar\alpha_k}$와 $\varepsilon=-\sigma_ks$를 사용하면 sampler에 넣을 noise prediction은
+
+$$
+\widehat\varepsilon
+=\varepsilon_\theta(x_k,k)
+-\gamma\sqrt{1-\bar\alpha_k}\,
+\nabla_{x_k}\log p_\phi(c\mid x_k,k)
+$$
+
+가 된다. 이것은 score를 수정하는 구성이라 reverse SDE, ODE, DDIM형 sampler에도 사용할 수 있다.
+
+두 구성은 같은 Bayes 방향을 사용하지만 임의의 reverse covariance $\Sigma$에서 단순한 재매개화로 서로 같지는 않다. 특정 sampler의 mean-score 관계와 covariance가 맞을 때만 mean shift를 직접 대응시킬 수 있다.
+
+Classifier는 clean data만이 아니라 각 noise level의 $x_k$와 $k$를 입력받도록 학습되어야 한다. $\gamma$가 커지면 조건 적합도는 강해질 수 있지만 확률질량이 좁은 영역에 집중되어 다양성과 recall이 줄 수 있다.

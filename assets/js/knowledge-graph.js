@@ -972,7 +972,9 @@
         const line = svgElement("line", { class: "graph-link" });
         if (edge.directed) line.setAttribute("marker-end", `url(#${this.markerId})`);
         const title = svgElement("title");
-        title.textContent = `${edge.sourceNode.label} — ${relationLabel(edge.relation)} → ${edge.targetNode.label}`;
+        title.textContent = edge.directed
+          ? `${edge.sourceNode.label} — ${relationLabel(edge.relation)} → ${edge.targetNode.label}`
+          : `${edge.sourceNode.label} — ${relationLabel(edge.relation)} — ${edge.targetNode.label}`;
         line.append(title);
         this.linkLayer.append(line);
         this.edgeElements.set(edge, line);
@@ -1273,6 +1275,7 @@
       header.append(authors);
 
       const topics = element("div", "reference-detail-topics");
+      topics.append(element("span", "reference-detail-topics-label", "소속 개념"));
       for (const topicId of node.attachedTo || []) {
         const topic = this.nodeById.get(topicId);
         if (!topic) continue;
@@ -1282,6 +1285,7 @@
           topic.label
         );
         chip.type = "button";
+        chip.title = topicId === node.primaryNode ? "이 문헌의 주 소속 개념" : "이 문헌이 함께 연결된 개념";
         chip.addEventListener("click", () => this.selectNode(topic, true));
         topics.append(chip);
       }
@@ -1293,6 +1297,32 @@
       frame.src = detailUrl.href;
       frame.title = `${node.title} 상세 노트`;
       frame.loading = "eager";
+      frame.addEventListener("load", () => {
+        const documentInFrame = frame.contentDocument;
+        if (!documentInFrame) return;
+        documentInFrame.addEventListener("click", (event) => {
+          const link = event.target.closest?.("a[href]");
+          if (!link) return;
+          const destination = new URL(link.href, frame.contentWindow.location.href);
+          if (destination.origin !== window.location.origin) return;
+          const currentPath = frame.contentWindow.location.pathname.replace(/\/+$/, "");
+          const destinationPath = destination.pathname.replace(/\/+$/, "");
+          if (destinationPath === currentPath) {
+            if (destination.hash) {
+              event.preventDefault();
+              frame.contentWindow.location.hash = destination.hash;
+            }
+            return;
+          }
+          const destinationNode = [...this.nodeById.values()].find((candidate) => {
+            const candidatePath = new URL(nodeUrl(candidate)).pathname.replace(/\/+$/, "");
+            return candidatePath === destinationPath;
+          });
+          if (!destinationNode) return;
+          event.preventDefault();
+          this.selectNode(destinationNode, true);
+        });
+      });
       this.panel.append(header, frame);
     }
 
@@ -1360,7 +1390,8 @@
             this.selectNode(item.node, true);
           });
           const relation = relationLabel(item.edge.relation);
-          if (item.outgoing) li.append(document.createTextNode(`${relation} → `), link);
+          if (!item.edge.directed) li.append(document.createTextNode(`— ${relation} — `), link);
+          else if (item.outgoing) li.append(document.createTextNode(`${relation} → `), link);
           else li.append(document.createTextNode(`← ${relation} — `), link);
           list.append(li);
         }

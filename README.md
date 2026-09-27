@@ -54,7 +54,7 @@ python scripts/check_site.py
 
 1. `templates/topic.qmd`를 복사해 `topics/<slug>/index.qmd`로 저장합니다. 예: `topics/optimal-transport/index.qmd`.
 2. 복사한 문서의 YAML front matter를 채웁니다. `node-id`는 `topic-`으로 시작하는 고유값이며, 한 번 정하면 바꾸지 않는 식별자로 사용합니다. `importance`는 1–5 사이의 정수입니다. `relations`의 `target`에는 실제로 존재하는 concept 또는 entry의 `node-id`를, `type`에는 `data/relation-types.yml`에 정의된 관계 유형을 적습니다.
-3. 본문에는 현재의 이해, 핵심 질문, 다음에 읽을 자료를 기록합니다.
+3. 여러 문헌이 반복해서 사용할 정의·가정·notation·기본 유도를 concept 본문에 먼저 기록합니다. 공통 표기는 `_includes/notation/`, concept 고유의 공통 유도는 `_includes/concepts/<concept>-core.qmd`에 두어 concept에서는 펼쳐서 보여주고 문헌에서는 같은 파일을 접힌 상자로 include합니다.
 4. `quarto preview`로 페이지와 그래프 연결을 확인합니다.
 
 템플릿의 필드명이 그래프 생성 스크립트가 기대하는 스키마이므로, 필드를 임의로 바꾸기보다 값을 채워 사용합니다.
@@ -69,9 +69,10 @@ Concept와 entry의 크기는 직접 지정한 `importance`, 연결된 concept/e
 
 1. `templates/reference.qmd`를 복사해 `references/<slug>/index.qmd`로 저장합니다. 논문·책 한 항목당 한 디렉터리를 사용합니다.
 2. YAML front matter에 `ref-`로 시작하는 고유 `node-id`, `reference-type`, 저자, 연도, `citekey`, 연결할 concept/entry의 `node-id`를 `attached-to`에 기록합니다. 그중 이 문헌이 주로 속하는 노드 하나를 `primary-node`로 지정합니다. URL 또는 DOI는 BibTeX 항목에 넣습니다.
-3. 본문에는 첫 수식 전에 모든 표기를 정의하고, 핵심 아이디어를 그 정의에서부터 self-contained하게 전개합니다. 공통 표기는 `_includes/notation/`의 블록을 재사용합니다.
-4. BibTeX 항목을 `bibliography/references.bib`에 추가하고, 그 키를 문서의 `citekey`와 본문 인용에 사용합니다.
-5. `quarto preview`로 해당 concept/entry의 상세 패널에 문헌이 나타나는지 확인합니다.
+3. `attached-to`는 이 문헌을 찾아볼 수 있는 모든 소속·연관 concept을, `primary-node`는 이 문헌의 고유 기여가 가장 직접적으로 속하는 concept을 뜻합니다. 그래프 연결과 본문 상속은 구분합니다.
+4. 본문 첫머리에서 실제 전개에 사용하는 concept의 `_includes/notation/`과 `_includes/concepts/` 블록만 접힌 상자로 재사용한 뒤, **이 문헌이 공통 틀에 추가한 것**을 분리해 전개합니다. 공통 기호를 임의로 바꾸지 말고 새로운 기호·가정만 그 자리에서 정의합니다.
+5. BibTeX 항목을 `bibliography/references.bib`에 추가하고, 그 키를 문서의 `citekey`와 본문 인용에 사용합니다.
+6. `quarto preview`로 해당 concept/entry의 상세 패널에 문헌이 나타나는지 확인합니다.
 
 저작권이 있는 논문 PDF나 책 파일 자체를 저장소에 올리지 말고, DOI·출판사·arXiv 등 합법적인 원문 링크를 기록합니다.
 
@@ -91,43 +92,19 @@ Quarto 설정의 `project.pre-render`에도 같은 명령이 연결되어 있으
 
 다른 기기로 옮기려면 왼쪽의 **배치 내보내기**로 `graph-view.json`을 받은 뒤 새 기기에서 **가져오기**를 사용합니다. 이 배치를 사이트의 공통 기본값으로 만들려면 내보낸 파일을 `data/graph-view.json`으로 교체하고 commit/push합니다. GitHub Pages는 정적 사이트이므로 공개 브라우저에서 저장소에 안전하게 직접 쓰지는 않습니다.
 
-## 최초 GitHub Pages 배포
+## GitHub Pages 배포
 
-아래의 `USERNAME`과 `REPOSITORY`는 실제 GitHub 사용자명과 저장소명으로 바꿔야 하는 placeholder입니다. 저장소가 정해지면 `_quarto.yml`의 주석 처리된 `site-url`도 실제 주소로 바꾸고 주석을 해제합니다.
+이 저장소는 이미 [공개 사이트](https://20226074.github.io/all-of-my-future/)와 연결되어 있습니다. `_quarto.yml`의 `site-url`, Git remote, `gh-pages` 브랜치 게시가 구성되어 있으며 별도의 `_publish.yml`은 사용하지 않습니다.
 
-예상 주소는 다음과 같습니다.
-
-```text
-https://USERNAME.github.io/REPOSITORY/
-```
-
-1. GitHub에 **공개(public)** 저장소 `REPOSITORY`를 만듭니다.
-2. 저장소의 **Settings → Actions → General → Workflow permissions**에서 **Read and write permissions**를 선택하고 저장합니다.
-3. 로컬 저장소를 연결하고 `main` 브랜치를 처음 push합니다.
+변경을 공개하려면 `main` 브랜치에 commit한 뒤 push합니다.
 
 ```bash
-git remote add origin https://github.com/USERNAME/REPOSITORY.git
-git branch -M main
-git push -u origin main
+git add .
+git commit -m "Describe the update"
+git push origin main
 ```
 
-4. 프로젝트 루트에서 최초 게시를 한 번 실행합니다. 이 명령이 `gh-pages` 브랜치와 이후 자동 게시에 필요한 `_publish.yml`을 만듭니다.
-
-```bash
-quarto publish gh-pages
-```
-
-5. 새로 생긴 `_publish.yml`을 `main`에 커밋하고 push합니다.
-
-```bash
-git add _publish.yml
-git commit -m "Configure GitHub Pages publishing"
-git push
-```
-
-6. 저장소의 **Settings → Pages → Build and deployment**에서 게시 소스가 **Deploy from a branch**, 브랜치가 **gh-pages**, 폴더가 **/(root)**인지 확인합니다. 일반 프로젝트 사이트는 최초 게시 후 자동으로 잡히는 경우가 많지만, 다르면 직접 선택합니다.
-
-이후에는 `main`에 push할 때 `.github/workflows/publish.yml`이 Python 3.13과 Quarto를 준비하고, 그래프를 다시 만든 뒤 사이트를 `gh-pages`에 자동 게시합니다. Actions 탭의 **Quarto Publish**에서 수동 실행도 가능합니다.
+`.github/workflows/publish.yml`의 **Quarto Publish** workflow가 그래프 생성과 전체 render를 실행한 뒤 결과를 `gh-pages`에 게시합니다. 진행 상태는 GitHub 저장소의 Actions 탭에서 확인할 수 있습니다. 배포가 성공했는데 예전 화면이 보이면 브라우저를 새로고침하거나 잠시 뒤 다시 확인합니다.
 
 ## 공개 저장소의 개인정보 주의
 

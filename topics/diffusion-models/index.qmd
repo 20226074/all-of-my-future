@@ -1,12 +1,12 @@
 ---
 title: "Diffusion Models"
-description: "노이즈를 더하는 과정과 역시간 확률 동역학을 이용하는 생성 모델"
+description: "노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학"
 node-id: topic-diffusion-models
 node-type: topic
 status: active
-maturity: seed
+maturity: developing
 priority: now
-importance: 3
+importance: 4
 search-aliases:
   - diffusion model
   - score-based generative model
@@ -20,24 +20,38 @@ tags:
 relations:
   - target: topic-sde
     type: connected-via
-    note: "연속시간 score-based diffusion은 forward 및 reverse-time SDE로 기술할 수 있다. 이는 diffusion model을 보는 한 관점이며 분야 전체의 계층을 뜻하지 않는다."
+    note: "연속시간 diffusion model은 forward 및 reverse-time SDE로 기술할 수 있다."
     evidence:
       - song2021score
   - target: topic-fokker-planck
     type: connected-via
-    note: "Forward SDE가 만드는 주변분포의 변화는 Fokker-Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다."
+    note: "Forward SDE와 probability-flow ODE가 같은 주변분포를 갖는다는 사실은 Fokker-Planck 방정식으로 확인한다."
     evidence:
       - song2021score
   - target: topic-schrodinger-bridge
     type: connected-via
-    note: "두 분야 모두 기준 확률 동역학과 분포의 연결을 다루지만 목적함수와 제약은 동일하지 않다. 직접적인 대응은 후속 문헌으로 검증한다."
+    note: "두 분야 모두 확률 동역학으로 분포를 연결하지만 목적함수와 제약은 같지 않다."
     evidence: []
 ---
 
+이 페이지가 diffusion 계열 문헌의 **공통 수학 계약**이다. 아래에서 정의한 $X_t,x_t,p_t,q_{t\mid0},s_t,\varepsilon_\theta$는 DDPM, score SDE, guidance, latent diffusion 문헌에서 같은 뜻으로 사용한다. 각 논문 노트는 이 블록을 다시 작성하지 않고 동일한 원본을 접힌 형태로 불러온다. 이산 Gaussian formulation은 [@ho2020ddpm], 연속시간 reverse SDE와 probability-flow ODE는 [@song2021score]를 기준으로 표기를 통일했다.
+
 {{< include ../../_includes/notation/diffusion-process.qmd >}}
 
-## 생성이 가능한 이유
+## 학습과 생성의 전체 흐름
 
-Forward process는 $p_0=p_{\mathrm{data}}$를 점차 단순한 $p_T=p_{\mathrm{prior}}$로 보낸다. 생성에서는 반대로 $X_T\sim p_T$를 먼저 뽑고, 학습한 score $s_\theta(x,t)\approx\nabla_x\log p_t(x)$를 사용해 $T$에서 $0$ 방향으로 분포를 되돌린다. 중요한 것은 한 데이터의 노이즈를 제거하는 규칙 하나가 아니라, **모든 시각의 주변분포 $p_t$를 잇는 벡터장**을 학습한다는 점이다 [@song2021score].
+1. $X_0\sim p_{\mathrm{data}}$에 알려진 noise process를 적용해 임의의 $X_t$를 만든다.
+2. $\varepsilon_\theta$ 또는 $s_\theta$가 noisy state에서 noise 또는 score를 예측하도록 학습한다.
+3. 쉬운 $p_T$에서 표본을 뽑고, 학습한 벡터장을 reverse SDE, DDPM transition, 또는 ODE sampler에 넣어 $p_0$ 방향으로 이동한다.
 
-Reverse dynamics의 정확한 식은 forward SDE, 시간 방향, 밀도의 존재와 정칙성에 의존한다. 따라서 이후 문헌 노트에서도 $X_t$, $p_t$, $s_t$의 뜻은 위 표기를 그대로 사용하고, reverse-time 식의 가정과 시간 부호는 각 문헌에서 따로 명시한다.
+유한한 종료시각에서는 보통 $p_T\approx p_{\mathrm{prior}}$이지 정확한 equality는 아니다. 생성 오차에는 terminal approximation, score approximation, time discretization이 모두 들어간다.
+
+## 이 개념에서 갈라지는 표준 경로
+
+- [DDPM](../ddpm/): 이산 Gaussian Markov chain, variational bound, $\varepsilon$-prediction
+- [Score-based SDE & Probability-flow ODE](../score-based-sde/): 연속시간 reverse SDE, deterministic flow, likelihood
+- [Conditional Diffusion & Guidance](../conditional-diffusion/): 조건부 score와 classifier gradient
+- [Classifier-Free Guidance](../classifier-free-guidance/): conditional/unconditional predictor의 선형결합
+- [Latent Diffusion](../latent-diffusion/): pixel 대신 압축 latent에서 수행하는 diffusion
+
+이 경로들은 서로 배타적인 분류가 아니다. 예를 들어 latent diffusion은 DDPM식 forward process, text conditioning, classifier-free guidance를 동시에 사용할 수 있다 [@rombach2022ldm].

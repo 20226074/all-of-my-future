@@ -22,7 +22,7 @@ sidebar: false
 - [High-dimensional PDE Solvers](topics/high-dimensional-pde/)
 - [Diffusion Models](topics/diffusion-models/)
 - [Optimal Transport](topics/optimal-transport/)
-- [Fokker–Planck Equation](topics/fokker-planck/)
+- [Fokker-Planck Equation](topics/fokker-planck/)
 - [Schrödinger Bridge](topics/schrodinger-bridge/)
 :::
 

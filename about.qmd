@@ -18,7 +18,7 @@ sidebar: false
 
 ### Concept node
 
-하나의 문제나 개념을 독립적으로 다룬다. 다른 개념과의 연결은 그 개념의 부모가 아니라 특정 맥락의 관계다.
+하나의 문제나 개념을 독립적으로 다룬다. 그 아래 여러 문헌이 공유하는 정의·가정·notation·기본 유도의 소유자다. 다른 concept와의 연결은 절대적인 부모 관계가 아니라 특정 맥락의 의존·비교 관계다.
 :::
 
 ::: {.process-step}
@@ -34,7 +34,7 @@ sidebar: false
 
 ### Paper & book
 
-논문이나 책 한 권에 대한 구조화된 노트다. 그래프 모양에는 직접 나타나지 않고, 연결된 concept/entry를 선택했을 때 근거 자료로 나타난다.
+논문이나 책 한 권에 대한 구조화된 노트다. 하나 이상의 concept에 속하고 `primary-node`가 주 개념을 정한다. 공통 표기를 상위 concept에서 재사용하고 문헌 고유의 기여·유도·한계를 덧붙인다.
 :::
 
 ::: {.process-step}
@@ -54,6 +54,7 @@ AI가 작성한 요약은 기본적으로 `ai-draft`다. 핵심 주장에는 가
 
 - 모르는 것을 그럴듯하게 메우지 않고 질문으로 남긴다.
 - 한 자료의 요약과 여러 자료를 종합한 개념 설명을 구분한다.
+- 반복되는 정의·notation·기본 유도는 reference에 복사하지 않고 concept의 `_includes/notation/`과 `_includes/concepts/` 원본을 재사용한다.
 - 문헌 자료는 논문과 책만 허용한다.
 - 관계 유형을 자유롭게 늘리지 않고 통제된 어휘를 쓴다.
 - 공개 저장소에 둘 수 없는 개인정보나 미공개 연구 자료는 기록하지 않는다.
@@ -63,7 +64,7 @@ AI가 작성한 요약은 기본적으로 `ai-draft`다. 핵심 주장에는 가
 1. `bibliography/references.bib`에 정확한 서지 정보를 넣는다.
 2. `templates/reference.qmd`를 새 `references/<citekey>/index.qmd`로 복사한다.
 3. YAML의 `node-id`, `citekey`, `attached-to`, `primary-node`, 두 상태 필드를 채운다.
-4. 첫 수식 전에 공간·확률변수·측도·계수·시간 방향을 정의하고, 핵심 아이디어가 그 표기에서 어떻게 나오는지 적는다.
+4. 연결된 concept 중 본문에서 실제로 사용하는 공통 notation과 concept-core include를 접힌 상자로 불러오고, 그 문헌이 공통 틀에 새로 추가한 기여부터 적는다.
 5. `python scripts/build_graph.py`로 메타데이터와 관계를 검증한다.
 6. `quarto preview`에서 목록·그래프·링크를 확인한다.
 

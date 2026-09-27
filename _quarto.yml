@@ -21,7 +21,6 @@ bibliography: bibliography/references.bib
 website:
   title: "All of My Future"
   description: "개념과 문헌의 관계를 탐색하는 개인 연구 지식 지도"
-  # GitHub 저장소가 정해지면 아래 줄을 실제 주소로 바꾸고 주석을 해제하세요.
   site-url: "https://20226074.github.io/all-of-my-future/"
   page-navigation: true
   reader-mode: true

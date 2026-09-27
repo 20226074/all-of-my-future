@@ -1,7 +1,7 @@
 ---
 title: "Stochastic Differential Equations"
 short-title: "SDE"
-description: "잡음이 있는 연속시간 동역학을 기술하는 확률해석의 한 분야"
+description: "잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반"
 node-id: topic-sde
 node-type: topic
 status: active
@@ -20,33 +20,21 @@ tags:
 relations: []
 ---
 
-SDE는 잡음이 있는 연속시간 계의 경로를 기술하는 독립적인 연구 주제다. 다른 분야와 만나는 지점은 많지만, 그 연결이 다른 주제를 SDE의 하위 분야로 만들지는 않는다.
+SDE는 다른 응용의 보조도구이기 전에 확률경로 자체를 연구하는 독립적인 분야다. 아래 블록이 이 사이트에서 SDE를 사용하는 모든 페이지의 공통 차원·적분·생성자 표기다 [@oksendal2003sde].
 
-## 최소 문제 설정
+{{< include ../../_includes/notation/sde-core.qmd >}}
 
-대표적인 Itô SDE는 다음처럼 쓸 수 있다.
+## 서로 다른 질문을 구분하기
 
-$$
-dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t.
-$$
+- **경로의 문제:** 주어진 Brownian motion 위에서 strong solution이 존재하고 유일한가?
+- **법칙의 문제:** 해의 분포가 유일한가? 다른 확률공간 위의 weak solution도 허용하는가?
+- **분포의 진화:** $p_t$가 존재할 때 어떤 Fokker-Planck equation을 만족하는가?
+- **함수의 기대값:** $u(t,x)=\mathbb E[\Phi(X_T)\mid X_t=x]$가 어떤 backward PDE를 만족하는가?
 
-여기서 우선 확인할 것은 해의 존재와 유일성, Itô 적분의 의미, 생성자, 그리고 해의 분포가 어떻게 변하는가이다. 계수의 조건에 따라 결론이 달라지므로 일반적인 형태만 보고 성질을 단정하지 않는다. 표준 입문 경로는 [@oksendal2003sde]를 기준점으로 삼는다.
+같은 $dX_t=b\,dt+\sigma\,dW_t$ 표기라도 어떤 해 개념과 가정을 쓰는지 먼저 확인해야 한다.
 
 ## 다른 노드와 만나는 지점
 
-- [High-dimensional PDE Solvers](../high-dimensional-pde/)에서는 확률 표현과 BSDE가 계산법으로 바뀌는 과정을 본다.
-- [Diffusion Models](../diffusion-models/)에서는 forward/reverse-time SDE와 score가 어떤 역할을 하는지 본다.
-- [Fokker-Planck Equation](../fokker-planck/)에서는 개별 경로가 아니라 분포의 시간 변화를 본다.
-- [Optimal Transport](../optimal-transport/)와는 필요할 때 [Fokker-Planck Equation](../fokker-planck/) 같은 더 구체적인 연결을 통해 비교한다.
-
-## 다음 학습 질문
-
-1. 강해와 약해의 차이가 계산 및 모델링 선택에 어떤 영향을 주는가?
-2. 생성자와 Feynman--Kac 표현은 어떤 PDE 클래스에서 정확히 사용할 수 있는가?
-3. reverse-time SDE의 성립 조건은 무엇이며 실제 근사에서는 무엇이 손실되는가?
-
-::: {.callout-note}
-## 초안 상태
-
-현재 내용은 학습 지도의 골격이다. 정리 수준의 주장에는 이후 가정과 원문 위치를 추가한다.
-:::
+- [High-dimensional PDE Solvers](../high-dimensional-pde/)는 PDE-BSDE 표현을 계산법으로 바꾼다.
+- [Diffusion Models](../diffusion-models/)는 forward/reverse-time SDE와 score를 이용해 생성한다.
+- [Fokker-Planck Equation](../fokker-planck/)은 개별 경로가 아니라 법칙의 시간 변화를 기술한다.
