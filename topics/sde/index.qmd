@@ -36,8 +36,8 @@ $$
 
 - [High-dimensional PDE Solvers](../high-dimensional-pde/)에서는 확률 표현과 BSDE가 계산법으로 바뀌는 과정을 본다.
 - [Diffusion Models](../diffusion-models/)에서는 forward/reverse-time SDE와 score가 어떤 역할을 하는지 본다.
-- [Fokker--Planck Equations](../fokker-planck/)에서는 개별 경로가 아니라 분포의 시간 변화를 본다.
-- [Optimal Transport](../optimal-transport/)와는 필요할 때 [Fokker--Planck Equations](../fokker-planck/) 같은 더 구체적인 연결을 통해 비교한다.
+- [Fokker-Planck Equation](../fokker-planck/)에서는 개별 경로가 아니라 분포의 시간 변화를 본다.
+- [Optimal Transport](../optimal-transport/)와는 필요할 때 [Fokker-Planck Equation](../fokker-planck/) 같은 더 구체적인 연결을 통해 비교한다.
 
 ## 다음 학습 질문
 

@@ -25,7 +25,7 @@ relations:
       - song2021score
   - target: topic-fokker-planck
     type: connected-via
-    note: "Forward SDE가 만드는 주변분포의 변화는 Fokker--Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다."
+    note: "Forward SDE가 만드는 주변분포의 변화는 Fokker-Planck 방정식으로 볼 수 있으며, reverse dynamics의 해석과 연결된다."
     evidence:
       - song2021score
   - target: topic-schrodinger-bridge
@@ -34,27 +34,10 @@ relations:
     evidence: []
 ---
 
-이 토픽에서는 이미지 생성 기법 전체보다 **연속시간 확률 과정으로 표현되는 diffusion/score 모델**에 먼저 집중한다. 기본 출발점은 forward noising SDE, 시간별 score 근사, 그리고 reverse-time dynamics이다 [@song2021score].
+{{< include ../../_includes/notation/diffusion-process.qmd >}}
 
-## 핵심 구성요소
+## 생성이 가능한 이유
 
-- 데이터 분포를 단순한 기준 분포 쪽으로 보내는 forward process
-- 시간별 score $\nabla_x \log p_t(x)$의 근사
-- 학습된 score를 사용하는 reverse-time SDE 또는 probability-flow ODE
-- 샘플 품질, 계산량, likelihood 평가 사이의 선택
+Forward process는 $p_0=p_{\mathrm{data}}$를 점차 단순한 $p_T=p_{\mathrm{prior}}$로 보낸다. 생성에서는 반대로 $X_T\sim p_T$를 먼저 뽑고, 학습한 score $s_\theta(x,t)\approx\nabla_x\log p_t(x)$를 사용해 $T$에서 $0$ 방향으로 분포를 되돌린다. 중요한 것은 한 데이터의 노이즈를 제거하는 규칙 하나가 아니라, **모든 시각의 주변분포 $p_t$를 잇는 벡터장**을 학습한다는 점이다 [@song2021score].
 
-## SDE 관점에서 확인할 것
-
-Reverse-time 식은 형식적인 시간 반전만으로 얻어지는 것이 아니다. 밀도의 존재, 계수의 정칙성, score 근사의 정확도 등 필요한 조건을 원문별로 기록해야 한다. 또한 이론식과 실제 discretization 및 sampler의 차이를 분리한다.
-
-## 다음 연결
-
-- [Fokker--Planck Equations](../fokker-planck/): 주변분포가 따르는 방정식
-- [Schrödinger Bridge](../schrodinger-bridge/): 기준 경로 측도에 대한 제약된 분포 연결 문제
-- [SDE](../sde/): 확률 적분과 역시간 동역학의 기반
-
-::: {.callout-note}
-## 확인 대기
-
-Schrödinger bridge와 diffusion model의 관계는 유망한 학습 축이지만, 현재 그래프에서는 탐색 관계로만 둔다.
-:::
+Reverse dynamics의 정확한 식은 forward SDE, 시간 방향, 밀도의 존재와 정칙성에 의존한다. 따라서 이후 문헌 노트에서도 $X_t$, $p_t$, $s_t$의 뜻은 위 표기를 그대로 사용하고, reverse-time 식의 가정과 시간 부호는 각 문헌에서 따로 명시한다.

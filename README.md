@@ -68,8 +68,8 @@ Concept와 entry의 크기는 직접 지정한 `importance`, 연결된 concept/e
 ## 새 문헌 추가
 
 1. `templates/reference.qmd`를 복사해 `references/<slug>/index.qmd`로 저장합니다. 논문·책 한 항목당 한 디렉터리를 사용합니다.
-2. YAML front matter에 `ref-`로 시작하는 고유 `node-id`, `reference-type`, 저자, 연도, `citekey`, 연결할 concept/entry의 `node-id`를 `attached-to`에 기록합니다. URL 또는 DOI는 BibTeX 항목에 넣습니다.
-3. 본문에는 요약, 핵심 아이디어, 이해한 내용, 열린 질문, 다시 볼 부분을 정리합니다.
+2. YAML front matter에 `ref-`로 시작하는 고유 `node-id`, `reference-type`, 저자, 연도, `citekey`, 연결할 concept/entry의 `node-id`를 `attached-to`에 기록합니다. 그중 이 문헌이 주로 속하는 노드 하나를 `primary-node`로 지정합니다. URL 또는 DOI는 BibTeX 항목에 넣습니다.
+3. 본문에는 첫 수식 전에 모든 표기를 정의하고, 핵심 아이디어를 그 정의에서부터 self-contained하게 전개합니다. 공통 표기는 `_includes/notation/`의 블록을 재사용합니다.
 4. BibTeX 항목을 `bibliography/references.bib`에 추가하고, 그 키를 문서의 `citekey`와 본문 인용에 사용합니다.
 5. `quarto preview`로 해당 concept/entry의 상세 패널에 문헌이 나타나는지 확인합니다.
 
@@ -87,7 +87,9 @@ python scripts/build_graph.py
 
 Quarto 설정의 `project.pre-render`에도 같은 명령이 연결되어 있으므로 `quarto preview`, `quarto render`, GitHub Actions 배포 때 그래프가 자동으로 갱신됩니다. 생성 오류가 나면 중복된 ID, 존재하지 않는 연결 ID, 템플릿에서 빠진 필드를 먼저 확인합니다.
 
-왼쪽 탐색기의 concept/entry 순서는 드래그하거나 이동 핸들에서 `Alt+↑/↓`를 눌러 바꿀 수 있습니다. 정적 사이트라 이 순서는 현재 브라우저의 로컬 저장소에 보관되며, 다른 기기나 브라우저와 자동 동기화되지는 않습니다.
+왼쪽 탐색기의 concept/entry 순서는 드래그하거나 이동 핸들에서 `Alt+↑/↓`를 눌러 바꿀 수 있습니다. 그래프 노드를 드래그하면 위치가 고정되고, 오른쪽 **배치 편집**에서는 중요도를 바꿀 수 있습니다. 순서·위치·중요도는 같은 사이트 주소의 현재 브라우저에 자동 저장되므로 브라우저나 컴퓨터를 다시 시작해도 유지됩니다. 단, `127.0.0.1` 미리보기와 GitHub Pages는 서로 다른 주소이므로 저장값을 공유하지 않습니다.
+
+다른 기기로 옮기려면 왼쪽의 **배치 내보내기**로 `graph-view.json`을 받은 뒤 새 기기에서 **가져오기**를 사용합니다. 이 배치를 사이트의 공통 기본값으로 만들려면 내보낸 파일을 `data/graph-view.json`으로 교체하고 commit/push합니다. GitHub Pages는 정적 사이트이므로 공개 브라우저에서 저장소에 안전하게 직접 쓰지는 않습니다.
 
 ## 최초 GitHub Pages 배포
 

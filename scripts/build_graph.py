@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 import re
 import sys
 from pathlib import Path
@@ -13,6 +14,7 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets" / "generated" / "knowledge-graph.json"
+GRAPH_VIEW = ROOT / "data" / "graph-view.json"
 NODE_ID_PATTERN = re.compile(r"^(topic|entry|ref)-[a-z0-9][a-z0-9-]*$")
 READING_STATUSES = {"inbox", "queued", "reading", "complete"}
 NOTE_STATUSES = {"stub", "ai-draft", "checked", "verified"}
@@ -54,6 +56,40 @@ def scalar_text(value: Any) -> str:
     return str(value or "")
 
 
+def first_author_text(value: Any) -> str:
+    if isinstance(value, list):
+        return scalar_text(value[0]) if value else ""
+    text = scalar_text(value).strip()
+    if not text:
+        return ""
+    return re.split(r"\s*(?:;|\band\b|,)\s*", text, maxsplit=1)[0].strip()
+
+
+def load_graph_view(errors: list[str]) -> dict[str, Any]:
+    default = {"schemaVersion": 1, "explorerOrder": [], "nodes": {}}
+    if not GRAPH_VIEW.exists():
+        return default
+    try:
+        data = json.loads(GRAPH_VIEW.read_text(encoding="utf-8-sig"))
+    except (OSError, json.JSONDecodeError) as exc:
+        errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: JSON을 읽을 수 없습니다: {exc}")
+        return default
+    if not isinstance(data, dict):
+        errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: 최상위 값은 object여야 합니다.")
+        return default
+    if data.get("schemaVersion") != 1:
+        errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: schemaVersion은 1이어야 합니다.")
+    if not isinstance(data.get("explorerOrder", []), list):
+        errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: explorerOrder는 node-id 목록이어야 합니다.")
+    if not isinstance(data.get("nodes", {}), dict):
+        errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: nodes는 object여야 합니다.")
+    return {
+        "schemaVersion": 1,
+        "explorerOrder": data.get("explorerOrder", []),
+        "nodes": data.get("nodes", {}),
+    }
+
+
 def bibliography_keys() -> set[str]:
     bib_path = ROOT / "bibliography" / "references.bib"
     if not bib_path.exists():
@@ -73,6 +109,7 @@ def load_relation_types() -> tuple[set[str], set[str]]:
 
 def main() -> int:
     errors: list[str] = []
+    graph_view = load_graph_view(errors)
     records: list[tuple[Path, dict[str, Any]]] = []
     content_roots = [ROOT / "topics", ROOT / "entries", ROOT / "references"]
     source_paths = [
@@ -141,6 +178,19 @@ def main() -> int:
             if not isinstance(importance, int) or isinstance(importance, bool) or not 1 <= importance <= 5:
                 errors.append(f"{relative}: importance는 1부터 5 사이의 정수여야 합니다.")
                 importance = 3
+            view_node = graph_view.get("nodes", {}).get(node_id, {})
+            if isinstance(view_node, dict) and "importance" in view_node:
+                view_importance = view_node.get("importance")
+                if (
+                    not isinstance(view_importance, int)
+                    or isinstance(view_importance, bool)
+                    or not 1 <= view_importance <= 5
+                ):
+                    errors.append(
+                        f"{GRAPH_VIEW.relative_to(ROOT)}: {node_id}.importance는 1부터 5 사이의 정수여야 합니다."
+                    )
+                else:
+                    importance = view_importance
             node.update(
                 {
                     "maturity": scalar_text(meta.get("maturity")),
@@ -160,6 +210,7 @@ def main() -> int:
             reading_status = scalar_text(meta.get("reading-status"))
             note_status = scalar_text(meta.get("note-status"))
             citekey = scalar_text(meta.get("citekey"))
+            primary_node = scalar_text(meta.get("primary-node"))
             raw_attached_to = meta.get("attached-to") if "attached-to" in meta else meta.get("topics", [])
             attached_to: list[str] = []
             if not isinstance(raw_attached_to, list):
@@ -181,6 +232,10 @@ def main() -> int:
                 errors.append(f"{relative}: 알 수 없는 note-status '{note_status}'")
             if citekey not in citekeys:
                 errors.append(f"{relative}: citekey '{citekey}'가 bibliography에 없습니다.")
+            if not primary_node:
+                errors.append(f"{relative}: primary-node가 필요합니다.")
+            elif primary_node not in attached_to:
+                errors.append(f"{relative}: primary-node '{primary_node}'는 attached-to에도 있어야 합니다.")
             if meta.get("source-checked") not in {True, False}:
                 errors.append(f"{relative}: source-checked는 true 또는 false여야 합니다.")
             node.update(
@@ -192,7 +247,9 @@ def main() -> int:
                     "citekey": citekey,
                     "year": meta.get("year"),
                     "author": scalar_text(meta.get("author")),
+                    "firstAuthor": first_author_text(meta.get("author")),
                     "attachedTo": attached_to,
+                    "primaryNode": primary_node,
                     "cluster": "references",
                 }
             )
@@ -200,6 +257,73 @@ def main() -> int:
 
     edges: list[dict[str, Any]] = []
     known_ids = set(metadata_by_id)
+    graph_node_ids = {
+        node_id
+        for node_id, (_, meta) in metadata_by_id.items()
+        if meta.get("node-type") in {"topic", "entry"}
+    }
+
+    validated_order: list[str] = []
+    seen_order: set[str] = set()
+    for node_id in graph_view.get("explorerOrder", []):
+        if not isinstance(node_id, str) or not node_id.strip():
+            errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: explorerOrder에는 node-id 문자열만 쓸 수 있습니다.")
+            continue
+        node_id = node_id.strip()
+        if node_id in seen_order:
+            errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: explorerOrder에 '{node_id}'가 중복됩니다.")
+            continue
+        if node_id not in graph_node_ids:
+            errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: explorerOrder의 '{node_id}'는 그래프 노드가 아닙니다.")
+            continue
+        seen_order.add(node_id)
+        validated_order.append(node_id)
+
+    validated_view_nodes: dict[str, dict[str, Any]] = {}
+    for node_id, config in graph_view.get("nodes", {}).items():
+        if node_id not in graph_node_ids:
+            errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: nodes의 '{node_id}'는 그래프 노드가 아닙니다.")
+            continue
+        if not isinstance(config, dict):
+            errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: nodes.{node_id}는 object여야 합니다.")
+            continue
+        cleaned: dict[str, Any] = {}
+        if "importance" in config:
+            value = config.get("importance")
+            if not isinstance(value, int) or isinstance(value, bool) or not 1 <= value <= 5:
+                errors.append(
+                    f"{GRAPH_VIEW.relative_to(ROOT)}: nodes.{node_id}.importance는 1부터 5 사이의 정수여야 합니다."
+                )
+            else:
+                cleaned["importance"] = value
+        has_x = "x" in config
+        has_y = "y" in config
+        if has_x != has_y:
+            errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: nodes.{node_id}의 x와 y는 함께 있어야 합니다.")
+        elif has_x and has_y:
+            x = config.get("x")
+            y = config.get("y")
+            coordinates = (x, y)
+            if any(
+                isinstance(value, bool)
+                or not isinstance(value, (int, float))
+                or not math.isfinite(value)
+                or not 0 <= value <= 1
+                for value in coordinates
+            ):
+                errors.append(
+                    f"{GRAPH_VIEW.relative_to(ROOT)}: nodes.{node_id}의 x와 y는 0부터 1 사이의 유한한 수여야 합니다."
+                )
+            else:
+                cleaned.update({"x": float(x), "y": float(y)})
+        if "pinned" in config:
+            pinned = config.get("pinned")
+            if not isinstance(pinned, bool):
+                errors.append(f"{GRAPH_VIEW.relative_to(ROOT)}: nodes.{node_id}.pinned은 boolean이어야 합니다.")
+            else:
+                cleaned["pinned"] = pinned
+        validated_view_nodes[node_id] = cleaned
+
     for source_id, (path, meta) in metadata_by_id.items():
         relative = path.relative_to(ROOT).as_posix()
         node_type = meta.get("node-type")
@@ -264,7 +388,7 @@ def main() -> int:
     edges.sort(key=lambda edge: (edge["source"], edge["target"], edge["relation"]))
 
     graph = {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "generatedFrom": "Quarto front matter",
         "stats": {
             "topics": sum(node["kind"] == "topic" for node in nodes),
@@ -276,6 +400,11 @@ def main() -> int:
             "graphRelations": sum(edge["relation"] != "documents" for edge in edges),
             "documentLinks": sum(edge["relation"] == "documents" for edge in edges),
             "relations": len(edges),
+        },
+        "view": {
+            "schemaVersion": 1,
+            "explorerOrder": validated_order,
+            "nodes": validated_view_nodes,
         },
         "nodes": nodes,
         "edges": edges,

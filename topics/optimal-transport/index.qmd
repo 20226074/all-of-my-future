@@ -20,7 +20,7 @@ tags:
 relations:
   - target: topic-fokker-planck
     type: connected-via
-    note: "일부 Fokker--Planck 동역학은 Wasserstein 공간의 gradient-flow 관점에서 연구된다. 정확한 에너지와 가정은 문제별로 확인한다."
+    note: "일부 Fokker-Planck 동역학은 Wasserstein 공간의 gradient-flow 관점에서 연구된다. 정확한 에너지와 가정은 문제별로 확인한다."
     evidence:
       - villani2009ot
   - target: topic-schrodinger-bridge
@@ -41,7 +41,7 @@ Optimal Transport(OT)는 한 확률분포를 다른 확률분포로 옮기는 �
 
 ## SDE와의 연결 가설
 
-개별 확률 경로를 다루는 SDE와 분포 공간의 기하를 다루는 OT는 [Fokker--Planck Equations](../fokker-planck/)를 매개로 만날 수 있다. 다만 모든 SDE 동역학이 곧바로 Wasserstein gradient flow가 되는 것은 아니므로, drift·diffusion과 에너지 함수의 형태를 명시해야 한다.
+개별 확률 경로를 다루는 SDE와 분포 공간의 기하를 다루는 OT는 [Fokker-Planck Equation](../fokker-planck/)을 매개로 만날 수 있다. 다만 모든 SDE 동역학이 곧바로 Wasserstein gradient flow가 되는 것은 아니므로, drift·diffusion과 에너지 함수의 형태를 명시해야 한다.
 
 ## 다음 질문
 

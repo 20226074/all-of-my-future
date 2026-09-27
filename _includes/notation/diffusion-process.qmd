@@ -1,0 +1,39 @@
+## 공통 표기
+
+시간은 $t\in[0,T]$로 두고, $X_t\in\mathbb{R}^d$는 시각 $t$의 **확률 상태**를 뜻한다. 대문자 $X_t$는 아직 값이 정해지지 않은 확률변수이고, 소문자 $x_t$는 그 확률변수에서 실제로 얻은 한 상태값이다. 한 표본의 변화는
+
+$$
+x_0\longrightarrow x_t\longrightarrow x_T
+$$
+
+처럼 읽는다. $X_t$의 법칙이 밀도를 가지면 그 밀도를 $p_t(x)$라고 쓴다. 따라서 $p_t(x)\,dx$는 $X_t$가 $x$ 근처의 작은 부피 $dx$ 안에 있을 확률이다.
+
+Diffusion model에서는 보통
+
+$$
+X_0\sim p_{\mathrm{data}},
+\qquad
+p_T\approx p_{\mathrm{prior}}
+$$
+
+가 되도록 forward process와 충분히 큰 종료 시각 $T$를 정한다. $p_{\mathrm{data}}$는 학습 데이터의 분포이고, $p_{\mathrm{prior}}$는 표본을 쉽게 만들 수 있는 단순한 분포—대개 가우시안—다. $q_{t\mid 0}(x_t\mid x_0)$가 $x_0$에서 출발해 시각 $t$에 $x_t$가 될 조건부 밀도라면
+
+$$
+p_t(x_t)
+=\int q_{t\mid 0}(x_t\mid x_0)
+      p_{\mathrm{data}}(x_0)\,dx_0.
+$$
+
+즉 $p_t$는 모든 깨끗한 데이터 $x_0$에 노이즈를 더한 결과를 섞은 주변분포다. 연속시간 forward process는 흔히
+
+$$
+dX_t=f(t,X_t)\,dt+g(t)\,dW_t
+$$
+
+로 쓴다. 여기서 $W_t$는 표준 Brownian motion, $f$는 평균적인 이동을 정하는 drift, $g$는 주입되는 노이즈의 크기다. 시각 $t$의 score는
+
+$$
+s_t(x):=\nabla_x\log p_t(x)
+$$
+
+이며, 현재 상태 $x$를 그 시각의 고밀도 방향으로 얼마나 움직여야 하는지를 나타내는 벡터장이다. 신경망 $s_\theta(x,t)$는 이 $s_t(x)$를 근사하도록 학습한다.

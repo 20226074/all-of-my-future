@@ -545,7 +545,7 @@ section.section-kicker > h2 {
 }
 
 .graph-app.has-selection {
-  grid-template-columns: 286px minmax(0, 1fr) 348px;
+  grid-template-columns: 286px minmax(280px, 1fr) clamp(380px, 36vw, 540px);
 }
 
 .graph-explorer {
@@ -577,6 +577,47 @@ section.section-kicker > h2 {
   font-weight: 850;
   letter-spacing: 0.16em;
   margin: 0;
+}
+
+.explorer-storage-status {
+  color: var(--atlas-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.explorer-storage-status[data-local="true"] {
+  color: var(--atlas-teal);
+}
+
+.explorer-view-tools {
+  display: grid;
+  gap: 0.35rem;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 0.6rem;
+}
+
+.explorer-view-button {
+  background: transparent;
+  border: 1px solid var(--atlas-line);
+  border-radius: 7px;
+  color: var(--atlas-muted);
+  cursor: pointer;
+  font-size: 0.66rem;
+  font-weight: 700;
+  min-height: 30px;
+  padding: 0.3rem 0.4rem;
+}
+
+.explorer-view-button:last-of-type {
+  grid-column: 1 / -1;
+}
+
+.explorer-view-button:hover,
+.explorer-view-button:focus-visible {
+  border-color: var(--atlas-teal);
+  color: var(--atlas-teal);
+  outline: 0;
 }
 
 .explorer-order-reset {
@@ -1012,6 +1053,14 @@ section.section-kicker > h2 {
   padding: 1.3rem;
 }
 
+.knowledge-panel.is-reference-detail {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
 .graph-panel-empty {
   color: var(--atlas-muted);
   display: flex;
@@ -1030,7 +1079,8 @@ section.section-kicker > h2 {
 }
 
 .knowledge-panel h3 {
-  font-size: 1.45rem;
+  font-size: 1.25rem;
+  line-height: 1.28;
   margin: 0 0 0.8rem;
 }
 
@@ -1046,9 +1096,55 @@ section.section-kicker > h2 {
   margin: 1rem 0;
 }
 
-.status-badge[data-status="importance"] {
-  background: var(--atlas-blue-soft);
-  color: var(--atlas-blue);
+.panel-layout-editor {
+  border: 1px solid var(--atlas-line);
+  border-radius: 9px;
+  margin-top: 1rem;
+  padding: 0.55rem 0.65rem;
+}
+
+.panel-layout-editor summary {
+  color: var(--atlas-muted);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 750;
+}
+
+.panel-importance-control {
+  align-items: center;
+  display: grid;
+  font-size: 0.72rem;
+  gap: 0.55rem;
+  grid-template-columns: auto minmax(90px, 1fr) auto;
+  margin-top: 0.7rem;
+}
+
+.panel-importance-control input {
+  accent-color: var(--atlas-teal);
+  min-width: 0;
+}
+
+.panel-importance-control output {
+  color: var(--atlas-teal);
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+.panel-layout-hint {
+  color: var(--atlas-muted);
+  font-size: 0.68rem;
+  line-height: 1.45;
+  margin: 0.65rem 0;
+}
+
+.panel-position-reset {
+  background: transparent;
+  border: 0;
+  color: var(--atlas-teal);
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-weight: 750;
+  padding: 0;
 }
 
 .panel-sources,
@@ -1099,6 +1195,31 @@ section.section-kicker > h2 {
   padding: 0.58rem 0.65rem;
 }
 
+.panel-source-top {
+  align-items: center;
+  display: flex;
+  gap: 0.45rem;
+  justify-content: space-between;
+  margin-bottom: 0.3rem;
+}
+
+.panel-source-kind,
+.panel-source-origin {
+  color: var(--atlas-muted);
+  font-size: 0.56rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.panel-source-origin {
+  color: var(--atlas-violet);
+  max-width: 58%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .panel-source-item + .panel-source-item {
   margin-top: 0.4rem;
 }
@@ -1106,11 +1227,13 @@ section.section-kicker > h2 {
 .panel-source-link {
   display: block;
   font-family: var(--atlas-serif);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 650;
   line-height: 1.35;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
   text-decoration: none;
+  white-space: nowrap;
 }
 
 .panel-source-meta {
@@ -1119,7 +1242,9 @@ section.section-kicker > h2 {
   font-size: 0.64rem;
   line-height: 1.4;
   margin-top: 0.22rem;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .panel-source-item:focus-within,
@@ -1163,6 +1288,95 @@ section.section-kicker > h2 {
 
 .panel-open {
   margin-top: 1.2rem;
+  width: 100%;
+}
+
+.reference-detail-header {
+  background: color-mix(in srgb, var(--atlas-paper) 72%, var(--atlas-surface));
+  border-bottom: 1px solid var(--atlas-line);
+  flex: 0 0 auto;
+  padding: 1rem 1.1rem 0.85rem;
+}
+
+.reference-detail-back {
+  background: transparent;
+  border: 0;
+  color: var(--atlas-teal);
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 750;
+  margin: 0 0 0.65rem;
+  max-width: 100%;
+  overflow: hidden;
+  padding: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-detail-heading-row {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.reference-detail-heading-row .panel-type {
+  margin-bottom: 0.45rem;
+}
+
+.reference-detail-external {
+  color: var(--atlas-muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.reference-detail-header h3 {
+  font-size: 1.03rem;
+  line-height: 1.32;
+  margin-bottom: 0.38rem;
+}
+
+.reference-detail-authors {
+  color: var(--atlas-muted);
+  font-size: 0.7rem;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reference-detail-topics {
+  display: flex;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+  overflow-x: auto;
+  padding-bottom: 0.1rem;
+}
+
+.reference-topic-chip {
+  background: transparent;
+  border: 1px solid var(--atlas-line);
+  border-radius: 999px;
+  color: var(--atlas-muted);
+  cursor: pointer;
+  flex: 0 0 auto;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.22rem 0.5rem;
+}
+
+.reference-topic-chip.is-primary {
+  background: var(--atlas-teal-soft);
+  border-color: transparent;
+  color: var(--atlas-teal);
+}
+
+.reference-detail-frame {
+  background: var(--atlas-surface);
+  border: 0;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
 }
 
@@ -1303,7 +1517,7 @@ section.section-kicker > h2 {
   border-radius: 14px;
   display: flex;
   flex-direction: column;
-  min-height: 300px;
+  min-height: 220px;
   padding: 1.15rem;
   transition: border-color 150ms ease, box-shadow 150ms ease, transform 150ms ease;
 }
@@ -1335,8 +1549,8 @@ section.section-kicker > h2 {
 }
 
 .reference-card h3 {
-  font-size: 1.22rem;
-  line-height: 1.22;
+  font-size: 1.02rem;
+  line-height: 1.3;
   margin: 1.05rem 0 0.45rem;
 }
 
@@ -1354,12 +1568,9 @@ section.section-kicker > h2 {
   font-size: 0.72rem;
   line-height: 1.45;
   margin-bottom: 0.65rem;
-}
-
-.reference-description {
-  color: var(--atlas-muted);
-  font-size: 0.83rem;
-  line-height: 1.55;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .reference-topics {
@@ -1370,7 +1581,16 @@ section.section-kicker > h2 {
 }
 
 .reference-topics .topic-chip {
+  background: transparent;
+  border: 1px solid var(--atlas-line);
+  color: var(--atlas-muted);
   text-decoration: none;
+}
+
+.reference-topics .topic-chip.is-primary {
+  background: var(--atlas-teal-soft);
+  border-color: transparent;
+  color: var(--atlas-teal);
 }
 
 .reference-empty {
@@ -1378,6 +1598,93 @@ section.section-kicker > h2 {
   grid-column: 1 / -1;
   padding: 3rem 1rem;
   text-align: center;
+}
+
+html.atlas-reference-page #title-block-header.quarto-title-block.default .quarto-title .title {
+  font-size: clamp(1.55rem, 3vw, 2.25rem);
+  line-height: 1.2;
+}
+
+html.atlas-reference-page #title-block-header .description {
+  display: none;
+}
+
+html.atlas-reference-page #title-block-header .quarto-title-meta {
+  display: block;
+}
+
+html.atlas-reference-page #title-block-header .quarto-title-meta-contents {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0;
+  overflow-x: auto;
+}
+
+html.atlas-reference-page #title-block-header .quarto-title-meta-contents p {
+  flex: 0 0 auto;
+  margin: 0;
+  white-space: nowrap;
+}
+
+html.atlas-reference-page #title-block-header .quarto-title-meta-contents p:not(:last-child)::after {
+  content: ",\00a0";
+}
+
+html.atlas-embedded .navbar,
+html.atlas-embedded #quarto-sidebar-glass,
+html.atlas-embedded .sidebar-navigation,
+html.atlas-embedded #quarto-margin-sidebar,
+html.atlas-embedded .page-footer,
+html.atlas-embedded footer.footer,
+html.atlas-embedded #quarto-back-to-top,
+html.atlas-embedded #title-block-header {
+  display: none !important;
+}
+
+html.atlas-embedded body {
+  background: var(--atlas-surface);
+  overflow-x: hidden;
+}
+
+html.atlas-embedded #quarto-content,
+html.atlas-embedded .page-columns {
+  display: block !important;
+  min-height: 0;
+  padding: 0 !important;
+}
+
+html.atlas-embedded main.content {
+  margin: 0 !important;
+  max-width: none !important;
+  padding: 0.95rem 1.1rem 3rem !important;
+  width: 100% !important;
+}
+
+html.atlas-embedded .reference-note-content > :first-child,
+html.atlas-embedded .reference-note-content > section:first-child > h2:first-child {
+  margin-top: 0.2rem;
+}
+
+html.atlas-embedded .reference-note-content h2 {
+  font-size: 1.14rem;
+  margin-top: 1.9rem;
+}
+
+html.atlas-embedded .reference-note-content {
+  font-size: 0.91rem;
+  line-height: 1.68;
+}
+
+html.atlas-embedded .reference-note-content .math.display {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+html.atlas-embedded mjx-container[jax="CHTML"][display="true"] {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 0.25rem;
 }
 
 @container (max-width: 720px) {
@@ -1517,6 +1824,10 @@ blockquote {
     grid-column: 1 / -1;
     grid-row: 2;
     min-height: 210px;
+  }
+
+  .knowledge-panel.is-reference-detail {
+    min-height: 560px;
   }
 
   .graph-panel-empty {

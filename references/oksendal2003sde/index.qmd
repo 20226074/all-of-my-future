@@ -2,7 +2,7 @@
 title: "Stochastic Differential Equations: An Introduction with Applications"
 short-title: "Øksendal (2003)"
 author: "Bernt Øksendal"
-description: "Itô 적분에서 확산, 경계값 문제, 확률제어 응용까지 이어지는 SDE 입문 교재."
+graph-summary: "Itô 적분에서 확산, 경계값 문제, 확률제어 응용까지 이어지는 SDE 입문 교재."
 node-id: ref-oksendal2003sde
 node-type: reference
 reference-type: book
@@ -10,6 +10,7 @@ citekey: oksendal2003sde
 year: 2003
 attached-to:
   - topic-sde
+primary-node: topic-sde
 reading-status: queued
 note-status: ai-draft
 source-checked: false
@@ -21,42 +22,66 @@ tags:
   - diffusion-processes
 ---
 
-::: {.callout-warning title="AI 초안 · 원문 확인 필요"}
-이 노트는 [Springer의 공식 도서 페이지](https://link.springer.com/book/10.1007/978-3-642-14394-6)에 공개된 서지정보와 목차만을 바탕으로 작성했다. 원문 전체를 정독한 요약이 아니며, 세부 내용은 직접 읽은 뒤 검증해야 한다.
-:::
+::: {.reference-note-content}
+## 공통 표기
 
-## 한 줄 요약
+확률공간 $(\Omega,\mathcal F,\mathbb P)$와 정보의 증가를 나타내는 filtration $(\mathcal F_t)_{t\ge0}$를 둔다. $W_t$는 $(\mathcal F_t)$에 적응된 Brownian motion이다. 과정 $H_t$가 시각 $t$까지의 정보만 사용한다면 적응되었다고 하며, 적절한 제곱적분 조건 아래 Itô 적분
 
-Itô 적분과 Itô 공식에서 시작해 확산과 SDE의 여러 응용으로 나아가는 6판 입문 교재다.
+$$
+\int_0^t H_s\,dW_s
+$$
 
-## 왜 읽는가
+을 정의할 수 있다. 이 적분은 보통 경로별 Riemann–Stieltjes 적분이 아니며, 평균이 $0$이고
 
-[SDE](../../topics/sde/index.qmd)의 확률적분·확산 과정에 필요한 공통 언어를 점검하기 위한 기초 레퍼런스로 둔다.
+$$
+\mathbb E\left|\int_0^t H_s\,dW_s\right|^2
+=\mathbb E\int_0^t |H_s|^2\,ds
+$$
+
+라는 Itô isometry를 만족한다.
 
 ## 핵심 아이디어
 
-출판사 목차에서 직접 확인되는 범위는 다음과 같다.
+Itô SDE
 
-- 수학적 준비 뒤 Itô 적분, Itô 공식, 마팅게일 표현정리를 다룬다.
-- SDE와 확산의 기본 성질을 거쳐 필터링, 경계값 문제, 최적정지, 확률제어, 수리금융 응용으로 이어진다.
-- 이 페이지에는 아직 각 정리의 가정, 증명 또는 예제를 옮기지 않았다.
+$$
+dX_t=b(t,X_t)\,dt+\sigma(t,X_t)\,dW_t,
+\qquad X_0=\xi
+$$
 
-## 그래프에서의 위치
+의 해란 적분식
 
-- 연결 대상: [Stochastic Differential Equations](../../topics/sde/index.qmd)
-- 역할: SDE 개념을 뒷받침하는 기초 교재 노드
-- 다음 연결 후보: Itô calculus, diffusion processes, Feynman–Kac 관계. 후보 연결은 해당 절을 직접 읽은 뒤 확정한다.
+$$
+X_t=\xi+\int_0^t b(s,X_s)\,ds
++\int_0^t\sigma(s,X_s)\,dW_s
+$$
 
-## 확인할 주장
+을 만족하는 적응 과정이다. $b$는 평균적 이동, $\sigma$는 무작위 변동의 방향과 크기를 정한다.
 
-- [ ] 책에서 채택하는 확률공간과 적응성 가정을 정리한다.
-- [ ] SDE 해의 존재·유일성 정리에 필요한 정확한 조건을 확인한다.
-- [ ] 확산과 경계값 문제의 연결이 어떤 정리와 가정 아래 제시되는지 확인한다.
-- [ ] 후속 연구에 필요한 장과 연습문제의 우선순위를 매긴다.
+매끄러운 함수 $\varphi(t,x)$에 대해 Itô 공식은
 
-## 인용
+$$
+d\varphi(t,X_t)
+=\left(
+\partial_t\varphi
++b\cdot\nabla\varphi
++\frac12\operatorname{Tr}(\sigma\sigma^\top D^2\varphi)
+\right)dt
++\nabla\varphi^\top\sigma\,dW_t
+$$
 
-서지정보: [@oksendal2003sde]
+를 준다. 괄호 안의 공간 미분 연산자
 
-- 공식 출판사 페이지: <https://link.springer.com/book/10.1007/978-3-642-14394-6>
-- DOI: <https://doi.org/10.1007/978-3-642-14394-6>
+$$
+L\varphi
+=b\cdot\nabla\varphi
++\frac12\operatorname{Tr}(\sigma\sigma^\top D^2\varphi)
+$$
+
+가 diffusion의 generator다. 이 하나의 공식에서 마팅게일 성질, Kolmogorov 방정식, Feynman–Kac 표현, 확률제어로 이어지는 공통 언어가 나온다.
+
+## 원문
+
+- 서지정보: [@oksendal2003sde]
+- [Springer 도서 페이지](https://link.springer.com/book/10.1007/978-3-642-14394-6)
+:::

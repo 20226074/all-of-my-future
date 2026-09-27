@@ -1,5 +1,5 @@
 ---
-title: "Fokker--Planck Equations"
+title: "Fokker-Planck Equation"
 description: "확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE"
 node-id: topic-fokker-planck
 node-type: topic
@@ -25,7 +25,7 @@ relations:
       - oksendal2003sde
 ---
 
-Fokker--Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 $p_t(x)$가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.
+Fokker-Planck 방정식은 SDE의 표본 경로 자체가 아니라 시간에 따른 확률 법칙을 기술한다. 밀도 $p_t(x)$가 존재하고 필요한 정칙성이 확보된 경우, drift와 diffusion 계수로부터 전방 방정식을 유도할 수 있다.
 
 ## 기본 형태
 

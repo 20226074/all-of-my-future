@@ -1,6 +1,6 @@
 ---
 title: "References"
-description: "지식 그래프에 연결된 논문과 책의 읽기·요약 상태를 관리합니다."
+description: "지식 그래프에 연결된 논문과 책의 읽기·노트 상태를 관리합니다."
 toc: false
 ---
 
