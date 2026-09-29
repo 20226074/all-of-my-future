@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="독립적인 연구 개념과 그 사이의 연결">
+<meta name="description" content="Non-multiplicative discount 아래 diagonal costate를 discount-free kernel로 학습하고 first-order equilibrium gap을 인증하는 연구 프로젝트">
 
-<title>Topics – All of My Future</title>
+<title>Adjoint Costate Method – All of My Future</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,27 +27,44 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "일치 없음",
@@ -63,36 +80,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "검색"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-status','listing-maturity','listing-tags',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      page: 12,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -125,7 +112,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../../assets/styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -297,7 +284,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">All of My Future</span>
     </a>
   </div>
@@ -307,15 +294,15 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../queue.html"> 
+    <a class="nav-link" href="../../queue.html"> 
 <span class="menu-text">Queue</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../log/index.html"> 
+    <a class="nav-link" href="../../log/index.html"> 
 <span class="menu-text">Log</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -335,8 +322,29 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#acm이-풀려는-정확한-문제" id="toc-acm이-풀려는-정확한-문제" class="nav-link active" data-scroll-target="#acm이-풀려는-정확한-문제">ACM이 풀려는 정확한 문제</a></li>
+  <li><a href="#왜-삼각형-전체의-작은-loss로는-충분하지-않은가" id="toc-왜-삼각형-전체의-작은-loss로는-충분하지-않은가" class="nav-link" data-scroll-target="#왜-삼각형-전체의-작은-loss로는-충분하지-않은가">왜 삼각형 전체의 작은 loss로는 충분하지 않은가</a></li>
+  <li><a href="#단계-anchored-costate-방정식" id="toc-단계-anchored-costate-방정식" class="nav-link" data-scroll-target="#단계-anchored-costate-방정식">1단계: anchored costate 방정식</a></li>
+  <li><a href="#단계-discount-free-kernel-factorization" id="toc-단계-discount-free-kernel-factorization" class="nav-link" data-scroll-target="#단계-discount-free-kernel-factorization">2단계: discount-free kernel factorization</a></li>
+  <li><a href="#단계-diagonal-read-out과-policy-합성" id="toc-단계-diagonal-read-out과-policy-합성" class="nav-link" data-scroll-target="#단계-diagonal-read-out과-policy-합성">3단계: diagonal read-out과 policy 합성</a></li>
+  <li><a href="#단계-무엇을-학습하는가" id="toc-단계-무엇을-학습하는가" class="nav-link" data-scroll-target="#단계-무엇을-학습하는가">4단계: 무엇을 학습하는가</a></li>
+  <li><a href="#단계-residual-defect에서-equilibrium-gap까지" id="toc-단계-residual-defect에서-equilibrium-gap까지" class="nav-link" data-scroll-target="#단계-residual-defect에서-equilibrium-gap까지">5단계: residual defect에서 equilibrium gap까지</a></li>
+  <li><a href="#실험이-보여주는-것과-보여주지-않는-것" id="toc-실험이-보여주는-것과-보여주지-않는-것" class="nav-link" data-scroll-target="#실험이-보여주는-것과-보여주지-않는-것">실험이 보여주는 것과 보여주지 않는 것</a></li>
+  <li><a href="#현재-이론의-정확한-경계" id="toc-현재-이론의-정확한-경계" class="nav-link" data-scroll-target="#현재-이론의-정확한-경계">현재 이론의 정확한 경계</a></li>
+  <li><a href="#연결-문헌-지도" id="toc-연결-문헌-지도" class="nav-link" data-scroll-target="#연결-문헌-지도">연결 문헌 지도</a>
+  <ul class="collapse">
+  <li><a href="#먼저-읽을-이론적-뼈대" id="toc-먼저-읽을-이론적-뼈대" class="nav-link" data-scroll-target="#먼저-읽을-이론적-뼈대">먼저 읽을 이론적 뼈대</a></li>
+  <li><a href="#수치-방법과-학습" id="toc-수치-방법과-학습" class="nav-link" data-scroll-target="#수치-방법과-학습">수치 방법과 학습</a></li>
+  <li><a href="#금융-모형에서-equilibrium이-실제로-나타나는-방식" id="toc-금융-모형에서-equilibrium이-실제로-나타나는-방식" class="nav-link" data-scroll-target="#금융-모형에서-equilibrium이-실제로-나타나는-방식">금융 모형에서 equilibrium이 실제로 나타나는 방식</a></li>
+  </ul></li>
+  <li><a href="#다음-연구-점검사항" id="toc-다음-연구-점검사항" class="nav-link" data-scroll-target="#다음-연구-점검사항">다음 연구 점검사항</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -344,12 +352,12 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Topics</h1>
+<h1 class="title">Adjoint Costate Method</h1>
 </div>
 
 <div>
   <div class="description">
-    독립적인 연구 개념과 그 사이의 연결
+    Non-multiplicative discount 아래 diagonal costate를 discount-free kernel로 학습하고 first-order equilibrium gap을 인증하는 연구 프로젝트
   </div>
 </div>
 
@@ -366,730 +374,284 @@ window.Quarto = {
 </header>
 
 
-<p>이곳은 개별 논문이나 책의 요약을 넘어, 여러 레퍼런스에서 얻은 이해를 주제별로 합치는 공간이다. 이 목록의 모든 개념은 동등한 출발점이다. 연결은 특정 이론·방법·문헌이 만나는 맥락을 나타내며, 학습이 진행되면서 수정될 수 있다.</p>
-<p>토픽의 <code>maturity</code>는 내용의 완성도가 아니라 현재 이해의 성숙도를 나타낸다.</p>
+<p>이 프로젝트는 현재 진행 중인 익명 원고 <strong>The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting</strong>을 중심으로 한다. 동료평가가 완료된 결과가 아니므로, 아래에는 원고가 주장하는 정리와 실험을 정확히 분리해 기록한다.</p>
+<section id="acm이-풀려는-정확한-문제" class="level2">
+<h2 class="anchored" data-anchor-id="acm이-풀려는-정확한-문제">ACM이 풀려는 정확한 문제</h2>
+<p>Adjoint Costate Method(ACM)는 non-multiplicative discount 때문에 생기는 시간비일관적 확률제어에서, 각 현재 self가 행동을 정할 때 실제로 읽는 <strong>diagonal costate</strong>를 직접 계산하려는 방법이다 <span class="citation" data-cites="adjointCostate2026">(<a href="#ref-adjointCostate2026" role="doc-biblioref">Anonymous Author(s) 2026년</a>)</span>.</p>
+<p>인증 이론이 다루는 상태는</p>
+<p><span class="math display">\[
+dX_t=b(t,X_t,u_t)\,dt+\sigma(t)\,dW_t,
+\qquad X_s=x
+\]</span></p>
+<p>이다. 핵심 범위 제한은 <span class="math inline">\(\sigma\)</span>가 상태와 제어에 무관한 additive diffusion이라는 점이다. 보상은</p>
+<p><span class="math display">\[
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T D(s,r)f(r,X_r,u_r)\,dr
++D(s,T)\phi(X_T)
+\right]
+\]</span></p>
+<p>이고, feedback <span class="math inline">\(v\)</span>를 고정했을 때 anchored continuation value는</p>
+<p><span class="math display">\[
+\Theta^v(s,t,x)
+=\mathbb E_{t,x}\!\left[
+\int_t^T D(s,r)f^v(r,X_r)\,dr
++D(s,T)\phi(X_T)
+\right]
+\]</span></p>
+<p>이다. 여기서</p>
+<p><span class="math display">\[
+b^v(t,x):=b(t,x,v(t,x)),
+\qquad
+f^v(t,x):=f(t,x,v(t,x)).
+\]</span></p>
+<p>Feynman-Kac에 의해 고정된 anchor <span class="math inline">\(s\)</span>마다</p>
+<p><span class="math display">\[
+\partial_t\Theta^v
++b^v\cdot\nabla_x\Theta^v
++\frac12\operatorname{Tr}(aD_x^2\Theta^v)
++D(s,t)f^v=0,
+\]</span></p>
+<p><span class="math display">\[
+\Theta^v(s,T,x)=D(s,T)\phi(x),
+\qquad a(t)=\sigma(t)\sigma(t)^\top
+\]</span></p>
+<p>를 얻는다. 현재 self가 쓰는 costate는 전체 field가 아니라</p>
+<p><span class="math display">\[
+p^v(t,x):=\nabla_x\Theta^v(t,t,x)
+\]</span></p>
+<p>다. <span class="math inline">\(H(t,x,u,p)=f(t,x,u)+b(t,x,u)\cdot p\)</span>라 하면 equilibrium feedback은</p>
+<p><span class="math display">\[
+v(t,x)\in\arg\max_{u\in U}H(t,x,u,p^v(t,x))
+\]</span></p>
+<p>를 만족해야 한다.</p>
+</section>
+<section id="왜-삼각형-전체의-작은-loss로는-충분하지-않은가" class="level2">
+<h2 class="anchored" data-anchor-id="왜-삼각형-전체의-작은-loss로는-충분하지-않은가">왜 삼각형 전체의 작은 loss로는 충분하지 않은가</h2>
+<p>기존 field solver는 <span class="math inline">\((s,t,x)\)</span> 전체에서 residual을 평균낸다.</p>
+<p><span class="math display">\[
+\ell_{\mathrm{anc}}(F)
+=\int_{\Delta\times\mathcal X}
+\|\mathcal R[F](s,t,x)\|^2
+\,dm(s,t)\,d\rho_X(x)
++\lambda_T\ell_{\mathrm{term}}(F).
+\]</span></p>
+<p>하지만 제어는 <span class="math inline">\(s=t\)</span>의 trace만 읽는다. 연속적인 2차원 sampling law에서 이 diagonal은 measure zero다. 폭 <span class="math inline">\(\delta\)</span>인 띠 안에만 존재하면서 diagonal에서는 높이가 일정한 perturbation을 만들면, 면적은 <span class="math inline">\(O(\delta)\)</span>로 줄어 loss는 0으로 가지만 diagonal 오차와 equilibrium gap은 줄지 않을 수 있다. 원고의 첫 부정결과는 특정 anchored PINN/BSVIE population objective에는</p>
+<p><span class="math display">\[
+\operatorname{Gap}(F)
+\le \omega(\ell_{\mathrm{anc}}(F)),
+\qquad \omega(r)\to0
+\]</span></p>
+<p>꼴의 보편적 certificate가 없음을 보인다. 이는 모든 가능한 PINN이나 BSVIE loss가 실패한다는 명제가 아니다. diagonal supervision, anchor derivative control, 또는 architecture restriction은 별도 정보를 추가한다.</p>
+<p>Policy-gradient 계열에는 다른 문제가 있다. 시작 anchor들의 occupancy-weighted 분포를 <span class="math inline">\(w(ds\mid t,x)\)</span>라 하면 mixture objective의 stationarity는 diagonal costate가 아니라</p>
+<p><span class="math display">\[
+\overline P^v(t,x)
+:=
+\frac{\int P_s^v(t,x)\,w(ds\mid t,x)}
+{\int D(s,t)\,w(ds\mid t,x)}
+\]</span></p>
+<p>에 대한 Hamiltonian 조건을 준다. 따라서 일반적으로</p>
+<p><span class="math display">\[
+\partial_uH(t,x,v,p^v)
+-\partial_uH(t,x,v,\overline P^v)
+=\partial_ub(t,x,v)^\top(p^v-\overline P^v)
+\]</span></p>
+<p>가 남는다. 이는 finite-step PPO의 모든 stationary point에 대한 명제가 아니라, exact critic과 nonparametric policy mean을 둔 이상화된 anchor-mixture gradient의 구조적 차이다.</p>
+</section>
+<section id="단계-anchored-costate-방정식" class="level2">
+<h2 class="anchored" data-anchor-id="단계-anchored-costate-방정식">1단계: anchored costate 방정식</h2>
+<p><span class="math inline">\(P_s^v(t,x):=\nabla_x\Theta^v(s,t,x)\)</span>라 두고 value PDE를 <span class="math inline">\(x\)</span>로 미분한다. <span class="math inline">\(\sigma(t)\)</span>가 <span class="math inline">\(x\)</span>에 무관하므로 diffusion 미분에서 추가 결합항이 생기지 않는다. Vector field <span class="math inline">\(w\)</span>에 대해</p>
+<p><span class="math display">\[
+\mathcal A^v[w]
+:=\partial_tw
++b^v\cdot\nabla_xw
++\frac12\operatorname{Tr}(aD_x^2w)
++(\partial_xb^v)^\top w
+\]</span></p>
+<p>를 정의하면</p>
+<p><span class="math display">\[
+\mathcal A^v[P_s^v]
+=-D(s,t)\partial_xf^v,
+\qquad
+P_s^v(T,x)=D(s,T)\nabla_x\phi(x).
+\]</span></p>
+<p><span class="math inline">\(\partial_xb^v\)</span>와 <span class="math inline">\(\partial_xf^v\)</span>는 <span class="math inline">\(x\mapsto v(t,x)\)</span>를 통과해 미분한 <strong>total closed-loop derivative</strong>다. 예를 들어</p>
+<p><span class="math display">\[
+\partial_xf^v
+=f_x(t,x,v)+v_x(t,x)^\top f_u(t,x,v).
+\]</span></p>
+</section>
+<section id="단계-discount-free-kernel-factorization" class="level2">
+<h2 class="anchored" data-anchor-id="단계-discount-free-kernel-factorization">2단계: discount-free kernel factorization</h2>
+<p>선형 방정식의 source와 terminal data를 따로 전파하는 두 kernel을 정의한다.</p>
+<p><span class="math display">\[
+\mathcal A^v[K^v(\cdot;\tau)]=0,
+\qquad
+K^v(\tau,x;\tau)=\partial_xf^v(\tau,x),
+\]</span></p>
+<p><span class="math display">\[
+\mathcal A^v[\overline K^v]=0,
+\qquad
+\overline K^v(T,x)=\nabla_x\phi(x).
+\]</span></p>
+<p>선형성 때문에 각 source impulse를 <span class="math inline">\(D(s,\tau)\)</span>로 가중해 합하면</p>
+<p><span class="math display">\[
+P_s^v(t,x)
+=\int_t^T D(s,\tau)K^v(t,x;\tau)\,d\tau
++D(s,T)\overline K^v(t,x).
+\]</span></p>
+<p>실제로 <span class="math inline">\(\mathcal A^v\)</span>를 우변에 적용하면 homogeneous kernel PDE는 사라지고, 적분 하한을 미분할 때</p>
+<p><span class="math display">\[
+-D(s,t)K^v(t,x;t)
+=-D(s,t)\partial_xf^v(t,x)
+\]</span></p>
+<p>가 남는다. terminal time에서는 적분이 0이 되어 원하는 terminal condition을 준다. 이것이 Duhamel factorization의 직접 확인이다.</p>
+<p>중요한 변화는 learned object <span class="math inline">\(K^v(t,x;\tau),\overline K^v(t,x)\)</span>가 anchor <span class="math inline">\(s\)</span>를 입력으로 받지 않는다는 것이다. discount는 학습 residual이 아니라 read-out의 deterministic weight로만 들어간다.</p>
+</section>
+<section id="단계-diagonal-read-out과-policy-합성" class="level2">
+<h2 class="anchored" data-anchor-id="단계-diagonal-read-out과-policy-합성">3단계: diagonal read-out과 policy 합성</h2>
+<p><span class="math inline">\(s=t\)</span>를 대입하면</p>
+<p><span class="math display">\[
+p^v(t,x)
+=\int_t^T D(t,\tau)K^v(t,x;\tau)\,d\tau
++D(t,T)\overline K^v(t,x).
+\]</span></p>
+<p>실제 구현은 <span class="math inline">\([0,1]\)</span>의 quadrature node와 weight <span class="math inline">\((\xi_j,w_j)_{j=1}^{n_q}\)</span>를 써서</p>
+<p><span class="math display">\[
+\tau_j=t+(T-t)\xi_j,
+\]</span></p>
+<p><span class="math display">\[
+\widehat p_\theta(t,x)
+=(T-t)\sum_{j=1}^{n_q}
+w_jD(t,\tau_j)K_\theta(t,x;\tau_j)
++D(t,T)\overline K_\theta(t,x)
+\]</span></p>
+<p>로 계산한다. 배포 policy는</p>
+<p><span class="math display">\[
+\widehat u_\theta(t,x)
+\approx\arg\max_{a\in U}
+H(t,x,a,\widehat p_\theta(t,x))
+\]</span></p>
+<p>이다.</p>
+</section>
+<section id="단계-무엇을-학습하는가" class="level2">
+<h2 class="anchored" data-anchor-id="단계-무엇을-학습하는가">4단계: 무엇을 학습하는가</h2>
+<p>같은 <span class="math inline">\(\widehat u_\theta\)</span>로 closed-loop coefficient를 만들고 네 결함을 최소화한다.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\ell_{\mathrm{ACM}}
+={}&amp;\mathbb E\|\mathcal A^{\widehat u_\theta}[K_\theta]\|^2
++\mathbb E\|\mathcal A^{\widehat u_\theta}[\overline K_\theta]\|^2\\
+&amp;+\lambda_s\mathbb E
+\|K_\theta(t,x;t)-\partial_xf^{\widehat u_\theta}(t,x)\|^2\\
+&amp;+\lambda_T\mathbb E
+\|\overline K_\theta(T,x)-\nabla_x\phi(x)\|^2.
+\end{aligned}
+\]</span></p>
+<p>Operator residual을 계산할 때 <span class="math inline">\(x\mapsto\widehat u_\theta(t,x)\)</span>의 공간미분은 포함해야 한다. 다만 coefficient branch는 parameter <span class="math inline">\(\theta\)</span>에 대해 detach하여 semi-gradient update를 사용한다. Source와 terminal condition이 각각 <span class="math inline">\((t,x)\)</span> 공간의 양의 측도에서 직접 감독되므로, diagonal null-set 문제를 architecture 차원에서 제거한다.</p>
+</section>
+<section id="단계-residual-defect에서-equilibrium-gap까지" class="level2">
+<h2 class="anchored" data-anchor-id="단계-residual-defect에서-equilibrium-gap까지">5단계: residual defect에서 equilibrium gap까지</h2>
+<p>학습에 사용한 empirical MSE 자체는 certificate가 아니다. 별도의 verification domain에서 uniform defect</p>
+<p><span class="math display">\[
+\varepsilon_K,
+\quad
+\varepsilon_{\mathrm{src}},
+\quad
+\varepsilon_{\overline K},
+\quad
+\varepsilon_{\mathrm{term}}
+\]</span></p>
+<p>를 검증해야 한다. <span class="math inline">\(L_J^{\mathrm{dep}}:=\sup\|\partial_xb^{\widehat u_\theta}\|\)</span>라 두면 원고의 costate error budget은</p>
+<p><span class="math display">\[
+E_{\mathrm{train}}
+=e^{L_J^{\mathrm{dep}}T}
+\left[
+\frac12T^2\varepsilon_K
++T(\varepsilon_{\mathrm{src}}+\varepsilon_{\overline K})
++\varepsilon_{\mathrm{term}}
+\right].
+\]</span></p>
+<p>Quadrature error를 <span class="math inline">\(e_{\mathrm{quad}}\)</span>, 내부 Hamiltonian maximization error를 <span class="math inline">\(\eta\)</span>, 관련 action들에서 drift bound를 <span class="math inline">\(L_{b,\max}\)</span>라 하면</p>
+<p><span class="math display">\[
+\operatorname{Gap}(\widehat u_\theta)
+\le
+\eta+2L_{b,\max}
+(E_{\mathrm{train}}+e_{\mathrm{quad}}).
+\]</span></p>
+<p>핵심은 알 수 없는 equilibrium <span class="math inline">\(u^*\)</span>와 직접 비교하지 않고, <strong>실제로 배포하는 policy의 costate</strong>와 Hamiltonian suboptimality를 제어한다는 점이다. Equilibrium map의 contraction은 이 gap certificate에 필요하지 않다. 다만 특정 equilibrium과의 sup-distance까지 얻으려면 contraction/self-map 같은 추가 가정이 필요하다.</p>
+</section>
+<section id="실험이-보여주는-것과-보여주지-않는-것" class="level2">
+<h2 class="anchored" data-anchor-id="실험이-보여주는-것과-보여주지-않는-것">실험이 보여주는 것과 보여주지 않는 것</h2>
+<p>원고는 알려진 equilibrium을 가진 세 benchmark에서 PPO, value PINN, Deep BSVIE, PG-DPO, costate-targeted PINN/BSVIE와 비교한다. 열 개 seed의 grid-averaged control error에서 ACM의 평균오차가 세 경우 모두 가장 작았고, 보고된 비율은 runner-up 대비 약 <span class="math inline">\(86\times\)</span>, <span class="math inline">\(4.6\times\)</span>, <span class="math inline">\(2.9\times\)</span> 개선이다 <span class="citation" data-cites="adjointCostate2026">(<a href="#ref-adjointCostate2026" role="doc-biblioref">Anonymous Author(s) 2026년</a>)</span>.</p>
+<p>그러나 이 실험은 uniform residual, quadrature, argmax defect를 interval bound 등으로 검증해 수치적인 certificate 값을 실제 산출한 것은 아니다. 표의 작은 control error는 analytic/fixed-point reference에 대한 empirical evidence이고, theorem의 a-posteriori certificate와 구별해야 한다.</p>
+</section>
+<section id="현재-이론의-정확한-경계" class="level2">
+<h2 class="anchored" data-anchor-id="현재-이론의-정확한-경계">현재 이론의 정확한 경계</h2>
 <ul>
-<li><code>seed</code>: 질문과 읽을 방향을 잡는 단계</li>
-<li><code>developing</code>: 여러 레퍼런스를 연결하며 설명을 다듬는 단계</li>
-<li><code>stable</code>: 핵심 주장과 연결을 원문으로 점검한 단계</li>
+<li><span class="math inline">\(\sigma(t)\)</span>인 additive, state-independent, control-independent diffusion을 가정한다.</li>
+<li>Classical anchored PDE solution과 equilibrium의 존재는 증명 결과가 아니라 standing assumption이다.</li>
+<li>Uniform verification은 전역에서 하거나, 평가영역에서 시작한 representation process가 verification domain을 거의 확실히 벗어나지 않아야 한다. 단순히 큰 유한 box를 택하는 것만으로는 Gaussian noise의 full support를 막지 못한다.</li>
+<li>Population <span class="math inline">\(L^2\)</span> bound와 empirical minibatch loss는 동일하지 않다.</li>
+<li>Gap은 1차 spike-deviation에 대한 weak-equilibrium gap이다. Gap이 작다는 사실만으로 finite-duration deviation까지 막는 strong equilibrium certificate가 되지는 않는다 <span class="citation" data-cites="he2021equilibrium">(<a href="#ref-he2021equilibrium" role="doc-biblioref">He 와/과 Jiang 2021년</a>)</span>.</li>
+<li>Control-dependent diffusion에는 <span class="math inline">\(Q\)</span> 및 2차 adjoint에 해당하는 추가 구조가 필요하다.</li>
 </ul>
-<p>그래프의 간선은 확정된 분류 체계라기보다 현재의 연구 경로를 표현한다. 특히 근거가 비어 있는 연결은 앞으로 검증할 가설이다.</p>
+</section>
+<section id="연결-문헌-지도" class="level2">
+<h2 class="anchored" data-anchor-id="연결-문헌-지도">연결 문헌 지도</h2>
+<section id="먼저-읽을-이론적-뼈대" class="level3">
+<h3 class="anchored" data-anchor-id="먼저-읽을-이론적-뼈대">먼저 읽을 이론적 뼈대</h3>
+<ol type="1">
+<li><a href="../../references/he2021equilibrium/">He &amp; Jiang (2021)</a>: ACM의 gap이 어떤 equilibrium 개념을 인증하는가</li>
+<li><a href="../../references/wang2021closedloop/">Wang &amp; Zheng (2021)</a>: 더 일반적인 closed-loop continuation field와 diagonal HJB</li>
+<li><a href="../../references/nguwi2022constructive/">Nguwi &amp; Privault (2022)</a>: anchored adjoint와 diagonal maximum condition</li>
+<li><a href="../../references/wang2021bsviecontrol/">Wang &amp; Yong (2021)</a>: time inconsistency에서 BSVIE와 equilibrium HJB가 등장하는 이유</li>
+<li><a href="../../references/yong2012equilibriumhjb/">Yong (2012)</a>: equilibrium HJB라는 기본 해석 틀</li>
+<li><a href="../../references/peng1990smp/">Peng (1990)</a>: stochastic maximum principle과 1·2차 adjoint의 출발점</li>
+<li><a href="../../references/yong2006bsvie/">Yong (2006)</a>: BSVIE의 well-posedness와 M-solution</li>
+</ol>
+</section>
+<section id="수치-방법과-학습" class="level3">
+<h3 class="anchored" data-anchor-id="수치-방법과-학습">수치 방법과 학습</h3>
+<ol type="1">
+<li><a href="../../references/andersson2026deepbsvie/">Andersson et al.&nbsp;(2026)</a>: 비교 baseline인 neural BSVIE solver</li>
+<li><a href="../../references/andersson2023robustfbsde/">Andersson et al.&nbsp;(2023)</a>: time-consistent FBSDE solver의 convergence-analysis 선례</li>
+<li><a href="../../references/dai2023learning/">Dai et al.&nbsp;(2023)</a>: mean-variance equilibrium을 policy iteration으로 학습하는 방법</li>
+</ol>
+</section>
+<section id="금융-모형에서-equilibrium이-실제로-나타나는-방식" class="level3">
+<h3 class="anchored" data-anchor-id="금융-모형에서-equilibrium이-실제로-나타나는-방식">금융 모형에서 equilibrium이 실제로 나타나는 방식</h3>
+<ol type="1">
+<li><a href="../../references/bjork2017timeinconsistent/">Björk, Khapko &amp; Murgoci (2017)</a>: 연속시간 game formulation과 extended HJB</li>
+<li><a href="../../references/ekeland2012portfolio/">Ekeland, Mbodji &amp; Pirvu (2012)</a>: 일반 할인 아래 time-consistent portfolio rule</li>
+<li><a href="../../references/hamaguchi2021consumption/">Hamaguchi (2021)</a>: incomplete market의 consumption-investment equilibrium과 BSVIE</li>
+<li><a href="../../references/su2024nonmarkovian/">Su et al.&nbsp;(2024)</a>: non-Markovian mean-variance의 closed-loop equilibrium</li>
+</ol>
+</section>
+</section>
+<section id="다음-연구-점검사항" class="level2">
+<h2 class="anchored" data-anchor-id="다음-연구-점검사항">다음 연구 점검사항</h2>
+<ul>
+<li>Uniform defect를 실제 validated numerics로 계산해 표의 empirical error와 certificate를 연결할 것</li>
+<li>Gaussian noise에서 전역 검증 또는 exit contribution을 다룰 것</li>
+<li>State/control-dependent diffusion의 추가 adjoint coupling을 유도할 것</li>
+<li>Semi-gradient policy-kernel iteration의 수렴 조건을 분석할 것</li>
+<li>Weak gap에서 regular equilibrium으로 넘어가는 충분조건을 명시할 것</li>
+<li>고차원 또는 analytic reference가 없는 benchmark를 추가할 것</li>
+</ul>
 
 
 
+</section>
 
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="정렬" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">정렬</option>
-      <option value="index" data-direction="asc">디폴트</option>
-      <option value="listing-title" data-direction="asc">
-        제목
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="필터">
-    </div>
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">참고문헌</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-adjointCostate2026" class="csl-entry" role="listitem">
+Anonymous Author(s). 2026년. <span>“The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting”</span>. Manuscript.
 </div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="84">
-<a href="../topics/adjoint-methods/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Adjoint &amp; Costate Methods
-</h5>
-<div class="card-text listing-description delink">
-<p>전치된 선형화 방정식으로 목적함수의 민감도와 최적성 조건을 계산하는 방법</p>
+<div id="ref-he2021equilibrium" class="csl-entry" role="listitem">
+He, Xue Dong, 와/과 Zhao Li Jiang. 2021년. <span>“On the Equilibrium Strategies for Time-Inconsistent Problems in Continuous Time”</span>. <em>SIAM Journal on Control and Optimization</em> 59 (5): 3860–86. <a href="https://doi.org/10.1137/20M1382106">https://doi.org/10.1137/20M1382106</a>.
 </div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-adjoint,costate,sensitivity-analysis,optimal-control
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="82">
-<a href="../topics/bsvie/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Backward Stochastic Volterra Integral Equations
-</h5>
-<div class="card-text listing-description delink">
-<p>시작시각과 미래 진행시각을 함께 기억하는 두 시간축의 backward stochastic integral equation</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-bsvie,bsde,volterra,stochastic-analysis
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="20">
-<a href="../topics/classifier-free-guidance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Classifier-Free Guidance
-</h5>
-<div class="card-text listing-description delink">
-<p>조건부·무조건부 denoiser의 차이로 별도 classifier 없이 guidance를 만드는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,conditional-generation,guidance
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="18">
-<a href="../topics/conditional-diffusion/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Conditional Diffusion &amp; Guidance
-</h5>
-<div class="card-text listing-description delink">
-<p>조건부 score와 classifier gradient로 생성분포를 원하는 조건 쪽으로 바꾸는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,conditional-generation,classifier-guidance
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="../topics/ddpm/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Denoising Diffusion Probabilistic Models
-</h5>
-<div class="card-text listing-description delink">
-<p>이산 Gaussian Markov chain과 noise prediction으로 역과정을 학습하는 diffusion formulation</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,variational-inference,denoising
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="169">
-<a href="../topics/diffusion-models/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Diffusion Models
-</h5>
-<div class="card-text listing-description delink">
-<p>노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-generative-modeling,score-matching,stochastic-analysis,machine-learning
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="137">
-<a href="../topics/fokker-planck/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Fokker-Planck Equation
-</h5>
-<div class="card-text listing-description delink">
-<p>확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-partial-differential-equations,probability-density,stochastic-processes,kolmogorov-equations
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="7" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="124">
-<a href="../topics/high-dimensional-pde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-High-dimensional PDE Solvers
-</h5>
-<div class="card-text listing-description delink">
-<p>차원의 저주 아래에서 PDE를 계산하기 위한 수치·확률·학습 기반 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-partial-differential-equations,numerical-methods,deep-learning,bsde
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="8" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="20">
-<a href="../topics/latent-diffusion/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Latent Diffusion
-</h5>
-<div class="card-text listing-description delink">
-<p>압축된 latent representation에서 diffusion을 수행하고 decoder로 데이터 공간에 복원하는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,latent-variable-models,autoencoders,cross-attention
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="9" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
-<a href="../topics/mean-variance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Mean-Variance Portfolio Selection
-</h5>
-<div class="card-text listing-description delink">
-<p>기대수익과 조건부분산을 함께 최적화할 때 생기는 시간비일관적 포트폴리오 문제</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-portfolio,mean-variance,financial-mathematics,equilibrium-control
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="10" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="58">
-<a href="../topics/optimal-transport/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Optimal Transport
-</h5>
-<div class="card-text listing-description delink">
-<p>확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-probability-measures,optimization,wasserstein,geometry
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="11" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="133">
-<a href="../topics/schrodinger-bridge/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Schrödinger Bridge
-</h5>
-<div class="card-text listing-description delink">
-<p>기준 확률 동역학에 가깝게 두 끝점 분포를 연결하는 경로공간 문제</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-exploratory
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-seed
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-stochastic-control,path-space,entropy,optimal-transport
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="12" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="../topics/score-based-sde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Score-based SDE &amp; Probability-flow ODE
-</h5>
-<div class="card-text listing-description delink">
-<p>Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,stochastic-differential-equations,score-matching,ordinary-differential-equations
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="13" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
-<a href="../topics/stochastic-control/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Stochastic Control
-</h5>
-<div class="card-text listing-description delink">
-<p>확률적으로 움직이는 상태에 피드백을 가해 기대 보상이나 비용을 최적화하는 이론</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-stochastic-control,controlled-sde,hjb,maximum-principle
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="14" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="101">
-<a href="../topics/sde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Stochastic Differential Equations
-</h5>
-<div class="card-text listing-description delink">
-<p>잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-probability,stochastic-analysis,ito-calculus
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="15" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="128">
-<a href="../topics/time-inconsistent-control/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Time-Inconsistent Control
-</h5>
-<div class="card-text listing-description delink">
-<p>서로 다른 시점의 self가 같은 미래를 다르게 평가할 때 equilibrium policy를 정의하고 계산하는 이론</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">일치 없음</div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a></main> <!-- /main -->
+</div></section></div></main> <!-- /main -->
 <script>
 (() => {
   const assets = [
@@ -1545,12 +1107,12 @@ time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">
-    <a class="nav-link" href="../index.html">
+    <a class="nav-link" href="../../index.html">
 <p>Home</p>
 </a>
   </li>  
     <li class="nav-item">
-    <a class="nav-link" href="../about.html">
+    <a class="nav-link" href="../../about.html">
 <p>Working guide</p>
 </a>
   </li>  
@@ -1562,5 +1124,5 @@ time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
 
 
 
-<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

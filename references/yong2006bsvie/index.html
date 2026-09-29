@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="독립적인 연구 개념과 그 사이의 연결">
+<meta name="author" content="Jiongmin Yong">
 
-<title>Topics – All of My Future</title>
+<title>Backward Stochastic Volterra Integral Equations and Some Related Problems – All of My Future</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -27,27 +27,44 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "일치 없음",
@@ -63,36 +80,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "검색"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-status','listing-maturity','listing-tags',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      page: 12,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -125,7 +112,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../../assets/styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -297,7 +284,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">All of My Future</span>
     </a>
   </div>
@@ -307,15 +294,15 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../queue.html"> 
+    <a class="nav-link" href="../../queue.html"> 
 <span class="menu-text">Queue</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../log/index.html"> 
+    <a class="nav-link" href="../../log/index.html"> 
 <span class="menu-text">Log</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -344,18 +331,19 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Topics</h1>
+<h1 class="title">Backward Stochastic Volterra Integral Equations and Some Related Problems</h1>
 </div>
 
-<div>
-  <div class="description">
-    독립적인 연구 개념과 그 사이의 연결
-  </div>
-</div>
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">저자</div>
+    <div class="quarto-title-meta-contents">
+             <p>Jiongmin Yong </p>
+          </div>
+  </div>
     
   
     
@@ -366,730 +354,116 @@ window.Quarto = {
 </header>
 
 
-<p>이곳은 개별 논문이나 책의 요약을 넘어, 여러 레퍼런스에서 얻은 이해를 주제별로 합치는 공간이다. 이 목록의 모든 개념은 동등한 출발점이다. 연결은 특정 이론·방법·문헌이 만나는 맥락을 나타내며, 학습이 진행되면서 수정될 수 있다.</p>
-<p>토픽의 <code>maturity</code>는 내용의 완성도가 아니라 현재 이해의 성숙도를 나타낸다.</p>
+<div class="reference-note-content">
+<div class="callout callout-style-default callout-note callout-titled" title="소속 개념 · BSVIE">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">노트</span>소속 개념 · BSVIE
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<section id="bsde에서-bsvie로" class="level2">
+<h2 class="anchored" data-anchor-id="bsde에서-bsvie로">BSDE에서 BSVIE로</h2>
+<p>표준 backward SDE는 하나의 terminal random variable <span class="math inline">\(\xi\)</span>에 대해</p>
+<p><span class="math display">\[
+Y_t
+=\xi+\int_t^T g(r,Y_r,Z_r)\,dr
+-\int_t^T Z_r\,dW_r
+\]</span></p>
+<p>를 푼다. <span class="math inline">\(Y_t\)</span>와 <span class="math inline">\(Z_t\)</span>는 한 시간축을 따라 움직인다.</p>
+<p>Backward stochastic Volterra integral equation(BSVIE)의 대표적인 Type-I 형태는</p>
+<p><span class="math display">\[
+Y(t)
+=\psi(t)
++\int_t^T g(t,r,Y(r),Z(t,r))\,dr
+-\int_t^T Z(t,r)\,dW_r,
+\qquad 0\le t\le T.
+\]</span></p>
+<p>여기에는 두 시간이 있다.</p>
 <ul>
-<li><code>seed</code>: 질문과 읽을 방향을 잡는 단계</li>
-<li><code>developing</code>: 여러 레퍼런스를 연결하며 설명을 다듬는 단계</li>
-<li><code>stable</code>: 핵심 주장과 연결을 원문으로 점검한 단계</li>
+<li><span class="math inline">\(t\)</span>: 방정식을 시작하거나 선호를 고정하는 query/anchor 시간</li>
+<li><span class="math inline">\(r\)</span>: <span class="math inline">\(t\)</span>부터 <span class="math inline">\(T\)</span>까지 실제로 적분하는 evolution 시간</li>
 </ul>
-<p>그래프의 간선은 확정된 분류 체계라기보다 현재의 연구 경로를 표현한다. 특히 근거가 비어 있는 연결은 앞으로 검증할 가설이다.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="정렬" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">정렬</option>
-      <option value="index" data-direction="asc">디폴트</option>
-      <option value="listing-title" data-direction="asc">
-        제목
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="필터">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="84">
-<a href="../topics/adjoint-methods/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Adjoint &amp; Costate Methods
-</h5>
-<div class="card-text listing-description delink">
-<p>전치된 선형화 방정식으로 목적함수의 민감도와 최적성 조건을 계산하는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-adjoint,costate,sensitivity-analysis,optimal-control
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="82">
-<a href="../topics/bsvie/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Backward Stochastic Volterra Integral Equations
-</h5>
-<div class="card-text listing-description delink">
-<p>시작시각과 미래 진행시각을 함께 기억하는 두 시간축의 backward stochastic integral equation</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-bsvie,bsde,volterra,stochastic-analysis
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="20">
-<a href="../topics/classifier-free-guidance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Classifier-Free Guidance
-</h5>
-<div class="card-text listing-description delink">
-<p>조건부·무조건부 denoiser의 차이로 별도 classifier 없이 guidance를 만드는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,conditional-generation,guidance
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="18">
-<a href="../topics/conditional-diffusion/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Conditional Diffusion &amp; Guidance
-</h5>
-<div class="card-text listing-description delink">
-<p>조건부 score와 classifier gradient로 생성분포를 원하는 조건 쪽으로 바꾸는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,conditional-generation,classifier-guidance
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="../topics/ddpm/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Denoising Diffusion Probabilistic Models
-</h5>
-<div class="card-text listing-description delink">
-<p>이산 Gaussian Markov chain과 noise prediction으로 역과정을 학습하는 diffusion formulation</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,variational-inference,denoising
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="169">
-<a href="../topics/diffusion-models/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Diffusion Models
-</h5>
-<div class="card-text listing-description delink">
-<p>노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-generative-modeling,score-matching,stochastic-analysis,machine-learning
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="137">
-<a href="../topics/fokker-planck/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Fokker-Planck Equation
-</h5>
-<div class="card-text listing-description delink">
-<p>확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-partial-differential-equations,probability-density,stochastic-processes,kolmogorov-equations
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="7" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="124">
-<a href="../topics/high-dimensional-pde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-High-dimensional PDE Solvers
-</h5>
-<div class="card-text listing-description delink">
-<p>차원의 저주 아래에서 PDE를 계산하기 위한 수치·확률·학습 기반 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-partial-differential-equations,numerical-methods,deep-learning,bsde
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="8" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="20">
-<a href="../topics/latent-diffusion/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Latent Diffusion
-</h5>
-<div class="card-text listing-description delink">
-<p>압축된 latent representation에서 diffusion을 수행하고 decoder로 데이터 공간에 복원하는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,latent-variable-models,autoencoders,cross-attention
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="9" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
-<a href="../topics/mean-variance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Mean-Variance Portfolio Selection
-</h5>
-<div class="card-text listing-description delink">
-<p>기대수익과 조건부분산을 함께 최적화할 때 생기는 시간비일관적 포트폴리오 문제</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-portfolio,mean-variance,financial-mathematics,equilibrium-control
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="10" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="58">
-<a href="../topics/optimal-transport/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Optimal Transport
-</h5>
-<div class="card-text listing-description delink">
-<p>확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-probability-measures,optimization,wasserstein,geometry
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="11" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="133">
-<a href="../topics/schrodinger-bridge/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Schrödinger Bridge
-</h5>
-<div class="card-text listing-description delink">
-<p>기준 확률 동역학에 가깝게 두 끝점 분포를 연결하는 경로공간 문제</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-exploratory
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-seed
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-stochastic-control,path-space,entropy,optimal-transport
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="12" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="../topics/score-based-sde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Score-based SDE &amp; Probability-flow ODE
-</h5>
-<div class="card-text listing-description delink">
-<p>Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,stochastic-differential-equations,score-matching,ordinary-differential-equations
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="13" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
-<a href="../topics/stochastic-control/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Stochastic Control
-</h5>
-<div class="card-text listing-description delink">
-<p>확률적으로 움직이는 상태에 피드백을 가해 기대 보상이나 비용을 최적화하는 이론</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-stochastic-control,controlled-sde,hjb,maximum-principle
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="14" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="101">
-<a href="../topics/sde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Stochastic Differential Equations
-</h5>
-<div class="card-text listing-description delink">
-<p>잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-probability,stochastic-analysis,ito-calculus
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="15" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="128">
-<a href="../topics/time-inconsistent-control/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Time-Inconsistent Control
-</h5>
-<div class="card-text listing-description delink">
-<p>서로 다른 시점의 self가 같은 미래를 다르게 평가할 때 equilibrium policy를 정의하고 계산하는 이론</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
+<p>따라서 <span class="math inline">\(Z\)</span>는 정사각형 전체가 아니라 적어도 상삼각형 <span class="math inline">\(0\le t\le r\le T\)</span> 위의 field다. Type-II BSVIE는 driver가 <span class="math inline">\(Z(r,t)\)</span>까지 사용해 두 삼각형을 결합한다.</p>
+</section>
+<section id="왜-ztr가-필요한가" class="level2">
+<h2 class="anchored" data-anchor-id="왜-ztr가-필요한가">왜 <span class="math inline">\(Z(t,r)\)</span>가 필요한가</h2>
+<p>고정된 <span class="math inline">\(t\)</span>에 대해 <span class="math inline">\(Y(t)\)</span>는 <span class="math inline">\(\mathcal F_t\)</span>-measurable여야 한다. 미래의 random integral을 현재 정보로 되돌리기 위해 <span class="math inline">\(Z(t,r)\)</span>가 martingale integrand 역할을 한다. Adapted M-solution에서는 방정식뿐 아니라</p>
+<p><span class="math display">\[
+Y(t)=\mathbb E[Y(t)]+\int_0^t Z(t,r)\,dW_r
+\]</span></p>
+<p>와 같은 martingale representation도 함께 요구한다. 이 조건은 <span class="math inline">\(r&lt;t\)</span> 영역의 <span class="math inline">\(Z(t,r)\)</span>까지 정의하며 해의 의미를 완성한다 <span class="citation" data-cites="yong2006bsvie">(<a href="#ref-yong2006bsvie" role="doc-biblioref">Yong 2006년</a>)</span>.</p>
+</section>
+<section id="시간비일관성과-자연스럽게-만나는-이유" class="level2">
+<h2 class="anchored" data-anchor-id="시간비일관성과-자연스럽게-만나는-이유">시간비일관성과 자연스럽게 만나는 이유</h2>
+<p>일반 discount를 가진 continuation value는 시작시각 <span class="math inline">\(t\)</span>를 잊을 수 없다. 예를 들어 recursive payoff를</p>
+<p><span class="math display">\[
+Y(t)
+=\Phi(t,X_T)
++\int_t^T
+g(t,r,X_r,u_r,Y(r),Z(t,r))\,dr
+-\int_t^T Z(t,r)\,dW_r
+\]</span></p>
+<p>로 두면, 첫 번째 인수 <span class="math inline">\(t\)</span>가 preference anchor를 보존한다. Markov 문제에서 이 구조는 <span class="math inline">\((t,r,x)\)</span>를 인수로 갖는 equilibrium HJB field와 대응한다 <span class="citation" data-cites="wang2021bsviecontrol">(<a href="#ref-wang2021bsviecontrol" role="doc-biblioref">Wang 와/과 Yong 2021년</a>)</span>.</p>
+</section>
+<section id="이산화했을-때의-계산-구조" class="level2">
+<h2 class="anchored" data-anchor-id="이산화했을-때의-계산-구조">이산화했을 때의 계산 구조</h2>
+<p>격자 <span class="math inline">\(0=t_0&lt;\cdots&lt;t_N=T\)</span>에서 <span class="math inline">\(Y_i\approx Y(t_i)\)</span>, <span class="math inline">\(Z_{ij}\approx Z(t_i,t_j)\)</span>라 두면 각 <span class="math inline">\(i\)</span>마다 <span class="math inline">\(j\ge i\)</span>를 다뤄야 한다. 저장량과 직접적인 회귀 문제 수가 대략 <span class="math inline">\(N^2\)</span>로 늘어나는 이유다. 또한 제어가 <span class="math inline">\(Z(t,t)\)</span>나 <span class="math inline">\(\nabla_x\Theta(t,t,x)\)</span> 같은 diagonal trace를 읽는다면, 삼각형 전체의 평균 오차가 작다는 사실만으로 diagonal 오차가 작다고 결론낼 수 없다.</p>
+<p>Deep BSVIE 방법은 두 시간과 상태를 입력으로 받는 neural field로 <span class="math inline">\(Y\)</span>와 <span class="math inline">\(Z\)</span>를 공동 근사해 nested time-stepping을 피하려 한다 <span class="citation" data-cites="andersson2026deepbsvie">(<a href="#ref-andersson2026deepbsvie" role="doc-biblioref">Andersson 기타 2026년</a>)</span>. 그러나 loss의 norm, diagonal supervision, time discretization, function-approximation error는 별도로 구분해야 한다.</p>
+</section>
+<section id="bsde와-혼동하지-않을-점" class="level2">
+<h2 class="anchored" data-anchor-id="bsde와-혼동하지-않을-점">BSDE와 혼동하지 않을 점</h2>
+<p>BSDE는 BSVIE의 특수한 모양으로 볼 수 있지만, 일반 BSVIE에는 semigroup/flow property가 없다. 그래서 BSDE의 비교정리, Markovian decoupling field, time-consistent dynamic programming 결과가 자동으로 옮겨오지 않는다. 논문마다 해의 종류(adapted solution, M-solution), Type-I/II, driver의 Lipschitz 조건을 확인해야 한다.</p>
+</section>
 </div>
 </div>
-<div class="listing-no-matching d-none">일치 없음</div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a></main> <!-- /main -->
+</div>
+<section id="이-문헌이-공통-틀에-추가한-것" class="level2">
+<h2 class="anchored" data-anchor-id="이-문헌이-공통-틀에-추가한-것">이 문헌이 공통 틀에 추가한 것</h2>
+<p>이 논문은</p>
+<p><span class="math display">\[
+Y(t)=\psi(t)+\int_t^Tg(t,s,Y(s),Z(t,s))\,ds
+-\int_t^TZ(t,s)\,dW_s
+\]</span></p>
+<p>같은 BSVIE를 체계적으로 연구하고, 두 시간 인덱스를 가진 martingale integrand가 왜 필요한지를 정식화한다 <span class="citation" data-cites="yong2006bsvie">(<a href="#ref-yong2006bsvie" role="doc-biblioref">Yong 2006년</a>)</span>.</p>
+<p>BSDE와 달리 <span class="math inline">\(Y(t)\)</span>의 미래 dynamics를 하나의 flow로 이어 붙일 수 없고, 첫 시간 <span class="math inline">\(t\)</span>가 terminal datum과 driver에 계속 남는다. 이 구조가 이후 recursive utility, risk measure, 시간비일관적 제어의 anchor를 표현하는 기반이 되었다.</p>
+</section>
+<section id="읽을-때-확인할-것" class="level2">
+<h2 class="anchored" data-anchor-id="읽을-때-확인할-것">읽을 때 확인할 것</h2>
+<ul>
+<li>논문이 사용하는 adapted solution과 이후 문헌의 adapted M-solution은 같은 정의가 아니다.</li>
+<li>Type-I와 <span class="math inline">\(Z(s,t)\)</span>까지 driver에 들어가는 Type-II는 well-posedness 조건이 다르다.</li>
+<li>해의 <span class="math inline">\(L^2\)</span> 존재·유일성은 diagonal trace의 pointwise regularity를 자동으로 주지 않는다.</li>
+</ul>
+</section>
+<section id="원문" class="level2">
+<h2 class="anchored" data-anchor-id="원문">원문</h2>
+<ul>
+<li>서지정보: <span class="citation" data-cites="yong2006bsvie">(<a href="#ref-yong2006bsvie" role="doc-biblioref">Yong 2006년</a>)</span></li>
+<li><a href="https://doi.org/10.1016/j.spa.2006.01.005">ScienceDirect DOI</a></li>
+</ul>
+</section>
+</div>
+
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">참고문헌</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-andersson2026deepbsvie" class="csl-entry" role="listitem">
+Andersson, Kristoffer, Alessandro Gnoatto, 와/과 Camilo Andrés García Trillos. 2026년. <span>“A Deep Solver for Backward Stochastic Volterra Integral Equations”</span>. <em>SIAM Journal on Scientific Computing</em> 48 (2): C359–84. <a href="https://doi.org/10.1137/25M177463X">https://doi.org/10.1137/25M177463X</a>.
+</div>
+<div id="ref-wang2021bsviecontrol" class="csl-entry" role="listitem">
+Wang, Hanxiao, 와/과 Jiongmin Yong. 2021년. <span>“Time-Inconsistent Stochastic Optimal Control Problems and Backward Stochastic Volterra Integral Equations”</span>. <em>ESAIM: Control, Optimisation and Calculus of Variations</em> 27: 22. <a href="https://doi.org/10.1051/cocv/2021027">https://doi.org/10.1051/cocv/2021027</a>.
+</div>
+<div id="ref-yong2006bsvie" class="csl-entry" role="listitem">
+Yong, Jiongmin. 2006년. <span>“Backward Stochastic Volterra Integral Equations and Some Related Problems”</span>. <em>Stochastic Processes and their Applications</em> 116 (5): 779–95. <a href="https://doi.org/10.1016/j.spa.2006.01.005">https://doi.org/10.1016/j.spa.2006.01.005</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script>
 (() => {
   const assets = [
@@ -1545,12 +919,12 @@ time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">
-    <a class="nav-link" href="../index.html">
+    <a class="nav-link" href="../../index.html">
 <p>Home</p>
 </a>
   </li>  
     <li class="nav-item">
-    <a class="nav-link" href="../about.html">
+    <a class="nav-link" href="../../about.html">
 <p>Working guide</p>
 </a>
   </li>  
@@ -1562,5 +936,5 @@ time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
 
 
 
-<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

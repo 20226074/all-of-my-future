@@ -1,13 +1,9 @@
 [
   {
-    "listing": "/log/index.html",
-    "items": [
-      "/log/2026-09-26-foundation.html"
-    ]
-  },
-  {
     "listing": "/topics/index.html",
     "items": [
+      "/topics/adjoint-methods/index.html",
+      "/topics/bsvie/index.html",
       "/topics/classifier-free-guidance/index.html",
       "/topics/conditional-diffusion/index.html",
       "/topics/ddpm/index.html",
@@ -15,10 +11,19 @@
       "/topics/fokker-planck/index.html",
       "/topics/high-dimensional-pde/index.html",
       "/topics/latent-diffusion/index.html",
+      "/topics/mean-variance/index.html",
       "/topics/optimal-transport/index.html",
       "/topics/schrodinger-bridge/index.html",
       "/topics/score-based-sde/index.html",
-      "/topics/sde/index.html"
+      "/topics/stochastic-control/index.html",
+      "/topics/sde/index.html",
+      "/topics/time-inconsistent-control/index.html"
+    ]
+  },
+  {
+    "listing": "/log/index.html",
+    "items": [
+      "/log/2026-09-26-foundation.html"
     ]
   }
 ]

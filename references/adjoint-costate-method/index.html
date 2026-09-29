@@ -1,0 +1,1235 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ko" xml:lang="ko"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Anonymous Author(s)">
+
+<title>The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting – All of My Future</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "language": {
+    "search-no-results-text": "일치 없음",
+    "search-matching-documents-text": "일치된 문서",
+    "search-copy-link-title": "검색 링크 복사",
+    "search-hide-matches-text": "추가 검색 결과 숨기기",
+    "search-more-match-text": "추가 검색결과",
+    "search-more-matches-text": "추가 검색결과",
+    "search-clear-button-title": "제거",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "취소",
+    "search-submit-button-title": "검색",
+    "search-label": "검색"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../assets/styles.css">
+</head>
+
+<body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const darkModeDefault = authorPrefersDark;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">All of My Future</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="탐색 전환" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../queue.html"> 
+<span class="menu-text">Queue</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../log/index.html"> 
+<span class="menu-text">Log</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="다크 모드 전환"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="리더 모드 전환">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">저자</div>
+    <div class="quarto-title-meta-contents">
+             <p>Anonymous Author(s) </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="reference-note-content">
+<div class="callout callout-style-default callout-note callout-titled" title="소속 개념 · Time-Inconsistent Control → Adjoint Costate Method">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">노트</span>소속 개념 · Time-Inconsistent Control → Adjoint Costate Method
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<section id="시간비일관적-제어의-공통-표기" class="level2">
+<h2 class="anchored" data-anchor-id="시간비일관적-제어의-공통-표기">시간비일관적 제어의 공통 표기</h2>
+<p>같은 물리적 상태라도 <strong>누가 언제 평가를 시작했는가</strong>에 따라 미래 보상의 가중치가 달라질 수 있다. 시작 시각을 anchor <span class="math inline">\(s\)</span>, 현재 계산 시각을 <span class="math inline">\(t\)</span>라 쓰고 <span class="math inline">\(0\le s\le t\le T\)</span>라 하자. 가장 단순한 non-exponential discount 문제는</p>
+<p><span class="math display">\[
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T D(s,r)f(r,X_r,u_r)\,dr
++D(s,T)\Phi(X_T)
+\right]
+\]</span></p>
+<p>로 쓸 수 있다. <span class="math inline">\(D(s,s)=1\)</span>이고 보통 <span class="math inline">\(D(s,r)&gt;0\)</span>이다.</p>
+</section>
+<section id="왜-bellman-원리가-깨지는가" class="level2">
+<h2 class="anchored" data-anchor-id="왜-bellman-원리가-깨지는가">왜 Bellman 원리가 깨지는가</h2>
+<p>Exponential discount <span class="math inline">\(D(s,r)=e^{-\delta(r-s)}\)</span>는</p>
+<p><span class="math display">\[
+D(s,r)=D(s,t)D(t,r)
+\]</span></p>
+<p>라는 곱셈성을 갖는다. 시각 <span class="math inline">\(t\)</span>에 도달했을 때 과거 self가 부여한 모든 미래 가중치는 현재 self의 가중치에 공통 상수 <span class="math inline">\(D(s,t)\)</span>만 곱한 것이므로 행동의 순위를 바꾸지 않는다.</p>
+<p>일반 discount에서는</p>
+<p><span class="math display">\[
+\frac{D(s,r_1)}{D(s,r_2)}
+\ne
+\frac{D(t,r_1)}{D(t,r_2)}
+\]</span></p>
+<p>일 수 있다. 그러면 <span class="math inline">\(s\)</span>에서 세운 계획과 <span class="math inline">\(t\)</span>에서 다시 푼 계획의 선호순서가 다르다. 하나의 value function을 뒤에서부터 재귀적으로 최적화하는 Bellman principle을 그대로 사용할 수 없는 이유다. 비일관성은 non-exponential discount 외에도 mean-variance criterion, 현재 상태나 조건부 기대값에 의존하는 목적함수, 서로 다른 평가 시각의 utility에서 생길 수 있다.</p>
+</section>
+<section id="하나의-최적제어-대신-self들의-게임" class="level2">
+<h2 class="anchored" data-anchor-id="하나의-최적제어-대신-self들의-게임">하나의 최적제어 대신 self들의 게임</h2>
+<p>Feedback strategy <span class="math inline">\(v(t,x)\)</span>를 고정하고, anchor <span class="math inline">\(s\)</span>가 시각 <span class="math inline">\(t\)</span> 이후를 평가하는 continuation value를</p>
+<p><span class="math display">\[
+\Theta^v(s,t,x)
+:=\mathbb E_{t,x}\!\left[
+\int_t^T D(s,r)f(r,X_r^v,v(r,X_r^v))\,dr
++D(s,T)\Phi(X_T^v)
+\right]
+\]</span></p>
+<p>로 정의한다. 같은 <span class="math inline">\((t,x)\)</span>에도 <span class="math inline">\(s\)</span>마다 다른 값이 있으므로 <span class="math inline">\(\Theta^v\)</span>는 삼각형</p>
+<p><span class="math display">\[
+\Delta:=\{(s,t):0\le s\le t\le T\}
+\]</span></p>
+<p>위의 field다. 시각 <span class="math inline">\(t\)</span>의 self가 실제로 읽는 것은 diagonal <span class="math inline">\(s=t\)</span>이고, 제어 합성에는 흔히</p>
+<p><span class="math display">\[
+p^v(t,x):=\nabla_x\Theta^v(t,t,x)
+\]</span></p>
+<p>가 들어간다.</p>
+</section>
+<section id="spike-deviation과-local-equilibrium" class="level2">
+<h2 class="anchored" data-anchor-id="spike-deviation과-local-equilibrium">Spike deviation과 local equilibrium</h2>
+<p><span class="math inline">\(a\in U\)</span>로 아주 짧은 구간 <span class="math inline">\([t,t+h)\)</span>만 바꾸고 이후에는 <span class="math inline">\(v\)</span>로 돌아가는 제어를 <span class="math inline">\(v^{t,h,a}\)</span>라 하자. 보상 최대화 규약에서 <span class="math inline">\(v\)</span>가 weak 또는 first-order equilibrium이라는 뜻은 모든 <span class="math inline">\((t,x,a)\)</span>에 대해</p>
+<p><span class="math display">\[
+\limsup_{h\downarrow0}
+\frac{J(t,x;v^{t,h,a})-J(t,x;v)}{h}
+\le0
+\]</span></p>
+<p>라는 것이다. 확산이 제어와 상태에 무관한 경우 Hamiltonian을</p>
+<p><span class="math display">\[
+H(t,x,a,p):=f(t,x,a)+b(t,x,a)\cdot p
+\]</span></p>
+<p>로 두면 spike variation은 형식적으로</p>
+<p><span class="math display">\[
+\lim_{h\downarrow0}
+\frac{J(t,x;v^{t,h,a})-J(t,x;v)}{h}
+=H(t,x,a,p^v(t,x))-H(t,x,v(t,x),p^v(t,x))
+\]</span></p>
+<p>가 된다. 따라서 pointwise equilibrium condition은</p>
+<p><span class="math display">\[
+v(t,x)\in\arg\max_{a\in U}H(t,x,a,p^v(t,x))
+\]</span></p>
+<p>이다. 계산된 policy의 1차 위반 정도는</p>
+<p><span class="math display">\[
+\operatorname{Gap}(v)
+:=\sup_{(t,x)\in Q}
+\left[
+\max_{a\in U}H(t,x,a,p^v(t,x))
+-H(t,x,v(t,x),p^v(t,x))
+\right]
+\]</span></p>
+<p>로 측정할 수 있다.</p>
+</section>
+<section id="open-loop-closed-loop-weak-regular-strong" class="level2">
+<h2 class="anchored" data-anchor-id="open-loop-closed-loop-weak-regular-strong">Open-loop, closed-loop, weak, regular, strong</h2>
+<ul>
+<li><strong>Open-loop equilibrium</strong>은 perturbation 이후의 제어를 주어진 확률과정으로 비교한다. 초기 조건이나 noise realization에 대한 feedback 법칙을 반드시 주지는 않는다.</li>
+<li><strong>Closed-loop equilibrium</strong>은 <span class="math inline">\(v(t,x)\)</span>처럼 현재 상태에 따라 행동하는 규칙 자체를 비교한다.</li>
+<li><strong>Weak equilibrium</strong>은 위와 같은 <span class="math inline">\(h\downarrow0\)</span>의 1차 spike 조건을 막는다.</li>
+<li><strong>Strong equilibrium</strong>은 충분히 작은 모든 양의 <span class="math inline">\(h\)</span>에서 실제 payoff 차이가 불리하지 않아야 한다. 1차항이 0일 때 2차 이상의 항이 deviation을 유리하게 만들 수 있으므로 weak보다 강하다.</li>
+<li><strong>Regular equilibrium</strong>은 현재 <span class="math inline">\((t,x)\)</span>에서 다른 행동으로 바꾸는 보다 직접적인 국소 비교를 사용하며, 특정 정칙성 조건 아래 weak equilibrium과 연결된다 <span class="citation" data-cites="he2021equilibrium">(<a href="#ref-he2021equilibrium" role="doc-biblioref">He 와/과 Jiang 2021년</a>)</span>.</li>
+</ul>
+<p>따라서 <span class="math inline">\(\operatorname{Gap}(v)=0\)</span>은 first-order equilibrium 진술이지, 그 자체로 finite-duration strong equilibrium을 증명하지 않는다.</p>
+</section>
+<section id="대표적인-계산-경로" class="level2">
+<h2 class="anchored" data-anchor-id="대표적인-계산-경로">대표적인 계산 경로</h2>
+<ol type="1">
+<li><strong>Extended HJB</strong>: anchor-indexed auxiliary value와 diagonal condition을 묶은 PDE system을 푼다.</li>
+<li><strong>Maximum principle / FBSDE</strong>: 각 self의 1차 조건과 adjoint BSDE를 결합한다.</li>
+<li><strong>BSVIE</strong>: 시작시각과 적분시각이라는 두 시간축을 한 확률방정식에 유지한다.</li>
+<li><strong><span class="math inline">\(n\)</span>-person game limit</strong>: 시간을 partition하고 각 구간을 한 player로 만든 뒤 mesh를 0으로 보낸다.</li>
+<li><strong>직접 equilibrium learning</strong>: equilibrium policy의 fixed point, Hamiltonian condition, 또는 costate를 근사한다.</li>
+</ol>
+<p>각 경로는 같은 문제를 항상 같은 가정 아래 푸는 것이 아니다. open/closed-loop 구분, Markov성, diffusion의 제어 의존성, 고전해 존재 조건을 논문별로 확인해야 한다.</p>
+</section>
+<section id="acm이-풀려는-정확한-문제" class="level2">
+<h2 class="anchored" data-anchor-id="acm이-풀려는-정확한-문제">ACM이 풀려는 정확한 문제</h2>
+<p>Adjoint Costate Method(ACM)는 non-multiplicative discount 때문에 생기는 시간비일관적 확률제어에서, 각 현재 self가 행동을 정할 때 실제로 읽는 <strong>diagonal costate</strong>를 직접 계산하려는 방법이다 <span class="citation" data-cites="adjointCostate2026">(<a href="#ref-adjointCostate2026" role="doc-biblioref">Anonymous Author(s) 2026년</a>)</span>.</p>
+<p>인증 이론이 다루는 상태는</p>
+<p><span class="math display">\[
+dX_t=b(t,X_t,u_t)\,dt+\sigma(t)\,dW_t,
+\qquad X_s=x
+\]</span></p>
+<p>이다. 핵심 범위 제한은 <span class="math inline">\(\sigma\)</span>가 상태와 제어에 무관한 additive diffusion이라는 점이다. 보상은</p>
+<p><span class="math display">\[
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T D(s,r)f(r,X_r,u_r)\,dr
++D(s,T)\phi(X_T)
+\right]
+\]</span></p>
+<p>이고, feedback <span class="math inline">\(v\)</span>를 고정했을 때 anchored continuation value는</p>
+<p><span class="math display">\[
+\Theta^v(s,t,x)
+=\mathbb E_{t,x}\!\left[
+\int_t^T D(s,r)f^v(r,X_r)\,dr
++D(s,T)\phi(X_T)
+\right]
+\]</span></p>
+<p>이다. 여기서</p>
+<p><span class="math display">\[
+b^v(t,x):=b(t,x,v(t,x)),
+\qquad
+f^v(t,x):=f(t,x,v(t,x)).
+\]</span></p>
+<p>Feynman-Kac에 의해 고정된 anchor <span class="math inline">\(s\)</span>마다</p>
+<p><span class="math display">\[
+\partial_t\Theta^v
++b^v\cdot\nabla_x\Theta^v
++\frac12\operatorname{Tr}(aD_x^2\Theta^v)
++D(s,t)f^v=0,
+\]</span></p>
+<p><span class="math display">\[
+\Theta^v(s,T,x)=D(s,T)\phi(x),
+\qquad a(t)=\sigma(t)\sigma(t)^\top
+\]</span></p>
+<p>를 얻는다. 현재 self가 쓰는 costate는 전체 field가 아니라</p>
+<p><span class="math display">\[
+p^v(t,x):=\nabla_x\Theta^v(t,t,x)
+\]</span></p>
+<p>다. <span class="math inline">\(H(t,x,u,p)=f(t,x,u)+b(t,x,u)\cdot p\)</span>라 하면 equilibrium feedback은</p>
+<p><span class="math display">\[
+v(t,x)\in\arg\max_{u\in U}H(t,x,u,p^v(t,x))
+\]</span></p>
+<p>를 만족해야 한다.</p>
+</section>
+<section id="왜-삼각형-전체의-작은-loss로는-충분하지-않은가" class="level2">
+<h2 class="anchored" data-anchor-id="왜-삼각형-전체의-작은-loss로는-충분하지-않은가">왜 삼각형 전체의 작은 loss로는 충분하지 않은가</h2>
+<p>기존 field solver는 <span class="math inline">\((s,t,x)\)</span> 전체에서 residual을 평균낸다.</p>
+<p><span class="math display">\[
+\ell_{\mathrm{anc}}(F)
+=\int_{\Delta\times\mathcal X}
+\|\mathcal R[F](s,t,x)\|^2
+\,dm(s,t)\,d\rho_X(x)
++\lambda_T\ell_{\mathrm{term}}(F).
+\]</span></p>
+<p>하지만 제어는 <span class="math inline">\(s=t\)</span>의 trace만 읽는다. 연속적인 2차원 sampling law에서 이 diagonal은 measure zero다. 폭 <span class="math inline">\(\delta\)</span>인 띠 안에만 존재하면서 diagonal에서는 높이가 일정한 perturbation을 만들면, 면적은 <span class="math inline">\(O(\delta)\)</span>로 줄어 loss는 0으로 가지만 diagonal 오차와 equilibrium gap은 줄지 않을 수 있다. 원고의 첫 부정결과는 특정 anchored PINN/BSVIE population objective에는</p>
+<p><span class="math display">\[
+\operatorname{Gap}(F)
+\le \omega(\ell_{\mathrm{anc}}(F)),
+\qquad \omega(r)\to0
+\]</span></p>
+<p>꼴의 보편적 certificate가 없음을 보인다. 이는 모든 가능한 PINN이나 BSVIE loss가 실패한다는 명제가 아니다. diagonal supervision, anchor derivative control, 또는 architecture restriction은 별도 정보를 추가한다.</p>
+<p>Policy-gradient 계열에는 다른 문제가 있다. 시작 anchor들의 occupancy-weighted 분포를 <span class="math inline">\(w(ds\mid t,x)\)</span>라 하면 mixture objective의 stationarity는 diagonal costate가 아니라</p>
+<p><span class="math display">\[
+\overline P^v(t,x)
+:=
+\frac{\int P_s^v(t,x)\,w(ds\mid t,x)}
+{\int D(s,t)\,w(ds\mid t,x)}
+\]</span></p>
+<p>에 대한 Hamiltonian 조건을 준다. 따라서 일반적으로</p>
+<p><span class="math display">\[
+\partial_uH(t,x,v,p^v)
+-\partial_uH(t,x,v,\overline P^v)
+=\partial_ub(t,x,v)^\top(p^v-\overline P^v)
+\]</span></p>
+<p>가 남는다. 이는 finite-step PPO의 모든 stationary point에 대한 명제가 아니라, exact critic과 nonparametric policy mean을 둔 이상화된 anchor-mixture gradient의 구조적 차이다.</p>
+</section>
+<section id="단계-anchored-costate-방정식" class="level2">
+<h2 class="anchored" data-anchor-id="단계-anchored-costate-방정식">1단계: anchored costate 방정식</h2>
+<p><span class="math inline">\(P_s^v(t,x):=\nabla_x\Theta^v(s,t,x)\)</span>라 두고 value PDE를 <span class="math inline">\(x\)</span>로 미분한다. <span class="math inline">\(\sigma(t)\)</span>가 <span class="math inline">\(x\)</span>에 무관하므로 diffusion 미분에서 추가 결합항이 생기지 않는다. Vector field <span class="math inline">\(w\)</span>에 대해</p>
+<p><span class="math display">\[
+\mathcal A^v[w]
+:=\partial_tw
++b^v\cdot\nabla_xw
++\frac12\operatorname{Tr}(aD_x^2w)
++(\partial_xb^v)^\top w
+\]</span></p>
+<p>를 정의하면</p>
+<p><span class="math display">\[
+\mathcal A^v[P_s^v]
+=-D(s,t)\partial_xf^v,
+\qquad
+P_s^v(T,x)=D(s,T)\nabla_x\phi(x).
+\]</span></p>
+<p><span class="math inline">\(\partial_xb^v\)</span>와 <span class="math inline">\(\partial_xf^v\)</span>는 <span class="math inline">\(x\mapsto v(t,x)\)</span>를 통과해 미분한 <strong>total closed-loop derivative</strong>다. 예를 들어</p>
+<p><span class="math display">\[
+\partial_xf^v
+=f_x(t,x,v)+v_x(t,x)^\top f_u(t,x,v).
+\]</span></p>
+</section>
+<section id="단계-discount-free-kernel-factorization" class="level2">
+<h2 class="anchored" data-anchor-id="단계-discount-free-kernel-factorization">2단계: discount-free kernel factorization</h2>
+<p>선형 방정식의 source와 terminal data를 따로 전파하는 두 kernel을 정의한다.</p>
+<p><span class="math display">\[
+\mathcal A^v[K^v(\cdot;\tau)]=0,
+\qquad
+K^v(\tau,x;\tau)=\partial_xf^v(\tau,x),
+\]</span></p>
+<p><span class="math display">\[
+\mathcal A^v[\overline K^v]=0,
+\qquad
+\overline K^v(T,x)=\nabla_x\phi(x).
+\]</span></p>
+<p>선형성 때문에 각 source impulse를 <span class="math inline">\(D(s,\tau)\)</span>로 가중해 합하면</p>
+<p><span class="math display">\[
+P_s^v(t,x)
+=\int_t^T D(s,\tau)K^v(t,x;\tau)\,d\tau
++D(s,T)\overline K^v(t,x).
+\]</span></p>
+<p>실제로 <span class="math inline">\(\mathcal A^v\)</span>를 우변에 적용하면 homogeneous kernel PDE는 사라지고, 적분 하한을 미분할 때</p>
+<p><span class="math display">\[
+-D(s,t)K^v(t,x;t)
+=-D(s,t)\partial_xf^v(t,x)
+\]</span></p>
+<p>가 남는다. terminal time에서는 적분이 0이 되어 원하는 terminal condition을 준다. 이것이 Duhamel factorization의 직접 확인이다.</p>
+<p>중요한 변화는 learned object <span class="math inline">\(K^v(t,x;\tau),\overline K^v(t,x)\)</span>가 anchor <span class="math inline">\(s\)</span>를 입력으로 받지 않는다는 것이다. discount는 학습 residual이 아니라 read-out의 deterministic weight로만 들어간다.</p>
+</section>
+<section id="단계-diagonal-read-out과-policy-합성" class="level2">
+<h2 class="anchored" data-anchor-id="단계-diagonal-read-out과-policy-합성">3단계: diagonal read-out과 policy 합성</h2>
+<p><span class="math inline">\(s=t\)</span>를 대입하면</p>
+<p><span class="math display">\[
+p^v(t,x)
+=\int_t^T D(t,\tau)K^v(t,x;\tau)\,d\tau
++D(t,T)\overline K^v(t,x).
+\]</span></p>
+<p>실제 구현은 <span class="math inline">\([0,1]\)</span>의 quadrature node와 weight <span class="math inline">\((\xi_j,w_j)_{j=1}^{n_q}\)</span>를 써서</p>
+<p><span class="math display">\[
+\tau_j=t+(T-t)\xi_j,
+\]</span></p>
+<p><span class="math display">\[
+\widehat p_\theta(t,x)
+=(T-t)\sum_{j=1}^{n_q}
+w_jD(t,\tau_j)K_\theta(t,x;\tau_j)
++D(t,T)\overline K_\theta(t,x)
+\]</span></p>
+<p>로 계산한다. 배포 policy는</p>
+<p><span class="math display">\[
+\widehat u_\theta(t,x)
+\approx\arg\max_{a\in U}
+H(t,x,a,\widehat p_\theta(t,x))
+\]</span></p>
+<p>이다.</p>
+</section>
+<section id="단계-무엇을-학습하는가" class="level2">
+<h2 class="anchored" data-anchor-id="단계-무엇을-학습하는가">4단계: 무엇을 학습하는가</h2>
+<p>같은 <span class="math inline">\(\widehat u_\theta\)</span>로 closed-loop coefficient를 만들고 네 결함을 최소화한다.</p>
+<p><span class="math display">\[
+\begin{aligned}
+\ell_{\mathrm{ACM}}
+={}&amp;\mathbb E\|\mathcal A^{\widehat u_\theta}[K_\theta]\|^2
++\mathbb E\|\mathcal A^{\widehat u_\theta}[\overline K_\theta]\|^2\\
+&amp;+\lambda_s\mathbb E
+\|K_\theta(t,x;t)-\partial_xf^{\widehat u_\theta}(t,x)\|^2\\
+&amp;+\lambda_T\mathbb E
+\|\overline K_\theta(T,x)-\nabla_x\phi(x)\|^2.
+\end{aligned}
+\]</span></p>
+<p>Operator residual을 계산할 때 <span class="math inline">\(x\mapsto\widehat u_\theta(t,x)\)</span>의 공간미분은 포함해야 한다. 다만 coefficient branch는 parameter <span class="math inline">\(\theta\)</span>에 대해 detach하여 semi-gradient update를 사용한다. Source와 terminal condition이 각각 <span class="math inline">\((t,x)\)</span> 공간의 양의 측도에서 직접 감독되므로, diagonal null-set 문제를 architecture 차원에서 제거한다.</p>
+</section>
+<section id="단계-residual-defect에서-equilibrium-gap까지" class="level2">
+<h2 class="anchored" data-anchor-id="단계-residual-defect에서-equilibrium-gap까지">5단계: residual defect에서 equilibrium gap까지</h2>
+<p>학습에 사용한 empirical MSE 자체는 certificate가 아니다. 별도의 verification domain에서 uniform defect</p>
+<p><span class="math display">\[
+\varepsilon_K,
+\quad
+\varepsilon_{\mathrm{src}},
+\quad
+\varepsilon_{\overline K},
+\quad
+\varepsilon_{\mathrm{term}}
+\]</span></p>
+<p>를 검증해야 한다. <span class="math inline">\(L_J^{\mathrm{dep}}:=\sup\|\partial_xb^{\widehat u_\theta}\|\)</span>라 두면 원고의 costate error budget은</p>
+<p><span class="math display">\[
+E_{\mathrm{train}}
+=e^{L_J^{\mathrm{dep}}T}
+\left[
+\frac12T^2\varepsilon_K
++T(\varepsilon_{\mathrm{src}}+\varepsilon_{\overline K})
++\varepsilon_{\mathrm{term}}
+\right].
+\]</span></p>
+<p>Quadrature error를 <span class="math inline">\(e_{\mathrm{quad}}\)</span>, 내부 Hamiltonian maximization error를 <span class="math inline">\(\eta\)</span>, 관련 action들에서 drift bound를 <span class="math inline">\(L_{b,\max}\)</span>라 하면</p>
+<p><span class="math display">\[
+\operatorname{Gap}(\widehat u_\theta)
+\le
+\eta+2L_{b,\max}
+(E_{\mathrm{train}}+e_{\mathrm{quad}}).
+\]</span></p>
+<p>핵심은 알 수 없는 equilibrium <span class="math inline">\(u^*\)</span>와 직접 비교하지 않고, <strong>실제로 배포하는 policy의 costate</strong>와 Hamiltonian suboptimality를 제어한다는 점이다. Equilibrium map의 contraction은 이 gap certificate에 필요하지 않다. 다만 특정 equilibrium과의 sup-distance까지 얻으려면 contraction/self-map 같은 추가 가정이 필요하다.</p>
+</section>
+<section id="실험이-보여주는-것과-보여주지-않는-것" class="level2">
+<h2 class="anchored" data-anchor-id="실험이-보여주는-것과-보여주지-않는-것">실험이 보여주는 것과 보여주지 않는 것</h2>
+<p>원고는 알려진 equilibrium을 가진 세 benchmark에서 PPO, value PINN, Deep BSVIE, PG-DPO, costate-targeted PINN/BSVIE와 비교한다. 열 개 seed의 grid-averaged control error에서 ACM의 평균오차가 세 경우 모두 가장 작았고, 보고된 비율은 runner-up 대비 약 <span class="math inline">\(86\times\)</span>, <span class="math inline">\(4.6\times\)</span>, <span class="math inline">\(2.9\times\)</span> 개선이다 <span class="citation" data-cites="adjointCostate2026">(<a href="#ref-adjointCostate2026" role="doc-biblioref">Anonymous Author(s) 2026년</a>)</span>.</p>
+<p>그러나 이 실험은 uniform residual, quadrature, argmax defect를 interval bound 등으로 검증해 수치적인 certificate 값을 실제 산출한 것은 아니다. 표의 작은 control error는 analytic/fixed-point reference에 대한 empirical evidence이고, theorem의 a-posteriori certificate와 구별해야 한다.</p>
+</section>
+<section id="현재-이론의-정확한-경계" class="level2">
+<h2 class="anchored" data-anchor-id="현재-이론의-정확한-경계">현재 이론의 정확한 경계</h2>
+<ul>
+<li><span class="math inline">\(\sigma(t)\)</span>인 additive, state-independent, control-independent diffusion을 가정한다.</li>
+<li>Classical anchored PDE solution과 equilibrium의 존재는 증명 결과가 아니라 standing assumption이다.</li>
+<li>Uniform verification은 전역에서 하거나, 평가영역에서 시작한 representation process가 verification domain을 거의 확실히 벗어나지 않아야 한다. 단순히 큰 유한 box를 택하는 것만으로는 Gaussian noise의 full support를 막지 못한다.</li>
+<li>Population <span class="math inline">\(L^2\)</span> bound와 empirical minibatch loss는 동일하지 않다.</li>
+<li>Gap은 1차 spike-deviation에 대한 weak-equilibrium gap이다. Gap이 작다는 사실만으로 finite-duration deviation까지 막는 strong equilibrium certificate가 되지는 않는다 <span class="citation" data-cites="he2021equilibrium">(<a href="#ref-he2021equilibrium" role="doc-biblioref">He 와/과 Jiang 2021년</a>)</span>.</li>
+<li>Control-dependent diffusion에는 <span class="math inline">\(Q\)</span> 및 2차 adjoint에 해당하는 추가 구조가 필요하다.</li>
+</ul>
+</section>
+</div>
+</div>
+</div>
+<section id="이-원고가-공통-틀에-추가한-것" class="level2">
+<h2 class="anchored" data-anchor-id="이-원고가-공통-틀에-추가한-것">이 원고가 공통 틀에 추가한 것</h2>
+<p>이 원고는 시간비일관적 제어의 anchored costate가 만족하는 선형 PDE를 running-reward impulse kernel <span class="math inline">\(K^v\)</span>와 terminal kernel <span class="math inline">\(\overline K^v\)</span>로 분해한다. Anchor <span class="math inline">\(s\)</span>와 discount <span class="math inline">\(D(s,\tau)\)</span>는 neural network의 입력과 residual에서 빠지고 deterministic quadrature read-out에만 남는다 <span class="citation" data-cites="adjointCostate2026">(<a href="#ref-adjointCostate2026" role="doc-biblioref">Anonymous Author(s) 2026년</a>)</span>.</p>
+<p>고유한 기여는 세 층이다.</p>
+<ol type="1">
+<li>분석된 anchored <span class="math inline">\(L^2\)</span> PINN/BSVIE loss에는 diagonal equilibrium-gap certificate가 없다는 trace obstruction</li>
+<li>Anchor-mixture policy gradient가 diagonal costate가 아니라 anchor-averaged costate에 stationarity를 강제한다는 구분</li>
+<li>검증된 uniform kernel defect, quadrature error, Hamiltonian maximization error를 배포 policy의 first-order gap으로 바꾸는 a-posteriori bound</li>
+</ol>
+</section>
+<section id="논문의-논리-구조" class="level2">
+<h2 class="anchored" data-anchor-id="논문의-논리-구조">논문의 논리 구조</h2>
+<p><span class="math display">\[
+\text{anchored value PDE}
+\xrightarrow{\nabla_x}
+\text{linear adjoint PDE}
+\xrightarrow{\text{Duhamel}}
+(K^v,\overline K^v)
+\xrightarrow{\text{quadrature}}
+\widehat p_\theta
+\xrightarrow{\arg\max H}
+\widehat u_\theta.
+\]</span></p>
+<p>그 뒤 uniform residual verification으로 <span class="math inline">\(\widehat p_\theta\)</span>와 실제 continuation costate <span class="math inline">\(p^{\widehat u_\theta}\)</span>의 차이를 제어하고, Hamiltonian의 <span class="math inline">\(p\)</span>-Lipschitz 성질로 equilibrium gap을 bound한다.</p>
+</section>
+<section id="결과를-읽는-정확한-방식" class="level2">
+<h2 class="anchored" data-anchor-id="결과를-읽는-정확한-방식">결과를 읽는 정확한 방식</h2>
+<ul>
+<li>이론상 certificate는 empirical training loss가 아니라 별도로 검증한 continuum <span class="math inline">\(L^\infty\)</span> defect를 입력으로 받는다.</li>
+<li>실험표는 알려진 equilibrium에 대한 grid control error이고 실제 certificate 값을 계산한 표가 아니다.</li>
+<li>Gap은 weak/first-order spike equilibrium의 위반량이다. Strong equilibrium 보장은 아니다.</li>
+<li>ACM은 general BSVIE solver가 아니라 additive-noise Markov model에서 costate BSVIE를 adjoint PDE로 우회하는 방법이다.</li>
+<li>“Discount-free kernel”은 kernel equation이 discount를 직접 입력받지 않는다는 뜻이지, discount를 바꿔도 policy-dependent kernel을 재학습할 필요가 없다는 뜻은 아니다.</li>
+</ul>
+</section>
+<section id="원문에서-남은-연구-과제" class="level2">
+<h2 class="anchored" data-anchor-id="원문에서-남은-연구-과제">원문에서 남은 연구 과제</h2>
+<ul>
+<li>Uniform verification을 실제 수치 certificate로 닫기</li>
+<li>Additive Brownian noise의 domain escape 처리</li>
+<li>State/control-dependent diffusion으로 확장</li>
+<li>Policy-kernel semi-gradient iteration의 수렴</li>
+<li>고차원 및 reference equilibrium이 없는 실험</li>
+</ul>
+</section>
+<section id="원문" class="level2">
+<h2 class="anchored" data-anchor-id="원문">원문</h2>
+<ul>
+<li>서지정보: <span class="citation" data-cites="adjointCostate2026">(<a href="#ref-adjointCostate2026" role="doc-biblioref">Anonymous Author(s) 2026년</a>)</span></li>
+<li>2026-09-29에 제공된 39쪽 익명 원고를 기준으로 정리했다. 동료평가 완료본이 아니다.</li>
+</ul>
+</section>
+</div>
+
+
+
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">참고문헌</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-adjointCostate2026" class="csl-entry" role="listitem">
+Anonymous Author(s). 2026년. <span>“The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting”</span>. Manuscript.
+</div>
+<div id="ref-he2021equilibrium" class="csl-entry" role="listitem">
+He, Xue Dong, 와/과 Zhao Li Jiang. 2021년. <span>“On the Equilibrium Strategies for Time-Inconsistent Problems in Continuous Time”</span>. <em>SIAM Journal on Control and Optimization</em> 59 (5): 3860–86. <a href="https://doi.org/10.1137/20M1382106">https://doi.org/10.1137/20M1382106</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script>
+(() => {
+  const assets = [
+    ["assets/js/site.js", "atlas-site-script"],
+    ["assets/js/knowledge-graph.js", "atlas-graph-script"]
+  ];
+  const candidates = [...document.querySelectorAll("link[href], script[src]")]
+    .map((element) => element.href || element.src)
+    .filter(Boolean);
+  const libraryUrl = candidates.find((url) => url.includes("/site_libs/"));
+  const rootUrl = libraryUrl
+    ? libraryUrl.slice(0, libraryUrl.indexOf("/site_libs/") + 1)
+    : new URL("./", document.baseURI).href;
+
+  for (const [path, id] of assets) {
+    if (document.getElementById(id)) continue;
+    const script = document.createElement("script");
+    script.id = id;
+    script.src = new URL(path, rootUrl).href;
+    script.defer = true;
+    document.body.appendChild(script);
+  }
+})();
+</script>
+
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "복사완료!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "복사완료!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/20226074\.github\.io\/all-of-my-future\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>A living research atlas · built with <a href="https://quarto.org/">Quarto</a></p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="../../index.html">
+<p>Home</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+<p>Working guide</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

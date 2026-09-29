@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="description" content="독립적인 연구 개념과 그 사이의 연결">
+<meta name="description" content="확률적으로 움직이는 상태에 피드백을 가해 기대 보상이나 비용을 최적화하는 이론">
 
-<title>Topics – All of My Future</title>
+<title>Stochastic Control – All of My Future</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -30,24 +30,22 @@ ul.task-list li input[type="checkbox"] {
 </style>
 
 
-<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="../site_libs/quarto-listing/list.min.js"></script>
-<script src="../site_libs/quarto-listing/quarto-listing.js"></script>
-<script src="../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../site_libs/quarto-html/popper.min.js"></script>
-<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="../site_libs/quarto-html/anchor.min.js"></script>
-<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
-<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark-c4080326bf9aafd818956451897a18cd.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap-d1c5a90f90d90e75216aa13a4d2224eb.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "language": {
     "search-no-results-text": "일치 없음",
@@ -63,36 +61,6 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "검색"
   }
 }</script>
-<script>
-
-  window.document.addEventListener("DOMContentLoaded", function (_event) {
-    const listingTargetEl = window.document.querySelector('#listing-listing .list');
-    if (!listingTargetEl) {
-      // No listing discovered, do not attach.
-      return; 
-    }
-
-    const options = {
-      valueNames: ['listing-title','listing-description','listing-status','listing-maturity','listing-tags',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
-      page: 12,
-    pagination: { item: "<li class='page-item'><a class='page page-link' href='#'></a></li>" },
-      searchColumns: ["listing-title","listing-author","listing-image","listing-description"],
-    };
-
-    window['quarto-listings'] = window['quarto-listings'] || {};
-    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
-
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  });
-
-  window.addEventListener('hashchange',() => {
-    if (window['quarto-listing-loaded']) {
-      window['quarto-listing-loaded']();
-    }
-  })
-  </script>
 <style>html{ scroll-behavior: smooth; }</style>
 
   <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
@@ -125,7 +93,7 @@ window.Quarto = {
 };
 </script>
 
-<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../../assets/styles.css">
 </head>
 
 <body class="nav-fixed quarto-light"><script id="quarto-html-before-body" type="application/javascript">
@@ -297,7 +265,7 @@ window.Quarto = {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="../index.html">
+    <a class="navbar-brand" href="../../index.html">
     <span class="navbar-title">All of My Future</span>
     </a>
   </div>
@@ -307,15 +275,15 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
-    <a class="nav-link" href="../queue.html"> 
+    <a class="nav-link" href="../../queue.html"> 
 <span class="menu-text">Queue</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../log/index.html"> 
+    <a class="nav-link" href="../../log/index.html"> 
 <span class="menu-text">Log</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="../about.html"> 
+    <a class="nav-link" href="../../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
 </ul>
@@ -335,8 +303,20 @@ window.Quarto = {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">목차</h2>
+   
+  <ul>
+  <li><a href="#확률제어의-공통-표기" id="toc-확률제어의-공통-표기" class="nav-link active" data-scroll-target="#확률제어의-공통-표기">확률제어의 공통 표기</a></li>
+  <li><a href="#동적계획과-hjb-방정식" id="toc-동적계획과-hjb-방정식" class="nav-link" data-scroll-target="#동적계획과-hjb-방정식">동적계획과 HJB 방정식</a></li>
+  <li><a href="#hamiltonian과-costate" id="toc-hamiltonian과-costate" class="nav-link" data-scroll-target="#hamiltonian과-costate">Hamiltonian과 costate</a></li>
+  <li><a href="#hjb와-costate가-만나는-지점" id="toc-hjb와-costate가-만나는-지점" class="nav-link" data-scroll-target="#hjb와-costate가-만나는-지점">HJB와 costate가 만나는 지점</a></li>
+  <li><a href="#어떤-해법을-택할-것인가" id="toc-어떤-해법을-택할-것인가" class="nav-link" data-scroll-target="#어떤-해법을-택할-것인가">어떤 해법을 택할 것인가</a></li>
+  <li><a href="#이-지도에서-이어지는-경로" id="toc-이-지도에서-이어지는-경로" class="nav-link" data-scroll-target="#이-지도에서-이어지는-경로">이 지도에서 이어지는 경로</a></li>
+  <li><a href="#반드시-분리해서-볼-오차" id="toc-반드시-분리해서-볼-오차" class="nav-link" data-scroll-target="#반드시-분리해서-볼-오차">반드시 분리해서 볼 오차</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -344,12 +324,12 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Topics</h1>
+<h1 class="title">Stochastic Control</h1>
 </div>
 
 <div>
   <div class="description">
-    독립적인 연구 개념과 그 사이의 연결
+    확률적으로 움직이는 상태에 피드백을 가해 기대 보상이나 비용을 최적화하는 이론
   </div>
 </div>
 
@@ -366,730 +346,130 @@ window.Quarto = {
 </header>
 
 
-<p>이곳은 개별 논문이나 책의 요약을 넘어, 여러 레퍼런스에서 얻은 이해를 주제별로 합치는 공간이다. 이 목록의 모든 개념은 동등한 출발점이다. 연결은 특정 이론·방법·문헌이 만나는 맥락을 나타내며, 학습이 진행되면서 수정될 수 있다.</p>
-<p>토픽의 <code>maturity</code>는 내용의 완성도가 아니라 현재 이해의 성숙도를 나타낸다.</p>
+<p>확률제어는 <strong>noise가 있는 동역학에서 현재 정보만 사용해 행동을 선택하는 문제</strong>다. 이 페이지의 표기가 HJB, maximum principle, deep FBSDE, 시간비일관적 equilibrium 문헌의 공통 계약이다.</p>
+<section id="확률제어의-공통-표기" class="level2">
+<h2 class="anchored" data-anchor-id="확률제어의-공통-표기">확률제어의 공통 표기</h2>
+<p>완비 확률공간 <span class="math inline">\((\Omega,\mathcal F,(\mathcal F_t)_{0\le t\le T},\mathbb P)\)</span>가 <span class="math inline">\(m\)</span>차원 Brownian motion <span class="math inline">\(W\)</span>를 지닌다고 하자. 상태, 행동, 계수의 차원을 먼저 고정한다.</p>
+<p><span class="math display">\[
+X_t\in\mathbb R^d,
+\qquad
+u_t\in U\subseteq\mathbb R^k,
+\]</span></p>
+<p><span class="math display">\[
+b:[0,T]\times\mathbb R^d\times U\to\mathbb R^d,
+\qquad
+\sigma:[0,T]\times\mathbb R^d\times U\to\mathbb R^{d\times m}.
+\]</span></p>
+<p>제어 <span class="math inline">\(u=(u_t)\)</span>는 현재까지의 정보만 사용하는 progressively measurable process이고, 아래 SDE와 보상이 잘 정의될 만큼 적분 가능하다고 가정한다. 제어된 상태는</p>
+<p><span class="math display">\[
+dX_t=b(t,X_t,u_t)\,dt+\sigma(t,X_t,u_t)\,dW_t,
+\qquad X_s=x
+\]</span></p>
+<p>를 따른다. 여기서는 보상을 <strong>최대화</strong>하는 부호 규약을 사용한다.</p>
+<p><span class="math display">\[
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T f(r,X_r,u_r)\,dr+\Phi(X_T)
+\right].
+\]</span></p>
+<p><span class="math inline">\(f\)</span>는 running reward, <span class="math inline">\(\Phi\)</span>는 terminal reward다. 비용 최소화 문제는 <span class="math inline">\(f,\Phi\)</span>의 부호를 바꾸면 같은 표기로 옮길 수 있다.</p>
+</section>
+<section id="동적계획과-hjb-방정식" class="level2">
+<h2 class="anchored" data-anchor-id="동적계획과-hjb-방정식">동적계획과 HJB 방정식</h2>
+<p>시간일관적인 Markov 문제의 value function은</p>
+<p><span class="math display">\[
+V(t,x):=\sup_u J(t,x;u)
+\]</span></p>
+<p>이다. 아주 짧은 구간 <span class="math inline">\([t,t+h]\)</span>에서 행동 <span class="math inline">\(a\)</span>를 고정하면 동적계획원리는</p>
+<p><span class="math display">\[
+V(t,x)
+=\sup_{a\in U}\mathbb E_{t,x}\!\left[
+\int_t^{t+h}f(r,X_r,a)\,dr+V(t+h,X_{t+h})
+\right]
++o(h)
+\]</span></p>
+<p>라고 말한다. <span class="math inline">\(V\in C^{1,2}\)</span>라고 가정하고 Itô 공식을 적용한 뒤 <span class="math inline">\(h\)</span>로 나누어 <span class="math inline">\(h\downarrow0\)</span>을 취하면</p>
+<p><span class="math display">\[
+\partial_tV
++\sup_{a\in U}
+\left\{
+f(t,x,a)
++b(t,x,a)\cdot\nabla_xV
++\frac12\operatorname{Tr}
+\left[
+\sigma\sigma^\top(t,x,a)D_x^2V
+\right]
+\right\}=0,
+\]</span></p>
+<p><span class="math display">\[
+V(T,x)=\Phi(x)
+\]</span></p>
+<p>를 얻는다. 고전해가 없을 때에는 이 식을 viscosity solution 의미로 다루어야 한다.</p>
+</section>
+<section id="hamiltonian과-costate" class="level2">
+<h2 class="anchored" data-anchor-id="hamiltonian과-costate">Hamiltonian과 costate</h2>
+<p>확률적 최대원리에서는</p>
+<p><span class="math display">\[
+H(t,x,a,p,q)
+:=f(t,x,a)+b(t,x,a)\cdot p
++\operatorname{Tr}\!\left(\sigma(t,x,a)^\top q\right)
+\]</span></p>
+<p>를 Hamiltonian으로 둔다. 여기서 <span class="math inline">\(p\in\mathbb R^d\)</span>, <span class="math inline">\(q\in\mathbb R^{d\times m}\)</span>다. 매끄러운 최적 제어 <span class="math inline">\(u^*\)</span>에 대응하는 adjoint pair <span class="math inline">\((P,Q)\)</span>는 전형적으로</p>
+<p><span class="math display">\[
+dP_t=-\partial_xH(t,X_t^*,u_t^*,P_t,Q_t)\,dt+Q_t\,dW_t,
+\qquad
+P_T=\nabla_x\Phi(X_T^*)
+\]</span></p>
+<p>라는 backward SDE를 만족한다. 내부해라면</p>
+<p><span class="math display">\[
+\partial_aH(t,X_t^*,u_t^*,P_t,Q_t)=0
+\]</span></p>
+<p>가 1차 필요조건이고, 오목성 같은 추가 조건 아래에서는 Hamiltonian maximization이 충분조건이 될 수 있다. 제약된 <span class="math inline">\(U\)</span>에서는 미분식보다</p>
+<p><span class="math display">\[
+u_t^*\in\arg\max_{a\in U}H(t,X_t^*,a,P_t,Q_t)
+\]</span></p>
+<p>가 안전한 표현이다.</p>
+<p>확산계수 <span class="math inline">\(\sigma\)</span>가 제어와 상태에 무관하면 <span class="math inline">\(q\)</span>가 행동 선택에 직접 들어가지 않고,</p>
+<p><span class="math display">\[
+H_0(t,x,a,p):=f(t,x,a)+b(t,x,a)\cdot p
+\]</span></p>
+<p>만으로 제어를 합성할 수 있다. 반대로 control-dependent diffusion에서는 일반적으로 <span class="math inline">\(Q\)</span>와 2차 adjoint를 무시할 수 없다.</p>
+</section>
+<section id="hjb와-costate가-만나는-지점" class="level2">
+<h2 class="anchored" data-anchor-id="hjb와-costate가-만나는-지점">HJB와 costate가 만나는 지점</h2>
+<p><span class="math inline">\(V\)</span>가 충분히 매끄럽고 최적 feedback <span class="math inline">\(u^*(t,x)\)</span>가 존재하면, 최적 경로 위에서</p>
+<p><span class="math display">\[
+P_t=\nabla_xV(t,X_t^*)
+\]</span></p>
+<p>로 해석할 수 있다. 따라서 HJB는 value를 먼저 구하는 관점이고, 최대원리는 value의 상태미분인 costate와 forward state를 함께 구하는 관점이다. 둘은 경쟁하는 정의가 아니라, 정칙한 경우 같은 최적성 구조를 서로 다른 좌표로 표현한다.</p>
+</section>
+<section id="어떤-해법을-택할-것인가" class="level2">
+<h2 class="anchored" data-anchor-id="어떤-해법을-택할-것인가">어떤 해법을 택할 것인가</h2>
 <ul>
-<li><code>seed</code>: 질문과 읽을 방향을 잡는 단계</li>
-<li><code>developing</code>: 여러 레퍼런스를 연결하며 설명을 다듬는 단계</li>
-<li><code>stable</code>: 핵심 주장과 연결을 원문으로 점검한 단계</li>
+<li>상태차원이 낮고 Markov 구조가 명확하면 HJB PDE를 직접 푼다.</li>
+<li>차원이 높지만 semilinear PDE/BSDE 구조가 있으면 Monte Carlo와 deep BSDE 계열을 사용할 수 있다.</li>
+<li>제어의 1차 조건이나 parameter gradient가 중심이면 stochastic maximum principle과 adjoint BSDE가 자연스럽다.</li>
+<li>목적함수가 시간비일관적이면 하나의 Bellman value가 아니라 temporal selves의 equilibrium을 정의해야 한다.</li>
 </ul>
-<p>그래프의 간선은 확정된 분류 체계라기보다 현재의 연구 경로를 표현한다. 특히 근거가 비어 있는 연결은 앞으로 검증할 가설이다.</p>
-
-
-
-
-<div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
-<div class="listing-actions-group">
-   <div class="input-group input-group-sm quarto-listing-sort">
-    <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
-    <select id="listing-listing-sort" class="form-select" aria-label="정렬" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
-      <option value="" disabled="" selected="" hidden="">정렬</option>
-      <option value="index" data-direction="asc">디폴트</option>
-      <option value="listing-title" data-direction="asc">
-        제목
-      </option>
-    </select>
-  </div>
-    <div class="input-group input-group-sm quarto-listing-filter">
-      <span class="input-group-text"><i class="bi bi-search"></i></span>
-      <input type="text" class="search form-control" placeholder="필터">
-    </div>
-</div>
-<div class="list grid quarto-listing-cols-3">
-<div class="g-col-1" data-index="0" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="84">
-<a href="../topics/adjoint-methods/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Adjoint &amp; Costate Methods
-</h5>
-<div class="card-text listing-description delink">
-<p>전치된 선형화 방정식으로 목적함수의 민감도와 최적성 조건을 계산하는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-adjoint,costate,sensitivity-analysis,optimal-control
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="1" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="82">
-<a href="../topics/bsvie/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Backward Stochastic Volterra Integral Equations
-</h5>
-<div class="card-text listing-description delink">
-<p>시작시각과 미래 진행시각을 함께 기억하는 두 시간축의 backward stochastic integral equation</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-bsvie,bsde,volterra,stochastic-analysis
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="2" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="20">
-<a href="../topics/classifier-free-guidance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Classifier-Free Guidance
-</h5>
-<div class="card-text listing-description delink">
-<p>조건부·무조건부 denoiser의 차이로 별도 classifier 없이 guidance를 만드는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,conditional-generation,guidance
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="3" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="18">
-<a href="../topics/conditional-diffusion/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Conditional Diffusion &amp; Guidance
-</h5>
-<div class="card-text listing-description delink">
-<p>조건부 score와 classifier gradient로 생성분포를 원하는 조건 쪽으로 바꾸는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,conditional-generation,classifier-guidance
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="4" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="../topics/ddpm/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Denoising Diffusion Probabilistic Models
-</h5>
-<div class="card-text listing-description delink">
-<p>이산 Gaussian Markov chain과 noise prediction으로 역과정을 학습하는 diffusion formulation</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,variational-inference,denoising
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="5" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="169">
-<a href="../topics/diffusion-models/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Diffusion Models
-</h5>
-<div class="card-text listing-description delink">
-<p>노이즈를 더하는 과정과 그 역과정을 학습하는 생성 모델의 공통 수학</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-generative-modeling,score-matching,stochastic-analysis,machine-learning
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="6" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="137">
-<a href="../topics/fokker-planck/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Fokker-Planck Equation
-</h5>
-<div class="card-text listing-description delink">
-<p>확산 과정의 확률분포가 시간에 따라 변하는 방식을 기술하는 PDE</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-partial-differential-equations,probability-density,stochastic-processes,kolmogorov-equations
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="7" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="124">
-<a href="../topics/high-dimensional-pde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-High-dimensional PDE Solvers
-</h5>
-<div class="card-text listing-description delink">
-<p>차원의 저주 아래에서 PDE를 계산하기 위한 수치·확률·학습 기반 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-partial-differential-equations,numerical-methods,deep-learning,bsde
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="8" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="20">
-<a href="../topics/latent-diffusion/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Latent Diffusion
-</h5>
-<div class="card-text listing-description delink">
-<p>압축된 latent representation에서 diffusion을 수행하고 decoder로 데이터 공간에 복원하는 방법</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,latent-variable-models,autoencoders,cross-attention
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="9" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="90">
-<a href="../topics/mean-variance/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Mean-Variance Portfolio Selection
-</h5>
-<div class="card-text listing-description delink">
-<p>기대수익과 조건부분산을 함께 최적화할 때 생기는 시간비일관적 포트폴리오 문제</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-portfolio,mean-variance,financial-mathematics,equilibrium-control
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="10" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="58">
-<a href="../topics/optimal-transport/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Optimal Transport
-</h5>
-<div class="card-text listing-description delink">
-<p>확률분포 사이의 이동 비용과 그 기하를 연구하는 토픽</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-probability-measures,optimization,wasserstein,geometry
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="11" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="133">
-<a href="../topics/schrodinger-bridge/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Schrödinger Bridge
-</h5>
-<div class="card-text listing-description delink">
-<p>기준 확률 동역학에 가깝게 두 끝점 분포를 연결하는 경로공간 문제</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-exploratory
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-seed
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-stochastic-control,path-space,entropy,optimal-transport
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="12" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="15">
-<a href="../topics/score-based-sde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Score-based SDE &amp; Probability-flow ODE
-</h5>
-<div class="card-text listing-description delink">
-<p>Diffusion을 연속시간 SDE로 통합하고 score로 역시간 확률·결정론 동역학을 구성하는 관점</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-diffusion-models,stochastic-differential-equations,score-matching,ordinary-differential-equations
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="13" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="148">
-<a href="../topics/stochastic-control/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Stochastic Control
-</h5>
-<div class="card-text listing-description delink">
-<p>확률적으로 움직이는 상태에 피드백을 가해 기대 보상이나 비용을 최적화하는 이론</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-stochastic-control,controlled-sde,hjb,maximum-principle
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="14" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="101">
-<a href="../topics/sde/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Stochastic Differential Equations
-</h5>
-<div class="card-text listing-description delink">
-<p>잡음이 있는 연속시간 동역학의 해, Itô 공식, 생성자를 다루는 공통 기반</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-probability,stochastic-analysis,ito-calculus
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-<div class="g-col-1" data-index="15" data-listing-file-modified-sort="1790661294636" data-listing-reading-time-sort="1" data-listing-word-count-sort="128">
-<a href="../topics/time-inconsistent-control/index.html" class="quarto-grid-link">
-<div class="quarto-grid-item card h-100 card-left">
-<div class="card-body post-contents">
-<h5 class="no-anchor card-title listing-title">
-Time-Inconsistent Control
-</h5>
-<div class="card-text listing-description delink">
-<p>서로 다른 시점의 self가 같은 미래를 다르게 평가할 때 equilibrium policy를 정의하고 계산하는 이론</p>
-</div>
-<table class="card-other-values">
-
-<tbody><tr>
-<td>
-status
-</td>
-<td class="status">
-active
-</td>
-</tr>
-
-<tr>
-<td>
-maturity
-</td>
-<td class="maturity">
-developing
-</td>
-</tr>
-
-<tr>
-<td>
-tags
-</td>
-<td class="tags">
-time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
-</td>
-</tr>
-
-</tbody></table>
-</div>
-</div></a>
-</div>
-</div>
-<div class="listing-no-matching d-none">일치 없음</div>
-<nav id="listing-pagination" class="listing-pagination" aria-label="Page Navigation">
-  <ul class="pagination"></ul>
-</nav>
-</div><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a></main> <!-- /main -->
+</section>
+<section id="이-지도에서-이어지는-경로" class="level2">
+<h2 class="anchored" data-anchor-id="이-지도에서-이어지는-경로">이 지도에서 이어지는 경로</h2>
+<ul>
+<li><a href="../adjoint-methods/">Adjoint &amp; Costate Methods</a>: costate와 adjoint-state의 공통 원리</li>
+<li><a href="../time-inconsistent-control/">Time-Inconsistent Control</a>: Bellman principle이 깨질 때의 equilibrium</li>
+<li><a href="../bsvie/">BSVIE</a>: 두 시간축을 보존하는 backward stochastic equation</li>
+<li><a href="../high-dimensional-pde/">High-dimensional PDE Solvers</a>: HJB·adjoint PDE의 계산</li>
+<li><a href="../mean-variance/">Mean-Variance Portfolio Selection</a>: 대표적인 시간비일관 금융 문제</li>
+</ul>
+</section>
+<section id="반드시-분리해서-볼-오차" class="level2">
+<h2 class="anchored" data-anchor-id="반드시-분리해서-볼-오차">반드시 분리해서 볼 오차</h2>
+<p>PDE/BSDE 표현이 맞다는 것, 시간격자 scheme이 수렴한다는 것, neural class가 해를 근사한다는 것, SGD가 좋은 parameter를 찾는다는 것, 계산된 policy가 실제 optimality/equilibrium condition을 만족한다는 것은 서로 다른 주장이다. 각 논문 노트에서는 이 층들을 분리한다.</p>
+
+
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> 맨 위로</a></main> <!-- /main -->
 <script>
 (() => {
   const assets = [
@@ -1545,12 +925,12 @@ time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
     <li class="nav-item">
-    <a class="nav-link" href="../index.html">
+    <a class="nav-link" href="../../index.html">
 <p>Home</p>
 </a>
   </li>  
     <li class="nav-item">
-    <a class="nav-link" href="../about.html">
+    <a class="nav-link" href="../../about.html">
 <p>Working guide</p>
 </a>
   </li>  
@@ -1562,5 +942,5 @@ time-inconsistency,equilibrium,non-exponential-discounting,dynamic-games
 
 
 
-<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+<script src="../../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>
