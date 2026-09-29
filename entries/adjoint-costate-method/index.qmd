@@ -1,0 +1,88 @@
+---
+title: "Adjoint Costate Method"
+description: "Non-multiplicative discount 아래 diagonal costate를 discount-free kernel로 학습하고 first-order equilibrium gap을 인증하는 연구 프로젝트"
+graph-summary: "Anchor를 제거한 adjoint kernels로 diagonal costate와 배포 policy의 equilibrium gap을 연결하는 진행 중 연구."
+node-id: entry-adjoint-costate-method
+node-type: entry
+entry-kind: project
+status: active
+maturity: developing
+priority: now
+importance: 5
+cluster: stochastic-control
+search-aliases:
+  - ACM
+  - certifiable equilibrium learning
+  - adjoint costate
+  - non-multiplicative discounting
+tags:
+  - current-research
+  - equilibrium-learning
+  - adjoint-pde
+  - certification
+relations:
+  - target: topic-time-inconsistent-control
+    type: investigates
+    note: "Non-multiplicative discount 아래 closed-loop equilibrium의 diagonal costate를 계산한다."
+    evidence:
+      - adjointCostate2026
+  - target: topic-adjoint-methods
+    type: uses
+    note: "고정 policy의 linear adjoint PDE를 source와 terminal impulse kernel로 factorize한다."
+    evidence:
+      - adjointCostate2026
+  - target: topic-high-dimensional-pde
+    type: uses
+    note: "두 backward parabolic kernel PDE를 neural residual solver로 근사한다."
+    evidence:
+      - adjointCostate2026
+  - target: topic-bsvie
+    type: contrasts-with
+    note: "Anchor-indexed BSVIE field를 직접 학습하는 대신 Markovian adjoint PDE의 anchor-free kernel을 학습한다."
+    evidence:
+      - adjointCostate2026
+      - andersson2026deepbsvie
+  - target: topic-stochastic-control
+    type: applies-to
+    note: "Controlled diffusion의 Hamiltonian과 costate로 policy를 합성한다."
+    evidence:
+      - adjointCostate2026
+---
+
+이 프로젝트는 현재 진행 중인 익명 원고 **The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting**을 중심으로 한다. 동료평가가 완료된 결과가 아니므로, 아래에는 원고가 주장하는 정리와 실험을 정확히 분리해 기록한다.
+
+{{< include ../../_includes/concepts/adjoint-costate-method-core.qmd >}}
+
+## 연결 문헌 지도
+
+### 먼저 읽을 이론적 뼈대
+
+1. [He & Jiang (2021)](../../references/he2021equilibrium/): ACM의 gap이 어떤 equilibrium 개념을 인증하는가
+2. [Wang & Zheng (2021)](../../references/wang2021closedloop/): 더 일반적인 closed-loop continuation field와 diagonal HJB
+3. [Nguwi & Privault (2022)](../../references/nguwi2022constructive/): anchored adjoint와 diagonal maximum condition
+4. [Wang & Yong (2021)](../../references/wang2021bsviecontrol/): time inconsistency에서 BSVIE와 equilibrium HJB가 등장하는 이유
+5. [Yong (2012)](../../references/yong2012equilibriumhjb/): equilibrium HJB라는 기본 해석 틀
+6. [Peng (1990)](../../references/peng1990smp/): stochastic maximum principle과 1·2차 adjoint의 출발점
+7. [Yong (2006)](../../references/yong2006bsvie/): BSVIE의 well-posedness와 M-solution
+
+### 수치 방법과 학습
+
+1. [Andersson et al. (2026)](../../references/andersson2026deepbsvie/): 비교 baseline인 neural BSVIE solver
+2. [Andersson et al. (2023)](../../references/andersson2023robustfbsde/): time-consistent FBSDE solver의 convergence-analysis 선례
+3. [Dai et al. (2023)](../../references/dai2023learning/): mean-variance equilibrium을 policy iteration으로 학습하는 방법
+
+### 금융 모형에서 equilibrium이 실제로 나타나는 방식
+
+1. [Björk, Khapko & Murgoci (2017)](../../references/bjork2017timeinconsistent/): 연속시간 game formulation과 extended HJB
+2. [Ekeland, Mbodji & Pirvu (2012)](../../references/ekeland2012portfolio/): 일반 할인 아래 time-consistent portfolio rule
+3. [Hamaguchi (2021)](../../references/hamaguchi2021consumption/): incomplete market의 consumption-investment equilibrium과 BSVIE
+4. [Su et al. (2024)](../../references/su2024nonmarkovian/): non-Markovian mean-variance의 closed-loop equilibrium
+
+## 다음 연구 점검사항
+
+- Uniform defect를 실제 validated numerics로 계산해 표의 empirical error와 certificate를 연결할 것
+- Gaussian noise에서 전역 검증 또는 exit contribution을 다룰 것
+- State/control-dependent diffusion의 추가 adjoint coupling을 유도할 것
+- Semi-gradient policy-kernel iteration의 수렴 조건을 분석할 것
+- Weak gap에서 regular equilibrium으로 넘어가는 충분조건을 명시할 것
+- 고차원 또는 analytic reference가 없는 benchmark를 추가할 것

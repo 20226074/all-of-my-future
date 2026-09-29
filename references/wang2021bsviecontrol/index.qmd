@@ -1,0 +1,108 @@
+---
+title: "Time-Inconsistent Stochastic Optimal Control Problems and Backward Stochastic Volterra Integral Equations"
+short-title: "Wang & Yong (2021)"
+author:
+  - "Hanxiao Wang"
+  - "Jiongmin Yong"
+graph-summary: "Recursive BSVIE cost에서 time-partition game의 극한으로 equilibrium HJB와 diagonal Z를 유도한다."
+node-id: ref-wang2021bsviecontrol
+node-type: reference
+reference-type: paper
+citekey: wang2021bsviecontrol
+year: 2021
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-bsvie
+  - topic-stochastic-control
+primary-node: topic-bsvie
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - recursive-control
+  - bsvie
+  - equilibrium-hjb
+  - diagonal-z
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Control → BSVIE"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+
+{{< include ../../_includes/notation/bsvie-core.qmd >}}
+:::
+
+## Recursive payoff 자체가 BSVIE다
+
+Forward state는
+
+$$
+X(r)=\xi+\int_t^rb(q,X(q),u(q))\,dq
++\int_t^r\sigma(q,X(q),u(q))\,dW_q
+$$
+
+를 따르고, payoff는
+
+$$
+\begin{aligned}
+Y(s)={}&h(s,X(T))
++\int_s^Tg(s,r,X(r),u(r),Y(r),Z(s,r))\,dr\\
+&-\int_s^TZ(s,r)\,dW_r,
+\end{aligned}
+$$
+
+$$
+J(t,\xi;u)=Y(t)
+$$
+
+로 정의된다 [@wang2021bsviecontrol]. 첫 인수 $s$가 일반 discount뿐 아니라 recursive preference의 시작시각을 보존한다.
+
+## Equilibrium HJB의 두 시간 field
+
+Time partition의 각 interval을 player로 만들어 approximate equilibrium을 구성하고 mesh를 0으로 보낸다. 극한의 field $\Theta(\tau,t,x)$는 개략적으로
+
+$$
+\partial_t\Theta(\tau,t,x)
++H\!\left(
+\tau,t,x,\Psi(t,x),
+\Theta(t,t,x),
+D_x\Theta(\tau,t,x),
+D_{xx}\Theta(\tau,t,x)
+\right)=0,
+$$
+
+$$
+\Theta(\tau,T,x)=h(\tau,x)
+$$
+
+를 만족한다. Equilibrium selector는 대각선 문제
+
+$$
+\Psi(t,x)\in\arg\min_{u\in U}
+H\!\left(
+t,t,x,u,\Theta(t,t,x),D_x\Theta(t,t,x),D_{xx}\Theta(t,t,x)
+\right)
+$$
+
+에서 얻는다. Feynman-Kac 표현으로 옮기면 새로운 BSVIE 안에 $Z(r,r)$라는 diagonal 값이 직접 등장한다.
+
+## 주요 결과와 한계
+
+- Time-inconsistent recursive control에서 equilibrium HJB와 verification theorem을 유도한다.
+- Control-independent diffusion, smooth bounded coefficients, uniform ellipticity 아래 classical well-posedness를 보인다.
+- 일반 control-dependent diffusion의 equilibrium HJB well-posedness는 해결하지 않는다.
+- $L^2$ BSVIE 해의 동치류만으로 diagonal $Z(r,r)$가 자동 정의되는 것이 아니므로 추가 시간정칙성이 중요하다.
+
+## ACM과의 관계
+
+Anchor $\tau$, current time $t$, diagonal $\Theta(t,t,x)$/$Z(t,t)$라는 구조가 ACM과 가장 직접적으로 대응한다. ACM은 nonrecursive additive-discount case로 좁혀 costate PDE를 $x$로 미분하고 선형 kernel factorization을 사용한다. 일반 nonlinear recursive driver가 $Y(r),Z(s,r)$를 포함하면 그 factorization은 그대로 성립하지 않는다.
+
+## 원문
+
+- 서지정보: [@wang2021bsviecontrol]
+- [ESAIM 공식 페이지](https://doi.org/10.1051/cocv/2021027)
+- [arXiv 원문](https://arxiv.org/abs/1911.04995)
+:::

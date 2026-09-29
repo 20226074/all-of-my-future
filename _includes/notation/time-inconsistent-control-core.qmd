@@ -1,0 +1,122 @@
+## 시간비일관적 제어의 공통 표기
+
+같은 물리적 상태라도 **누가 언제 평가를 시작했는가**에 따라 미래 보상의 가중치가 달라질 수 있다. 시작 시각을 anchor $s$, 현재 계산 시각을 $t$라 쓰고 $0\le s\le t\le T$라 하자. 가장 단순한 non-exponential discount 문제는
+
+$$
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T D(s,r)f(r,X_r,u_r)\,dr
++D(s,T)\Phi(X_T)
+\right]
+$$
+
+로 쓸 수 있다. $D(s,s)=1$이고 보통 $D(s,r)>0$이다.
+
+## 왜 Bellman 원리가 깨지는가
+
+Exponential discount $D(s,r)=e^{-\delta(r-s)}$는
+
+$$
+D(s,r)=D(s,t)D(t,r)
+$$
+
+라는 곱셈성을 갖는다. 시각 $t$에 도달했을 때 과거 self가 부여한 모든 미래 가중치는 현재 self의 가중치에 공통 상수 $D(s,t)$만 곱한 것이므로 행동의 순위를 바꾸지 않는다.
+
+일반 discount에서는
+
+$$
+\frac{D(s,r_1)}{D(s,r_2)}
+\ne
+\frac{D(t,r_1)}{D(t,r_2)}
+$$
+
+일 수 있다. 그러면 $s$에서 세운 계획과 $t$에서 다시 푼 계획의 선호순서가 다르다. 하나의 value function을 뒤에서부터 재귀적으로 최적화하는 Bellman principle을 그대로 사용할 수 없는 이유다. 비일관성은 non-exponential discount 외에도 mean-variance criterion, 현재 상태나 조건부 기대값에 의존하는 목적함수, 서로 다른 평가 시각의 utility에서 생길 수 있다.
+
+## 하나의 최적제어 대신 self들의 게임
+
+Feedback strategy $v(t,x)$를 고정하고, anchor $s$가 시각 $t$ 이후를 평가하는 continuation value를
+
+$$
+\Theta^v(s,t,x)
+:=\mathbb E_{t,x}\!\left[
+\int_t^T D(s,r)f(r,X_r^v,v(r,X_r^v))\,dr
++D(s,T)\Phi(X_T^v)
+\right]
+$$
+
+로 정의한다. 같은 $(t,x)$에도 $s$마다 다른 값이 있으므로 $\Theta^v$는 삼각형
+
+$$
+\Delta:=\{(s,t):0\le s\le t\le T\}
+$$
+
+위의 field다. 시각 $t$의 self가 실제로 읽는 것은 diagonal $s=t$이고, 제어 합성에는 흔히
+
+$$
+p^v(t,x):=\nabla_x\Theta^v(t,t,x)
+$$
+
+가 들어간다.
+
+## Spike deviation과 local equilibrium
+
+$a\in U$로 아주 짧은 구간 $[t,t+h)$만 바꾸고 이후에는 $v$로 돌아가는 제어를 $v^{t,h,a}$라 하자. 보상 최대화 규약에서 $v$가 weak 또는 first-order equilibrium이라는 뜻은 모든 $(t,x,a)$에 대해
+
+$$
+\limsup_{h\downarrow0}
+\frac{J(t,x;v^{t,h,a})-J(t,x;v)}{h}
+\le0
+$$
+
+라는 것이다. 확산이 제어와 상태에 무관한 경우 Hamiltonian을
+
+$$
+H(t,x,a,p):=f(t,x,a)+b(t,x,a)\cdot p
+$$
+
+로 두면 spike variation은 형식적으로
+
+$$
+\lim_{h\downarrow0}
+\frac{J(t,x;v^{t,h,a})-J(t,x;v)}{h}
+=H(t,x,a,p^v(t,x))-H(t,x,v(t,x),p^v(t,x))
+$$
+
+가 된다. 따라서 pointwise equilibrium condition은
+
+$$
+v(t,x)\in\arg\max_{a\in U}H(t,x,a,p^v(t,x))
+$$
+
+이다. 계산된 policy의 1차 위반 정도는
+
+$$
+\operatorname{Gap}(v)
+:=\sup_{(t,x)\in Q}
+\left[
+\max_{a\in U}H(t,x,a,p^v(t,x))
+-H(t,x,v(t,x),p^v(t,x))
+\right]
+$$
+
+로 측정할 수 있다.
+
+## Open-loop, closed-loop, weak, regular, strong
+
+- **Open-loop equilibrium**은 perturbation 이후의 제어를 주어진 확률과정으로 비교한다. 초기 조건이나 noise realization에 대한 feedback 법칙을 반드시 주지는 않는다.
+- **Closed-loop equilibrium**은 $v(t,x)$처럼 현재 상태에 따라 행동하는 규칙 자체를 비교한다.
+- **Weak equilibrium**은 위와 같은 $h\downarrow0$의 1차 spike 조건을 막는다.
+- **Strong equilibrium**은 충분히 작은 모든 양의 $h$에서 실제 payoff 차이가 불리하지 않아야 한다. 1차항이 0일 때 2차 이상의 항이 deviation을 유리하게 만들 수 있으므로 weak보다 강하다.
+- **Regular equilibrium**은 현재 $(t,x)$에서 다른 행동으로 바꾸는 보다 직접적인 국소 비교를 사용하며, 특정 정칙성 조건 아래 weak equilibrium과 연결된다 [@he2021equilibrium].
+
+따라서 $\operatorname{Gap}(v)=0$은 first-order equilibrium 진술이지, 그 자체로 finite-duration strong equilibrium을 증명하지 않는다.
+
+## 대표적인 계산 경로
+
+1. **Extended HJB**: anchor-indexed auxiliary value와 diagonal condition을 묶은 PDE system을 푼다.
+2. **Maximum principle / FBSDE**: 각 self의 1차 조건과 adjoint BSDE를 결합한다.
+3. **BSVIE**: 시작시각과 적분시각이라는 두 시간축을 한 확률방정식에 유지한다.
+4. **$n$-person game limit**: 시간을 partition하고 각 구간을 한 player로 만든 뒤 mesh를 0으로 보낸다.
+5. **직접 equilibrium learning**: equilibrium policy의 fixed point, Hamiltonian condition, 또는 costate를 근사한다.
+
+각 경로는 같은 문제를 항상 같은 가정 아래 푸는 것이 아니다. open/closed-loop 구분, Markov성, diffusion의 제어 의존성, 고전해 존재 조건을 논문별로 확인해야 한다.

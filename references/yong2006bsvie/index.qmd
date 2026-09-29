@@ -1,0 +1,56 @@
+---
+title: "Backward Stochastic Volterra Integral Equations and Some Related Problems"
+short-title: "Yong (2006)"
+author:
+  - "Jiongmin Yong"
+graph-summary: "두 시간축의 backward stochastic Volterra equation과 adapted solution의 기초를 세운 대표 문헌."
+node-id: ref-yong2006bsvie
+node-type: reference
+reference-type: paper
+citekey: yong2006bsvie
+year: 2006
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-bsvie
+  - topic-stochastic-control
+primary-node: topic-bsvie
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: later
+last-reviewed: 2026-09-29
+tags:
+  - bsvie
+  - adapted-solution
+  - stochastic-integral-equation
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · BSVIE"}
+{{< include ../../_includes/notation/bsvie-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+이 논문은
+
+$$
+Y(t)=\psi(t)+\int_t^Tg(t,s,Y(s),Z(t,s))\,ds
+-\int_t^TZ(t,s)\,dW_s
+$$
+
+같은 BSVIE를 체계적으로 연구하고, 두 시간 인덱스를 가진 martingale integrand가 왜 필요한지를 정식화한다 [@yong2006bsvie].
+
+BSDE와 달리 $Y(t)$의 미래 dynamics를 하나의 flow로 이어 붙일 수 없고, 첫 시간 $t$가 terminal datum과 driver에 계속 남는다. 이 구조가 이후 recursive utility, risk measure, 시간비일관적 제어의 anchor를 표현하는 기반이 되었다.
+
+## 읽을 때 확인할 것
+
+- 논문이 사용하는 adapted solution과 이후 문헌의 adapted M-solution은 같은 정의가 아니다.
+- Type-I와 $Z(s,t)$까지 driver에 들어가는 Type-II는 well-posedness 조건이 다르다.
+- 해의 $L^2$ 존재·유일성은 diagonal trace의 pointwise regularity를 자동으로 주지 않는다.
+
+## 원문
+
+- 서지정보: [@yong2006bsvie]
+- [ScienceDirect DOI](https://doi.org/10.1016/j.spa.2006.01.005)
+:::

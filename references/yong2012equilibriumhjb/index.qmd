@@ -1,0 +1,47 @@
+---
+title: "Time-Inconsistent Optimal Control Problems and the Equilibrium HJB Equation"
+short-title: "Yong (2012)"
+author:
+  - "Jiongmin Yong"
+graph-summary: "시간분할 다인게임의 극한에서 equilibrium strategy와 equilibrium HJB를 구성한 기초 문헌."
+node-id: ref-yong2012equilibriumhjb
+node-type: reference
+reference-type: paper
+citekey: yong2012equilibriumhjb
+year: 2012
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+primary-node: topic-time-inconsistent-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: later
+last-reviewed: 2026-09-29
+tags:
+  - equilibrium-hjb
+  - time-inconsistency
+  - multiperson-game
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Control"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+시간구간을 여러 player의 구간으로 나누고 backward induction으로 각 player의 최적반응을 구한 뒤 mesh를 0으로 보내는 방법으로 equilibrium strategy를 도출한다 [@yong2012equilibriumhjb]. 이 과정에서 하나의 Bellman HJB가 아니라 초기시각 parameter를 유지하는 equilibrium HJB system이 나타난다.
+
+핵심 직관은 각 시간의 self가 자신이 통제하는 infinitesimal interval에서만 최적반응을 하고, 미래 self의 feedback은 주어진 것으로 본다는 것이다. 따라서 결과는 처음 self의 global optimum이 아니라 local subgame equilibrium이다.
+
+## ACM과의 관계
+
+ACM은 equilibrium HJB 전체의 value field를 직접 풀기보다, additive discount model에서 policy 합성에 필요한 diagonal gradient를 adjoint kernel로 분해한다. Yong의 construction은 “어떤 equilibrium을 계산하는가”의 이론적 출발점이고, ACM은 특정 구조에서 “그 equilibrium condition을 어떻게 수치적으로 인증할 것인가”를 다룬다.
+
+## 원문
+
+- 서지정보: [@yong2012equilibriumhjb]
+- [MCRF DOI](https://doi.org/10.3934/mcrf.2012.2.271)
+:::

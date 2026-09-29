@@ -1,0 +1,61 @@
+---
+title: "Time-Inconsistent Control"
+description: "서로 다른 시점의 self가 같은 미래를 다르게 평가할 때 equilibrium policy를 정의하고 계산하는 이론"
+graph-summary: "Bellman optimality가 깨진 문제를 temporal selves의 게임과 diagonal equilibrium condition으로 다시 세운다."
+node-id: topic-time-inconsistent-control
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 5
+cluster: stochastic-control
+search-aliases:
+  - time inconsistency
+  - equilibrium control
+  - non-exponential discounting
+  - subgame perfect control
+  - 시간비일관적 제어
+tags:
+  - time-inconsistency
+  - equilibrium
+  - non-exponential-discounting
+  - dynamic-games
+relations:
+  - target: topic-stochastic-control
+    type: connected-via
+    note: "하나의 optimum 대신 temporal selves 사이의 local equilibrium을 구한다."
+    evidence:
+      - bjork2017timeinconsistent
+  - target: topic-bsvie
+    type: connected-via
+    note: "Anchor와 evolution time을 함께 보존하면 BSVIE와 equilibrium HJB가 자연스럽게 나타난다."
+    evidence:
+      - wang2021bsviecontrol
+  - target: topic-mean-variance
+    type: applies-to
+    note: "Conditional variance의 비선형성은 대표적인 시간비일관성을 만든다."
+    evidence:
+      - dai2023learning
+---
+
+시간비일관적 제어의 질문은 “처음 세운 계획이 최적인가?”가 아니라 **“미래의 어느 self도 국소적으로 이탈하고 싶지 않은가?”**다. 이 페이지는 모든 관련 논문이 공유할 anchor, continuation field, spike variation, equilibrium gap을 먼저 정의한다.
+
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+
+## 대표 문헌이 나누어 맡는 역할
+
+- [Björk, Khapko & Murgoci](../../references/bjork2017timeinconsistent/): extended HJB와 verification의 일반 Markov framework
+- [Wang & Zheng](../../references/wang2021closedloop/): random coefficients와 일반 objective의 closed-loop characterization
+- [He & Jiang](../../references/he2021equilibrium/): weak, regular, strong equilibrium의 차이
+- [Nguwi & Privault](../../references/nguwi2022constructive/): $n$-person game limit을 통한 equilibrium 존재 구성
+- [Wang & Yong](../../references/wang2021bsviecontrol/): BSVIE와 equilibrium HJB의 연결
+- [Adjoint Costate Method](../../entries/adjoint-costate-method/): diagonal costate를 위한 kernel factorization과 a-posteriori gap bound
+
+## 읽을 때 계속 확인할 질문
+
+1. Maximization인가 minimization인가?
+2. Open-loop인가 closed-loop인가?
+3. Weak/regular/strong 중 어떤 equilibrium인가?
+4. 조건은 모든 상태에서인가, 실제 equilibrium trajectory 위에서만인가?
+5. 존재·유일성을 증명하는가, 주어진 smooth solution을 검증만 하는가?
+6. 수치 loss가 field norm, diagonal trace, policy error, equilibrium gap 중 무엇을 제어하는가?

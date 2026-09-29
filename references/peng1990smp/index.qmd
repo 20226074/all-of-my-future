@@ -1,0 +1,55 @@
+---
+title: "A General Stochastic Maximum Principle for Optimal Control Problems"
+short-title: "Peng (1990)"
+author:
+  - "Shige Peng"
+graph-summary: "Control-dependent diffusion과 nonconvex control domain까지 다루기 위해 2차 adjoint를 도입한 stochastic maximum principle."
+node-id: ref-peng1990smp
+node-type: reference
+reference-type: paper
+citekey: peng1990smp
+year: 1990
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-stochastic-control
+  - topic-adjoint-methods
+primary-node: topic-adjoint-methods
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: later
+last-reviewed: 2026-09-29
+tags:
+  - stochastic-maximum-principle
+  - second-order-adjoint
+  - control-dependent-diffusion
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Stochastic Control → Adjoint Methods"}
+{{< include ../../_includes/notation/stochastic-control-core.qmd >}}
+
+{{< include ../../_includes/concepts/adjoint-methods-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+고전적인 1차 maximum principle은 control set이 convex하거나 diffusion이 제어에 무관할 때 가장 단순하다. Peng은 nonconvex control domain에서 spike variation이 diffusion을 바꾸면 상태 perturbation의 크기가 $O(\sqrt h)$가 되어 **2차항도 $O(h)$로 살아남는다**는 점을 처리했다 [@peng1990smp].
+
+1차 adjoint $(P,Q)$ 외에 matrix-valued 2차 adjoint가 필요하며, 최적성 조건에는 drift Hamiltonian 차이뿐 아니라 diffusion 변화에 대한 quadratic correction이 들어간다. 그래서 control-dependent diffusion 문제에서
+
+$$
+u_t^*\in\arg\max_a\{f+b\cdot P\}
+$$
+
+만 사용하는 것은 일반적으로 충분하지 않다.
+
+## ACM과의 관계
+
+ACM 원고가 $\sigma=\sigma(t)$로 범위를 제한하는 이유를 가장 분명히 보여주는 고전적 기준점이다. 이 제한 아래에서는 행동을 바꾸어도 diffusion perturbation의 2차 기여가 생기지 않아 single costate Hamiltonian으로 first-order gap을 표현할 수 있다.
+
+## 원문
+
+- 서지정보: [@peng1990smp]
+- [SIAM DOI](https://doi.org/10.1137/0328054)
+:::

@@ -1,0 +1,70 @@
+---
+title: "On the Equilibrium Strategies for Time-Inconsistent Problems in Continuous Time"
+short-title: "He & Jiang (2021)"
+author:
+  - "Xue Dong He"
+  - "Zhao Li Jiang"
+graph-summary: "Weak, regular, strong equilibrium을 분리해 1차 spike condition이 실제 finite-duration deviation을 막지 못할 수 있음을 보인다."
+node-id: ref-he2021equilibrium
+node-type: reference
+reference-type: paper
+citekey: he2021equilibrium
+year: 2021
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+primary-node: topic-time-inconsistent-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - weak-equilibrium
+  - regular-equilibrium
+  - strong-equilibrium
+  - spike-variation
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Control"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+:::
+
+## 이 문헌의 핵심 구분
+
+후보 feedback $\widehat u$를 $[t,t+\varepsilon)$에서 alternative $a$로 바꾼 것을 $u^{t,\varepsilon,a}$라 하자. Weak equilibrium은 보상 최대화 규약에서
+
+$$
+\limsup_{\varepsilon\downarrow0}
+\frac{J(t,x;u^{t,\varepsilon,a})-J(t,x;\widehat u)}{\varepsilon}
+\le0
+$$
+
+만 요구한다. Strong equilibrium은 모든 충분히 작은 실제 $\varepsilon>0$에서 payoff difference 자체가 양수가 아니어야 한다 [@he2021equilibrium].
+
+First-order coefficient가 0이면 higher-order term이 deviation을 유리하게 만들 수 있으므로 weak에서 strong은 나오지 않는다. 논문은 현재 점에서 실제로 다른 action을 택하는 deviation을 검사하는 regular equilibrium도 도입한다.
+
+$$
+\text{strong}\Longrightarrow\text{regular}\Longrightarrow\text{weak},
+$$
+
+반대 방향은 일반적으로 성립하지 않는다.
+
+## 주요 결과
+
+- Weak equilibrium의 first-order characterization
+- Strong equilibrium의 higher-order necessary conditions
+- 세 investment/consumption 문제에서 smooth nonconstant deviation을 허용할 때 strong equilibrium 비존재
+- Pointwise first-order deviation의 maximizer가 유일한 조건 등에서 weak equilibrium이 regular equilibrium이 되는 충분조건
+
+## ACM을 해석할 때의 역할
+
+ACM의 $\operatorname{Gap}(v)$는 Hamiltonian의 first-order spike gain이다. 따라서 gap certificate는 직접적으로 weak/first-order equilibrium certificate다. Strong concavity와 unique maximizer가 regular equilibrium으로 연결될 수는 있지만, He-Jiang의 추가 정칙성과 정의를 확인해야 하며 ACM theorem 자체가 strong equilibrium을 인증하지는 않는다.
+
+## 원문
+
+- 서지정보: [@he2021equilibrium]
+- [SIAM DOI](https://doi.org/10.1137/20M1382106)
+- [기관 공개 PDF](https://ira.lib.polyu.edu.hk/bitstream/10397/115144/1/20m1382106.pdf)
+:::

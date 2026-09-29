@@ -1,0 +1,105 @@
+---
+title: "Time-Consistent Portfolio Management"
+short-title: "Ekeland et al. (2012)"
+author:
+  - "Ivar Ekeland"
+  - "Oumar Mbodji"
+  - "Traian A. Pirvu"
+graph-summary: "서로 다른 할인과 mortality가 있는 소비·투자·생명보험을 successive selves의 equilibrium fixed point로 푼다."
+node-id: ref-ekeland2012portfolio
+node-type: reference
+reference-type: paper
+citekey: ekeland2012portfolio
+year: 2012
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+primary-node: topic-time-inconsistent-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - portfolio
+  - hyperbolic-discounting
+  - consumption
+  - life-insurance
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Stochastic Control"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+
+{{< include ../../_includes/notation/stochastic-control-core.qmd >}}
+:::
+
+## 시장과 세 행동
+
+주식 투자금액 $\zeta_t$, 소비 $c_t$, 생명보험료 $p_t$를 선택한다.
+
+$$
+dX_t
+=\left(rX_t+(\alpha-r)\zeta_t-c_t-p_t+i(t)\right)dt
++\sigma\zeta_t\,dW_t.
+$$
+
+사망 시 유산은 $Z_t=\eta(t)X_t+l(t)p_t$다. Mortality hazard를 적분하면 목적함수는
+
+$$
+\mathbb E_{t,x}\!\left[
+\int_t^TQ(s,t)U_1(c_s)\,ds
++\int_t^Tq(s,t)U_3(Z_s)\,ds
++nQ(T,t)U_2(X_T)
+\right]
+$$
+
+가 된다 [@ekeland2012portfolio]. $Q,q$에는 hyperbolic/일반 discount와 survival probability가 함께 들어간다.
+
+## Equilibrium feedback
+
+Fixed-point value $v\in C^{1,2}$가 두 번째 변수에 대해 오목하다고 하자. $I_i=(U_i')^{-1}$와 $\mu=\alpha-r$를 쓰면 feedback은
+
+$$
+\zeta^*(t,x)
+=-\frac{\mu v_x(t,x)}{\sigma^2v_{xx}(t,x)},
+\qquad
+c^*(t,x)=I_1(v_x(t,x)),
+$$
+
+$$
+p^*(t,x)
+=\frac1{l(t)}
+\left[
+I_3\!\left(\frac{v_x(t,x)}{m(0)}\right)-\eta(t)x
+\right]
+$$
+
+로 표현된다. 이 feedback으로 생성한 continuation payoff가 다시 $v$가 되어야 하므로 표준 HJB가 아니라 미래 할인 kernel의 미분을 포함한 integral fixed-point equation이 생긴다.
+
+CRRA utility에서는
+
+$$
+v(t,x)=a(t)U_\gamma(x+b(t))
+$$
+
+ansatz로 human-capital ODE $b$와 nonlinear integral equation $a$로 줄인다. Hyperbolic discount 아래 소비가 먼저 증가한 뒤 감소하는 hump shape도 나타난다.
+
+## 가정과 한계
+
+- 한 Brownian, 한 stock, deterministic income·mortality·market coefficients
+- General theorem은 smooth concave fixed-point value와 auxiliary classical solution의 존재를 가정한다.
+- 실제 construction은 주로 CRRA 구조에 의존한다.
+- 투자액 $\zeta$가 diffusion을 제어하므로 selector에 $v_{xx}$가 필요하다.
+
+## ACM과의 관계
+
+Successive selves, non-exponential discount, feedback equilibrium의 고전적 사례다. 하지만 ACM의 gradient costate만으로는 $\frac12\sigma^2\zeta^2v_{xx}$가 들어가는 portfolio selector를 복원할 수 없다. 직접 적용하려면 Hessian kernel 또는 2차 adjoint가 필요하다.
+
+## 원문
+
+- 서지정보: [@ekeland2012portfolio]
+- [SIAM DOI](https://doi.org/10.1137/100810034)
+- [arXiv 원문](https://arxiv.org/abs/1008.3407)
+:::

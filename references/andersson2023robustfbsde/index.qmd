@@ -1,0 +1,85 @@
+---
+title: "Convergence of a Robust Deep FBSDE Method for Stochastic Control"
+short-title: "Andersson et al. (2023)"
+author:
+  - "Kristoffer Andersson"
+  - "Adam Andersson"
+  - "Cornelis W. Oosterlee"
+graph-summary: "Coupled FBSDE에서 control cost와 terminal-consistency variance를 함께 최소화하는 robust deep solver와 convergence 분석."
+node-id: ref-andersson2023robustfbsde
+node-type: reference
+reference-type: paper
+citekey: andersson2023robustfbsde
+year: 2023
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-stochastic-control
+  - topic-high-dimensional-pde
+primary-node: topic-stochastic-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - fbsde
+  - deep-bsde
+  - stochastic-control
+  - convergence
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Stochastic Control → PDE/BSDE"}
+{{< include ../../_includes/notation/stochastic-control-core.qmd >}}
+
+{{< include ../../_includes/notation/semilinear-pde-bsde.qmd >}}
+:::
+
+## 이 문헌이 해결하는 실패
+
+Stochastic control의 HJB에서 optimizer를 feedback map으로 대입하면 forward state가 backward variable $Z$에 의존하는 strongly coupled FBSDE가 생길 수 있다. Classical deep BSDE처럼 $Y_0$를 자유 parameter로 두고 terminal mismatch만 줄이면, 잘못된 $Y_0$와 잘못된 control이 서로 보상하는 퇴화가 생긴다 [@andersson2023robustfbsde].
+
+논문은 Markov map $Z_t=\zeta(t,X_t)$마다 backward identity가 만드는 random initial quantity $\mathcal Y_0^\zeta$를 사용해
+
+$$
+\Phi_\lambda(\zeta)
+=\mathbb E[\mathcal Y_0^\zeta]
++\lambda\operatorname{Var}(\mathcal Y_0^\zeta)
+$$
+
+를 최소화한다.
+
+- $\mathbb E[\mathcal Y_0^\zeta]$: control problem의 실제 expected cost
+- $\operatorname{Var}(\mathcal Y_0^\zeta)$: 올바른 adapted solution이면 deterministic이어야 할 $Y_0$의 inconsistency
+
+이 variance term은 terminal mismatch MSE와 대응한다. 즉 cost와 stochastic consistency를 동시에 요구한다.
+
+## 핵심 convergence 문장
+
+정확한 continuous/discrete minimizer와 정칙한 optimal Markov map을 가정하면 objective와 initial/terminal quantities의 time-discretization error가 $Ch^\alpha$로 제어된다. 더 강한 small-horizon 또는 weak-coupling 조건에서는
+
+$$
+\|X-\widehat X^{h,\lambda}\|_{\mathcal S^2}
++\|Y-\widehat Y^{h,\lambda}\|_{\mathcal S^2}
++\|Z-\widehat Z^{h,\lambda}\|_{\mathcal H^2}
+\le Ch^{\alpha/2}
+$$
+
+형태의 strong convergence를 얻는다. 일반 horizon에서는 continuous/discrete optimal Markov map 사이의 별도 근사오차가 남는다.
+
+## ACM과의 관계
+
+두 연구 모두 “loss가 실제 control object를 식별하는가?”를 묻는다. 다만 이 논문은 time-consistent Bellman optimum과 single-time $Z_t$를 다뤄 anchor-diagonal 문제가 없다. ACM은 temporal-self equilibrium에서 deployed policy의 diagonal costate와 gap을 목표로 한다.
+
+## 한계
+
+- Optimal Markov map의 존재·정칙성·boundedness를 가정한다.
+- Neural representation, finite-sample, nonconvex optimization을 모두 합친 end-to-end theorem은 아니다.
+- 일부 LQ 실험은 theorem의 bounded-derivative 조건 밖에 있다.
+
+## 원문
+
+- 서지정보: [@andersson2023robustfbsde]
+- [SIAM DOI](https://doi.org/10.1137/22M1478057)
+- [arXiv 원문](https://arxiv.org/abs/2201.06854)
+:::

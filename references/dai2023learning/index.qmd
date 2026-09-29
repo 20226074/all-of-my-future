@@ -1,0 +1,119 @@
+---
+title: "Learning Equilibrium Mean-Variance Strategy"
+short-title: "Dai et al. (2023)"
+author:
+  - "Min Dai"
+  - "Yuchao Dong"
+  - "Yanwei Jia"
+graph-summary: "Entropy-regularized Gaussian exploration과 맞춤형 policy iteration으로 time-inconsistent mean-variance equilibrium을 학습한다."
+node-id: ref-dai2023learning
+node-type: reference
+reference-type: paper
+citekey: dai2023learning
+year: 2023
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-mean-variance
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+primary-node: topic-mean-variance
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - reinforcement-learning
+  - mean-variance
+  - exploratory-control
+  - policy-iteration
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Mean-Variance → Time-Inconsistent Control"}
+{{< include ../../_includes/notation/mean-variance-core.qmd >}}
+
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+:::
+
+## Exploratory equilibrium 문제
+
+Stock return과 stochastic factor를
+
+$$
+\frac{dS_t}{S_t}=\mu(t,X_t)dt+\sigma(t,X_t)dB_t,
+$$
+
+$$
+dX_t
+=m(t,X_t)dt
++\nu(t,X_t)\left(
+\rho\,dB_t+\sqrt{1-\rho^2}\,d\widetilde B_t
+\right)
+$$
+
+로 둔다. Action $u_t$는 wealth 중 stock 비율이며, log wealth $R_t$는
+
+$$
+dR_t
+=\left[r+(\mu_t-r)u_t-\frac12\sigma_t^2u_t^2\right]dt
++\sigma_tu_t\,dB_t
+$$
+
+를 따른다 [@dai2023learning].
+
+Policy를 확률분포 $\pi_t(du)$로 확장하고 entropy $H(\pi)$를 더해
+
+$$
+J(t,R,X;\pi)
+=\mathbb E_t\!\left[
+R_T^\pi+\lambda\int_t^TH(\pi_s)ds
+\right]
+-\frac\gamma2\operatorname{Var}_t(R_T^\pi)
+$$
+
+를 사용한다. Exploration noise가 원래 market Brownian과의 covariance를 보존하도록 randomized dynamics를 구성한다.
+
+## Equilibrium policy는 Gaussian
+
+Market Sharpe ratio $\vartheta=(\mu-r)/\sigma$와 auxiliary quadratic BSDE의 martingale coefficient $Z_t$를 쓰면 exploratory equilibrium은
+
+$$
+\pi^*(t,X)
+\sim\mathcal N\!\left(
+\frac{\mu-r}{(1+\gamma)\sigma^2}
+-\frac{\rho\gamma Z_t}{(1+\gamma)\sigma},
+\frac{\lambda}{(1+\gamma)\sigma^2}
+\right).
+$$
+
+평균의 첫 항은 myopic demand, $Z$ 항은 factor hedge, 분산은 exploration temperature $\lambda$가 정한다.
+
+## Bellman improvement 없이 만드는 policy iteration
+
+주어진 $\pi$에 대해 equilibrium objective $V^\pi$뿐 아니라
+
+$$
+g^\pi(t,R,X)=\mathbb E_t[R_T^\pi]
+$$
+
+를 함께 평가한다. 그 뒤 $V^\pi$, $g^\pi$, $(g^\pi)^2$의 generator 조합과 entropy를 최대화하는 새 distribution으로 갱신한다. 일반적인 policy-improvement theorem은 시간비일관성 때문에 성립하지 않지만, Gaussian mean-return/OU factor와 적절한 초기 affine-Gaussian class에서는 iteration convergence를 증명한다.
+
+## 가정과 한계
+
+- Terminal wealth가 아니라 terminal log-return의 mean-variance다.
+- 엄밀한 수렴은 주로 scalar stock/factor와 Gaussian mean-return 구조에 집중한다.
+- Entropy-regularized exploratory equilibrium이다.
+- 초기 Riccati coefficient가 적절한 invariant region에 있어야 한다.
+- TD/neural approximation error에서 equilibrium gap으로 가는 a-posteriori certificate는 없다.
+
+## ACM과의 관계
+
+둘 다 Bellman DPP 없이 equilibrium을 학습한다. Dai-Dong-Jia는 $(V^\pi,g^\pi)$와 Gaussian policy를 평가·개선하고, ACM은 costate kernel과 Hamiltonian read-out을 fixed point로 맞춘다. 이 논문은 control-dependent diffusion과 conditional variance를 포함하므로 현재 ACM theorem 밖이지만, “equilibrium learning” 관점에서 가장 직접적인 비교 대상이다.
+
+## 원문
+
+- 서지정보: [@dai2023learning]
+- [Wiley 출판본](https://doi.org/10.1111/mafi.12402)
+- [SSRN 원고](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3770818)
+:::

@@ -1,0 +1,273 @@
+## ACM이 풀려는 정확한 문제
+
+Adjoint Costate Method(ACM)는 non-multiplicative discount 때문에 생기는 시간비일관적 확률제어에서, 각 현재 self가 행동을 정할 때 실제로 읽는 **diagonal costate**를 직접 계산하려는 방법이다 [@adjointCostate2026].
+
+인증 이론이 다루는 상태는
+
+$$
+dX_t=b(t,X_t,u_t)\,dt+\sigma(t)\,dW_t,
+\qquad X_s=x
+$$
+
+이다. 핵심 범위 제한은 $\sigma$가 상태와 제어에 무관한 additive diffusion이라는 점이다. 보상은
+
+$$
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T D(s,r)f(r,X_r,u_r)\,dr
++D(s,T)\phi(X_T)
+\right]
+$$
+
+이고, feedback $v$를 고정했을 때 anchored continuation value는
+
+$$
+\Theta^v(s,t,x)
+=\mathbb E_{t,x}\!\left[
+\int_t^T D(s,r)f^v(r,X_r)\,dr
++D(s,T)\phi(X_T)
+\right]
+$$
+
+이다. 여기서
+
+$$
+b^v(t,x):=b(t,x,v(t,x)),
+\qquad
+f^v(t,x):=f(t,x,v(t,x)).
+$$
+
+Feynman-Kac에 의해 고정된 anchor $s$마다
+
+$$
+\partial_t\Theta^v
++b^v\cdot\nabla_x\Theta^v
++\frac12\operatorname{Tr}(aD_x^2\Theta^v)
++D(s,t)f^v=0,
+$$
+
+$$
+\Theta^v(s,T,x)=D(s,T)\phi(x),
+\qquad a(t)=\sigma(t)\sigma(t)^\top
+$$
+
+를 얻는다. 현재 self가 쓰는 costate는 전체 field가 아니라
+
+$$
+p^v(t,x):=\nabla_x\Theta^v(t,t,x)
+$$
+
+다. $H(t,x,u,p)=f(t,x,u)+b(t,x,u)\cdot p$라 하면 equilibrium feedback은
+
+$$
+v(t,x)\in\arg\max_{u\in U}H(t,x,u,p^v(t,x))
+$$
+
+를 만족해야 한다.
+
+## 왜 삼각형 전체의 작은 loss로는 충분하지 않은가
+
+기존 field solver는 $(s,t,x)$ 전체에서 residual을 평균낸다.
+
+$$
+\ell_{\mathrm{anc}}(F)
+=\int_{\Delta\times\mathcal X}
+\|\mathcal R[F](s,t,x)\|^2
+\,dm(s,t)\,d\rho_X(x)
++\lambda_T\ell_{\mathrm{term}}(F).
+$$
+
+하지만 제어는 $s=t$의 trace만 읽는다. 연속적인 2차원 sampling law에서 이 diagonal은 measure zero다. 폭 $\delta$인 띠 안에만 존재하면서 diagonal에서는 높이가 일정한 perturbation을 만들면, 면적은 $O(\delta)$로 줄어 loss는 0으로 가지만 diagonal 오차와 equilibrium gap은 줄지 않을 수 있다. 원고의 첫 부정결과는 특정 anchored PINN/BSVIE population objective에는
+
+$$
+\operatorname{Gap}(F)
+\le \omega(\ell_{\mathrm{anc}}(F)),
+\qquad \omega(r)\to0
+$$
+
+꼴의 보편적 certificate가 없음을 보인다. 이는 모든 가능한 PINN이나 BSVIE loss가 실패한다는 명제가 아니다. diagonal supervision, anchor derivative control, 또는 architecture restriction은 별도 정보를 추가한다.
+
+Policy-gradient 계열에는 다른 문제가 있다. 시작 anchor들의 occupancy-weighted 분포를 $w(ds\mid t,x)$라 하면 mixture objective의 stationarity는 diagonal costate가 아니라
+
+$$
+\overline P^v(t,x)
+:=
+\frac{\int P_s^v(t,x)\,w(ds\mid t,x)}
+{\int D(s,t)\,w(ds\mid t,x)}
+$$
+
+에 대한 Hamiltonian 조건을 준다. 따라서 일반적으로
+
+$$
+\partial_uH(t,x,v,p^v)
+-\partial_uH(t,x,v,\overline P^v)
+=\partial_ub(t,x,v)^\top(p^v-\overline P^v)
+$$
+
+가 남는다. 이는 finite-step PPO의 모든 stationary point에 대한 명제가 아니라, exact critic과 nonparametric policy mean을 둔 이상화된 anchor-mixture gradient의 구조적 차이다.
+
+## 1단계: anchored costate 방정식
+
+$P_s^v(t,x):=\nabla_x\Theta^v(s,t,x)$라 두고 value PDE를 $x$로 미분한다. $\sigma(t)$가 $x$에 무관하므로 diffusion 미분에서 추가 결합항이 생기지 않는다. Vector field $w$에 대해
+
+$$
+\mathcal A^v[w]
+:=\partial_tw
++b^v\cdot\nabla_xw
++\frac12\operatorname{Tr}(aD_x^2w)
++(\partial_xb^v)^\top w
+$$
+
+를 정의하면
+
+$$
+\mathcal A^v[P_s^v]
+=-D(s,t)\partial_xf^v,
+\qquad
+P_s^v(T,x)=D(s,T)\nabla_x\phi(x).
+$$
+
+$\partial_xb^v$와 $\partial_xf^v$는 $x\mapsto v(t,x)$를 통과해 미분한 **total closed-loop derivative**다. 예를 들어
+
+$$
+\partial_xf^v
+=f_x(t,x,v)+v_x(t,x)^\top f_u(t,x,v).
+$$
+
+## 2단계: discount-free kernel factorization
+
+선형 방정식의 source와 terminal data를 따로 전파하는 두 kernel을 정의한다.
+
+$$
+\mathcal A^v[K^v(\cdot;\tau)]=0,
+\qquad
+K^v(\tau,x;\tau)=\partial_xf^v(\tau,x),
+$$
+
+$$
+\mathcal A^v[\overline K^v]=0,
+\qquad
+\overline K^v(T,x)=\nabla_x\phi(x).
+$$
+
+선형성 때문에 각 source impulse를 $D(s,\tau)$로 가중해 합하면
+
+$$
+P_s^v(t,x)
+=\int_t^T D(s,\tau)K^v(t,x;\tau)\,d\tau
++D(s,T)\overline K^v(t,x).
+$$
+
+실제로 $\mathcal A^v$를 우변에 적용하면 homogeneous kernel PDE는 사라지고, 적분 하한을 미분할 때
+
+$$
+-D(s,t)K^v(t,x;t)
+=-D(s,t)\partial_xf^v(t,x)
+$$
+
+가 남는다. terminal time에서는 적분이 0이 되어 원하는 terminal condition을 준다. 이것이 Duhamel factorization의 직접 확인이다.
+
+중요한 변화는 learned object $K^v(t,x;\tau),\overline K^v(t,x)$가 anchor $s$를 입력으로 받지 않는다는 것이다. discount는 학습 residual이 아니라 read-out의 deterministic weight로만 들어간다.
+
+## 3단계: diagonal read-out과 policy 합성
+
+$s=t$를 대입하면
+
+$$
+p^v(t,x)
+=\int_t^T D(t,\tau)K^v(t,x;\tau)\,d\tau
++D(t,T)\overline K^v(t,x).
+$$
+
+실제 구현은 $[0,1]$의 quadrature node와 weight $(\xi_j,w_j)_{j=1}^{n_q}$를 써서
+
+$$
+\tau_j=t+(T-t)\xi_j,
+$$
+
+$$
+\widehat p_\theta(t,x)
+=(T-t)\sum_{j=1}^{n_q}
+w_jD(t,\tau_j)K_\theta(t,x;\tau_j)
++D(t,T)\overline K_\theta(t,x)
+$$
+
+로 계산한다. 배포 policy는
+
+$$
+\widehat u_\theta(t,x)
+\approx\arg\max_{a\in U}
+H(t,x,a,\widehat p_\theta(t,x))
+$$
+
+이다.
+
+## 4단계: 무엇을 학습하는가
+
+같은 $\widehat u_\theta$로 closed-loop coefficient를 만들고 네 결함을 최소화한다.
+
+$$
+\begin{aligned}
+\ell_{\mathrm{ACM}}
+={}&\mathbb E\|\mathcal A^{\widehat u_\theta}[K_\theta]\|^2
++\mathbb E\|\mathcal A^{\widehat u_\theta}[\overline K_\theta]\|^2\\
+&+\lambda_s\mathbb E
+\|K_\theta(t,x;t)-\partial_xf^{\widehat u_\theta}(t,x)\|^2\\
+&+\lambda_T\mathbb E
+\|\overline K_\theta(T,x)-\nabla_x\phi(x)\|^2.
+\end{aligned}
+$$
+
+Operator residual을 계산할 때 $x\mapsto\widehat u_\theta(t,x)$의 공간미분은 포함해야 한다. 다만 coefficient branch는 parameter $\theta$에 대해 detach하여 semi-gradient update를 사용한다. Source와 terminal condition이 각각 $(t,x)$ 공간의 양의 측도에서 직접 감독되므로, diagonal null-set 문제를 architecture 차원에서 제거한다.
+
+## 5단계: residual defect에서 equilibrium gap까지
+
+학습에 사용한 empirical MSE 자체는 certificate가 아니다. 별도의 verification domain에서 uniform defect
+
+$$
+\varepsilon_K,
+\quad
+\varepsilon_{\mathrm{src}},
+\quad
+\varepsilon_{\overline K},
+\quad
+\varepsilon_{\mathrm{term}}
+$$
+
+를 검증해야 한다. $L_J^{\mathrm{dep}}:=\sup\|\partial_xb^{\widehat u_\theta}\|$라 두면 원고의 costate error budget은
+
+$$
+E_{\mathrm{train}}
+=e^{L_J^{\mathrm{dep}}T}
+\left[
+\frac12T^2\varepsilon_K
++T(\varepsilon_{\mathrm{src}}+\varepsilon_{\overline K})
++\varepsilon_{\mathrm{term}}
+\right].
+$$
+
+Quadrature error를 $e_{\mathrm{quad}}$, 내부 Hamiltonian maximization error를 $\eta$, 관련 action들에서 drift bound를 $L_{b,\max}$라 하면
+
+$$
+\operatorname{Gap}(\widehat u_\theta)
+\le
+\eta+2L_{b,\max}
+(E_{\mathrm{train}}+e_{\mathrm{quad}}).
+$$
+
+핵심은 알 수 없는 equilibrium $u^*$와 직접 비교하지 않고, **실제로 배포하는 policy의 costate**와 Hamiltonian suboptimality를 제어한다는 점이다. Equilibrium map의 contraction은 이 gap certificate에 필요하지 않다. 다만 특정 equilibrium과의 sup-distance까지 얻으려면 contraction/self-map 같은 추가 가정이 필요하다.
+
+## 실험이 보여주는 것과 보여주지 않는 것
+
+원고는 알려진 equilibrium을 가진 세 benchmark에서 PPO, value PINN, Deep BSVIE, PG-DPO, costate-targeted PINN/BSVIE와 비교한다. 열 개 seed의 grid-averaged control error에서 ACM의 평균오차가 세 경우 모두 가장 작았고, 보고된 비율은 runner-up 대비 약 $86\times$, $4.6\times$, $2.9\times$ 개선이다 [@adjointCostate2026].
+
+그러나 이 실험은 uniform residual, quadrature, argmax defect를 interval bound 등으로 검증해 수치적인 certificate 값을 실제 산출한 것은 아니다. 표의 작은 control error는 analytic/fixed-point reference에 대한 empirical evidence이고, theorem의 a-posteriori certificate와 구별해야 한다.
+
+## 현재 이론의 정확한 경계
+
+- $\sigma(t)$인 additive, state-independent, control-independent diffusion을 가정한다.
+- Classical anchored PDE solution과 equilibrium의 존재는 증명 결과가 아니라 standing assumption이다.
+- Uniform verification은 전역에서 하거나, 평가영역에서 시작한 representation process가 verification domain을 거의 확실히 벗어나지 않아야 한다. 단순히 큰 유한 box를 택하는 것만으로는 Gaussian noise의 full support를 막지 못한다.
+- Population $L^2$ bound와 empirical minibatch loss는 동일하지 않다.
+- Gap은 1차 spike-deviation에 대한 weak-equilibrium gap이다. Gap이 작다는 사실만으로 finite-duration deviation까지 막는 strong equilibrium certificate가 되지는 않는다 [@he2021equilibrium].
+- Control-dependent diffusion에는 $Q$ 및 2차 adjoint에 해당하는 추가 구조가 필요하다.

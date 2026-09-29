@@ -1,0 +1,47 @@
+---
+title: "Backward Stochastic Volterra Integral Equations"
+short-title: "BSVIE"
+description: "시작시각과 미래 진행시각을 함께 기억하는 두 시간축의 backward stochastic integral equation"
+graph-summary: "Anchor-indexed continuation과 path-dependent payoff를 표현하는 두 시간축의 backward equation."
+node-id: topic-bsvie
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 4
+cluster: stochastic-control
+search-aliases:
+  - BSVIE
+  - backward stochastic Volterra equation
+  - Volterra stochastic integral equation
+tags:
+  - bsvie
+  - bsde
+  - volterra
+  - stochastic-analysis
+relations:
+  - target: topic-sde
+    type: connected-via
+    note: "BSVIE의 martingale integrand와 forward state는 같은 filtration과 Brownian noise 위에 놓인다."
+    evidence:
+      - yong2006bsvie
+  - target: topic-high-dimensional-pde
+    type: connected-via
+    note: "두 시간축의 neural field를 학습하는 Deep BSVIE는 고차원 확률 수치해법이다."
+    evidence:
+      - andersson2026deepbsvie
+---
+
+BSVIE는 BSDE에 Volterra식 memory를 넣어 query/anchor 시간과 미래 적분시간을 동시에 보존한다. 시간비일관적 제어에서는 바로 이 첫 번째 시간 인수가 과거 self의 선호를 기억한다.
+
+{{< include ../../_includes/notation/bsvie-core.qmd >}}
+
+## 이 지도에서의 핵심 갈림길
+
+- 이론: 해의 존재·유일성, adapted M-solution, equilibrium HJB의 Feynman-Kac 표현
+- 계산: $O(N^2)$ triangle field, nested solve, single-stage neural approximation
+- 제어: 전체 field 오차와 $Z(t,t)$ 또는 costate diagonal의 오차를 구분
+
+## ACM과의 관계
+
+[Adjoint Costate Method](../../entries/adjoint-costate-method/)는 일반 BSVIE solver가 아니다. Markovian, additive-noise 조건 아래 costate BSVIE에 대응하는 선형 adjoint PDE를 discount-free kernel로 factorize하여 anchor-indexed stochastic field를 직접 학습하지 않는 우회로다.

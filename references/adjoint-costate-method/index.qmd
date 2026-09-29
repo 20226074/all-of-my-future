@@ -1,0 +1,85 @@
+---
+title: "The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting"
+short-title: "Anonymous (2026)"
+author:
+  - "Anonymous Author(s)"
+graph-summary: "Anchor-free adjoint kernels와 검증된 residual defect로 배포 policy의 first-order equilibrium gap을 제어하는 진행 중 원고."
+node-id: ref-adjoint-costate-method
+node-type: reference
+reference-type: paper
+citekey: adjointCostate2026
+year: 2026
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-adjoint-methods
+  - topic-stochastic-control
+  - topic-high-dimensional-pde
+  - topic-bsvie
+primary-node: entry-adjoint-costate-method
+reading-status: reading
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - current-research
+  - equilibrium-gap
+  - adjoint-kernel
+  - non-multiplicative-discounting
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Control → Adjoint Costate Method"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+
+{{< include ../../_includes/concepts/adjoint-costate-method-core.qmd >}}
+:::
+
+## 이 원고가 공통 틀에 추가한 것
+
+이 원고는 시간비일관적 제어의 anchored costate가 만족하는 선형 PDE를 running-reward impulse kernel $K^v$와 terminal kernel $\overline K^v$로 분해한다. Anchor $s$와 discount $D(s,\tau)$는 neural network의 입력과 residual에서 빠지고 deterministic quadrature read-out에만 남는다 [@adjointCostate2026].
+
+고유한 기여는 세 층이다.
+
+1. 분석된 anchored $L^2$ PINN/BSVIE loss에는 diagonal equilibrium-gap certificate가 없다는 trace obstruction
+2. Anchor-mixture policy gradient가 diagonal costate가 아니라 anchor-averaged costate에 stationarity를 강제한다는 구분
+3. 검증된 uniform kernel defect, quadrature error, Hamiltonian maximization error를 배포 policy의 first-order gap으로 바꾸는 a-posteriori bound
+
+## 논문의 논리 구조
+
+$$
+\text{anchored value PDE}
+\xrightarrow{\nabla_x}
+\text{linear adjoint PDE}
+\xrightarrow{\text{Duhamel}}
+(K^v,\overline K^v)
+\xrightarrow{\text{quadrature}}
+\widehat p_\theta
+\xrightarrow{\arg\max H}
+\widehat u_\theta.
+$$
+
+그 뒤 uniform residual verification으로 $\widehat p_\theta$와 실제 continuation costate $p^{\widehat u_\theta}$의 차이를 제어하고, Hamiltonian의 $p$-Lipschitz 성질로 equilibrium gap을 bound한다.
+
+## 결과를 읽는 정확한 방식
+
+- 이론상 certificate는 empirical training loss가 아니라 별도로 검증한 continuum $L^\infty$ defect를 입력으로 받는다.
+- 실험표는 알려진 equilibrium에 대한 grid control error이고 실제 certificate 값을 계산한 표가 아니다.
+- Gap은 weak/first-order spike equilibrium의 위반량이다. Strong equilibrium 보장은 아니다.
+- ACM은 general BSVIE solver가 아니라 additive-noise Markov model에서 costate BSVIE를 adjoint PDE로 우회하는 방법이다.
+- “Discount-free kernel”은 kernel equation이 discount를 직접 입력받지 않는다는 뜻이지, discount를 바꿔도 policy-dependent kernel을 재학습할 필요가 없다는 뜻은 아니다.
+
+## 원문에서 남은 연구 과제
+
+- Uniform verification을 실제 수치 certificate로 닫기
+- Additive Brownian noise의 domain escape 처리
+- State/control-dependent diffusion으로 확장
+- Policy-kernel semi-gradient iteration의 수렴
+- 고차원 및 reference equilibrium이 없는 실험
+
+## 원문
+
+- 서지정보: [@adjointCostate2026]
+- 2026-09-29에 제공된 39쪽 익명 원고를 기준으로 정리했다. 동료평가 완료본이 아니다.
+:::

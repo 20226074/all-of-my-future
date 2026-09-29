@@ -2,28 +2,34 @@
   "schemaVersion": 3,
   "generatedFrom": "Quarto front matter",
   "stats": {
-    "topics": 11,
-    "entries": 1,
-    "graphNodes": 12,
-    "references": 8,
-    "papers": 6,
+    "topics": 16,
+    "entries": 2,
+    "graphNodes": 18,
+    "references": 23,
+    "papers": 21,
     "books": 2,
-    "graphRelations": 18,
-    "documentLinks": 19,
-    "relations": 37
+    "graphRelations": 33,
+    "documentLinks": 71,
+    "relations": 104
   },
   "view": {
     "schemaVersion": 1,
     "explorerOrder": [
+      "entry-adjoint-costate-method",
+      "topic-stochastic-control",
+      "topic-time-inconsistent-control",
+      "topic-adjoint-methods",
+      "topic-bsvie",
+      "topic-mean-variance",
+      "topic-sde",
+      "topic-high-dimensional-pde",
+      "topic-fokker-planck",
       "topic-diffusion-models",
       "topic-ddpm",
       "topic-score-sde",
       "topic-conditional-diffusion",
       "topic-classifier-free-guidance",
       "topic-latent-diffusion",
-      "topic-sde",
-      "topic-fokker-planck",
-      "topic-high-dimensional-pde",
       "topic-optimal-transport",
       "topic-schrodinger-bridge",
       "entry-all-of-my-future"
@@ -31,6 +37,155 @@
     "nodes": {}
   },
   "nodes": [
+    {
+      "id": "ref-nguwi2022constructive",
+      "kind": "reference",
+      "label": "Nguwi & Privault (2022)",
+      "title": "A Constructive Approach to Existence of Equilibria in Time-Inconsistent Stochastic Control Problems",
+      "summary": "시간분할 n-person game, adjoint BSDE, relaxed-control compactness로 continuous-time equilibrium 존재를 구성한다.",
+      "url": "references/nguwi2022constructive/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "equilibrium-existence",
+        "n-person-game",
+        "relaxed-control",
+        "adjoint-bsde"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "nguwi2022constructive",
+      "year": 2022,
+      "author": "Jiang Yu Nguwi, Nicolas Privault",
+      "firstAuthor": "Jiang Yu Nguwi",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control",
+        "topic-adjoint-methods"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-andersson2026deepbsvie",
+      "kind": "reference",
+      "label": "Andersson et al. (2026)",
+      "title": "A Deep Solver for Backward Stochastic Volterra Integral Equations",
+      "summary": "BSVIE의 두 solution field를 single-stage neural network로 학습하고 decoupled case의 integrated error bound를 제시한다.",
+      "url": "references/andersson2026deepbsvie/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "deep-bsvie",
+        "neural-solver",
+        "convergence",
+        "baseline"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "andersson2026deepbsvie",
+      "year": 2026,
+      "author": "Kristoffer Andersson, Alessandro Gnoatto, Camilo Andrés García Trillos",
+      "firstAuthor": "Kristoffer Andersson",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-bsvie",
+        "topic-high-dimensional-pde",
+        "topic-time-inconsistent-control"
+      ],
+      "primaryNode": "topic-bsvie",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-peng1990smp",
+      "kind": "reference",
+      "label": "Peng (1990)",
+      "title": "A General Stochastic Maximum Principle for Optimal Control Problems",
+      "summary": "Control-dependent diffusion과 nonconvex control domain까지 다루기 위해 2차 adjoint를 도입한 stochastic maximum principle.",
+      "url": "references/peng1990smp/",
+      "status": "",
+      "priority": "later",
+      "tags": [
+        "stochastic-maximum-principle",
+        "second-order-adjoint",
+        "control-dependent-diffusion"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "peng1990smp",
+      "year": 1990,
+      "author": "Shige Peng",
+      "firstAuthor": "Shige Peng",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-stochastic-control",
+        "topic-adjoint-methods"
+      ],
+      "primaryNode": "topic-adjoint-methods",
+      "cluster": "references"
+    },
+    {
+      "id": "topic-adjoint-methods",
+      "kind": "topic",
+      "label": "Adjoint Methods",
+      "title": "Adjoint & Costate Methods",
+      "summary": "ODE·PDE·확률제어에서 costate가 gradient를 운반하는 공통 원리.",
+      "url": "topics/adjoint-methods/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "adjoint",
+        "costate",
+        "sensitivity-analysis",
+        "optimal-control"
+      ],
+      "searchAliases": [
+        "adjoint state method",
+        "costate",
+        "Pontryagin maximum principle",
+        "stochastic maximum principle",
+        "수반법"
+      ],
+      "maturity": "developing",
+      "importance": 4,
+      "cluster": "stochastic-control"
+    },
+    {
+      "id": "entry-adjoint-costate-method",
+      "kind": "entry",
+      "label": "Adjoint Costate Method",
+      "title": "Adjoint Costate Method",
+      "summary": "Anchor를 제거한 adjoint kernels로 diagonal costate와 배포 policy의 equilibrium gap을 연결하는 진행 중 연구.",
+      "url": "entries/adjoint-costate-method/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "current-research",
+        "equilibrium-learning",
+        "adjoint-pde",
+        "certification"
+      ],
+      "searchAliases": [
+        "ACM",
+        "certifiable equilibrium learning",
+        "adjoint costate",
+        "non-multiplicative discounting"
+      ],
+      "maturity": "developing",
+      "importance": 5,
+      "cluster": "stochastic-control",
+      "entryKind": "project"
+    },
     {
       "id": "entry-all-of-my-future",
       "kind": "entry",
@@ -53,6 +208,61 @@
       "importance": 3,
       "cluster": "all-of-my-future",
       "entryKind": "project"
+    },
+    {
+      "id": "topic-bsvie",
+      "kind": "topic",
+      "label": "BSVIE",
+      "title": "Backward Stochastic Volterra Integral Equations",
+      "summary": "Anchor-indexed continuation과 path-dependent payoff를 표현하는 두 시간축의 backward equation.",
+      "url": "topics/bsvie/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "bsvie",
+        "bsde",
+        "volterra",
+        "stochastic-analysis"
+      ],
+      "searchAliases": [
+        "BSVIE",
+        "backward stochastic Volterra equation",
+        "Volterra stochastic integral equation"
+      ],
+      "maturity": "developing",
+      "importance": 4,
+      "cluster": "stochastic-control"
+    },
+    {
+      "id": "ref-yong2006bsvie",
+      "kind": "reference",
+      "label": "Yong (2006)",
+      "title": "Backward Stochastic Volterra Integral Equations and Some Related Problems",
+      "summary": "두 시간축의 backward stochastic Volterra equation과 adapted solution의 기초를 세운 대표 문헌.",
+      "url": "references/yong2006bsvie/",
+      "status": "",
+      "priority": "later",
+      "tags": [
+        "bsvie",
+        "adapted-solution",
+        "stochastic-integral-equation"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "yong2006bsvie",
+      "year": 2006,
+      "author": "Jiongmin Yong",
+      "firstAuthor": "Jiongmin Yong",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-bsvie",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-bsvie",
+      "cluster": "references"
     },
     {
       "id": "ref-ho2022cfg",
@@ -109,6 +319,38 @@
       "cluster": "classifier-free-guidance"
     },
     {
+      "id": "ref-wang2021closedloop",
+      "kind": "reference",
+      "label": "Wang & Zheng (2021)",
+      "title": "Closed-Loop Equilibrium Strategies for General Time-Inconsistent Optimal Control Problems",
+      "summary": "일반 objective와 random coefficients에서 closed-loop equilibrium을 integral BSPDE와 diagonal pointwise condition으로 특징화한다.",
+      "url": "references/wang2021closedloop/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "closed-loop-equilibrium",
+        "extended-hjb",
+        "bspde",
+        "random-coefficients"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "wang2021closedloop",
+      "year": 2021,
+      "author": "Tianxiao Wang, Harry Zheng",
+      "firstAuthor": "Tianxiao Wang",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
       "id": "topic-conditional-diffusion",
       "kind": "topic",
       "label": "Conditional Diffusion",
@@ -131,6 +373,38 @@
       "maturity": "developing",
       "importance": 3,
       "cluster": "conditional-diffusion"
+    },
+    {
+      "id": "ref-andersson2023robustfbsde",
+      "kind": "reference",
+      "label": "Andersson et al. (2023)",
+      "title": "Convergence of a Robust Deep FBSDE Method for Stochastic Control",
+      "summary": "Coupled FBSDE에서 control cost와 terminal-consistency variance를 함께 최소화하는 robust deep solver와 convergence 분석.",
+      "url": "references/andersson2023robustfbsde/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "fbsde",
+        "deep-bsde",
+        "stochastic-control",
+        "convergence"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "andersson2023robustfbsde",
+      "year": 2023,
+      "author": "Kristoffer Andersson, Adam Andersson, Cornelis W. Oosterlee",
+      "firstAuthor": "Kristoffer Andersson",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-stochastic-control",
+        "topic-high-dimensional-pde"
+      ],
+      "primaryNode": "topic-stochastic-control",
+      "cluster": "references"
     },
     {
       "id": "topic-ddpm",
@@ -347,6 +621,160 @@
       "cluster": "latent-diffusion"
     },
     {
+      "id": "ref-dai2023learning",
+      "kind": "reference",
+      "label": "Dai et al. (2023)",
+      "title": "Learning Equilibrium Mean-Variance Strategy",
+      "summary": "Entropy-regularized Gaussian exploration과 맞춤형 policy iteration으로 time-inconsistent mean-variance equilibrium을 학습한다.",
+      "url": "references/dai2023learning/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "reinforcement-learning",
+        "mean-variance",
+        "exploratory-control",
+        "policy-iteration"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "dai2023learning",
+      "year": 2023,
+      "author": "Min Dai, Yuchao Dong, Yanwei Jia",
+      "firstAuthor": "Min Dai",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-mean-variance",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-mean-variance",
+      "cluster": "references"
+    },
+    {
+      "id": "topic-mean-variance",
+      "kind": "topic",
+      "label": "Mean-Variance",
+      "title": "Mean-Variance Portfolio Selection",
+      "summary": "조건부분산 때문에 Bellman recursion이 깨지는 대표적 금융 equilibrium-control 문제.",
+      "url": "topics/mean-variance/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "portfolio",
+        "mean-variance",
+        "financial-mathematics",
+        "equilibrium-control"
+      ],
+      "searchAliases": [
+        "mean variance",
+        "portfolio selection",
+        "equilibrium portfolio",
+        "평균 분산 포트폴리오"
+      ],
+      "maturity": "developing",
+      "importance": 3,
+      "cluster": "stochastic-control"
+    },
+    {
+      "id": "ref-su2024nonmarkovian",
+      "kind": "reference",
+      "label": "Su et al. (2024)",
+      "title": "Non-Markovian Mean-Variance Portfolio Selection Problems via Closed-Loop Equilibrium Strategies",
+      "summary": "Random market coefficients의 closed-loop mean-variance equilibrium을 backward stochastic Riccati system으로 표현한다.",
+      "url": "references/su2024nonmarkovian/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "mean-variance",
+        "non-markovian",
+        "closed-loop-equilibrium",
+        "stochastic-riccati"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "su2024nonmarkovian",
+      "year": 2024,
+      "author": "Xizhi Su, Tianxiao Wang, Jiaqin Wei, Chao Zhou",
+      "firstAuthor": "Xizhi Su",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-mean-variance",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-mean-variance",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-he2021equilibrium",
+      "kind": "reference",
+      "label": "He & Jiang (2021)",
+      "title": "On the Equilibrium Strategies for Time-Inconsistent Problems in Continuous Time",
+      "summary": "Weak, regular, strong equilibrium을 분리해 1차 spike condition이 실제 finite-duration deviation을 막지 못할 수 있음을 보인다.",
+      "url": "references/he2021equilibrium/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "weak-equilibrium",
+        "regular-equilibrium",
+        "strong-equilibrium",
+        "spike-variation"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "he2021equilibrium",
+      "year": 2021,
+      "author": "Xue Dong He, Zhao Li Jiang",
+      "firstAuthor": "Xue Dong He",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-bjork2017timeinconsistent",
+      "kind": "reference",
+      "label": "Björk et al. (2017)",
+      "title": "On Time-Inconsistent Stochastic Control in Continuous Time",
+      "summary": "Continuous-time temporal selves의 게임에서 extended HJB system과 equilibrium verification theorem을 세운 일반 Markov framework.",
+      "url": "references/bjork2017timeinconsistent/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "extended-hjb",
+        "equilibrium-control",
+        "verification-theorem",
+        "markov-control"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "bjork2017timeinconsistent",
+      "year": 2017,
+      "author": "Tomas Björk, Mariana Khapko, Agatha Murgoci",
+      "firstAuthor": "Tomas Björk",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
       "id": "topic-optimal-transport",
       "kind": "topic",
       "label": "Optimal Transport",
@@ -513,6 +941,32 @@
       "cluster": "references"
     },
     {
+      "id": "topic-stochastic-control",
+      "kind": "topic",
+      "label": "Stochastic Control",
+      "title": "Stochastic Control",
+      "summary": "Controlled SDE, HJB, maximum principle, FBSDE를 잇는 확률제어의 공통 기반.",
+      "url": "topics/stochastic-control/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "stochastic-control",
+        "controlled-sde",
+        "hjb",
+        "maximum-principle"
+      ],
+      "searchAliases": [
+        "stochastic optimal control",
+        "controlled diffusion",
+        "HJB",
+        "Hamilton-Jacobi-Bellman",
+        "확률제어"
+      ],
+      "maturity": "developing",
+      "importance": 5,
+      "cluster": "stochastic-control"
+    },
+    {
       "id": "topic-sde",
       "kind": "topic",
       "label": "SDE",
@@ -564,9 +1018,409 @@
       ],
       "primaryNode": "topic-sde",
       "cluster": "references"
+    },
+    {
+      "id": "ref-adjoint-costate-method",
+      "kind": "reference",
+      "label": "Anonymous (2026)",
+      "title": "The Adjoint Costate Method: Certifiable Equilibrium Learning under Non-Multiplicative Discounting",
+      "summary": "Anchor-free adjoint kernels와 검증된 residual defect로 배포 policy의 first-order equilibrium gap을 제어하는 진행 중 원고.",
+      "url": "references/adjoint-costate-method/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "current-research",
+        "equilibrium-gap",
+        "adjoint-kernel",
+        "non-multiplicative-discounting"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "reading",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "adjointCostate2026",
+      "year": 2026,
+      "author": "Anonymous Author(s)",
+      "firstAuthor": "Anonymous Author(s)",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-adjoint-methods",
+        "topic-stochastic-control",
+        "topic-high-dimensional-pde",
+        "topic-bsvie"
+      ],
+      "primaryNode": "entry-adjoint-costate-method",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-ekeland2012portfolio",
+      "kind": "reference",
+      "label": "Ekeland et al. (2012)",
+      "title": "Time-Consistent Portfolio Management",
+      "summary": "서로 다른 할인과 mortality가 있는 소비·투자·생명보험을 successive selves의 equilibrium fixed point로 푼다.",
+      "url": "references/ekeland2012portfolio/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "portfolio",
+        "hyperbolic-discounting",
+        "consumption",
+        "life-insurance"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "ekeland2012portfolio",
+      "year": 2012,
+      "author": "Ivar Ekeland, Oumar Mbodji, Traian A. Pirvu",
+      "firstAuthor": "Ivar Ekeland",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-hamaguchi2021consumption",
+      "kind": "reference",
+      "label": "Hamaguchi (2021)",
+      "title": "Time-Inconsistent Consumption-Investment Problems in Incomplete Markets under General Discount Functions",
+      "summary": "불완전시장·random endowment·일반 할인 아래 open-loop equilibrium을 coupled FBSDE로 특징화한다.",
+      "url": "references/hamaguchi2021consumption/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "consumption-investment",
+        "incomplete-market",
+        "general-discount",
+        "open-loop-equilibrium"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "hamaguchi2021consumption",
+      "year": 2021,
+      "author": "Yushi Hamaguchi",
+      "firstAuthor": "Yushi Hamaguchi",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
+      "id": "topic-time-inconsistent-control",
+      "kind": "topic",
+      "label": "Time-Inconsistent Control",
+      "title": "Time-Inconsistent Control",
+      "summary": "Bellman optimality가 깨진 문제를 temporal selves의 게임과 diagonal equilibrium condition으로 다시 세운다.",
+      "url": "topics/time-inconsistent-control/",
+      "status": "active",
+      "priority": "now",
+      "tags": [
+        "time-inconsistency",
+        "equilibrium",
+        "non-exponential-discounting",
+        "dynamic-games"
+      ],
+      "searchAliases": [
+        "time inconsistency",
+        "equilibrium control",
+        "non-exponential discounting",
+        "subgame perfect control",
+        "시간비일관적 제어"
+      ],
+      "maturity": "developing",
+      "importance": 5,
+      "cluster": "stochastic-control"
+    },
+    {
+      "id": "ref-yong2012equilibriumhjb",
+      "kind": "reference",
+      "label": "Yong (2012)",
+      "title": "Time-Inconsistent Optimal Control Problems and the Equilibrium HJB Equation",
+      "summary": "시간분할 다인게임의 극한에서 equilibrium strategy와 equilibrium HJB를 구성한 기초 문헌.",
+      "url": "references/yong2012equilibriumhjb/",
+      "status": "",
+      "priority": "later",
+      "tags": [
+        "equilibrium-hjb",
+        "time-inconsistency",
+        "multiperson-game"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "yong2012equilibriumhjb",
+      "year": 2012,
+      "author": "Jiongmin Yong",
+      "firstAuthor": "Jiongmin Yong",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-time-inconsistent-control",
+      "cluster": "references"
+    },
+    {
+      "id": "ref-wang2021bsviecontrol",
+      "kind": "reference",
+      "label": "Wang & Yong (2021)",
+      "title": "Time-Inconsistent Stochastic Optimal Control Problems and Backward Stochastic Volterra Integral Equations",
+      "summary": "Recursive BSVIE cost에서 time-partition game의 극한으로 equilibrium HJB와 diagonal Z를 유도한다.",
+      "url": "references/wang2021bsviecontrol/",
+      "status": "",
+      "priority": "now",
+      "tags": [
+        "recursive-control",
+        "bsvie",
+        "equilibrium-hjb",
+        "diagonal-z"
+      ],
+      "searchAliases": [],
+      "referenceType": "paper",
+      "readingStatus": "queued",
+      "noteStatus": "ai-draft",
+      "sourceChecked": true,
+      "citekey": "wang2021bsviecontrol",
+      "year": 2021,
+      "author": "Hanxiao Wang, Jiongmin Yong",
+      "firstAuthor": "Hanxiao Wang",
+      "attachedTo": [
+        "entry-adjoint-costate-method",
+        "topic-time-inconsistent-control",
+        "topic-bsvie",
+        "topic-stochastic-control"
+      ],
+      "primaryNode": "topic-bsvie",
+      "cluster": "references"
     }
   ],
   "edges": [
+    {
+      "source": "entry-adjoint-costate-method",
+      "target": "topic-adjoint-methods",
+      "relation": "uses",
+      "directed": true,
+      "note": "고정 policy의 linear adjoint PDE를 source와 terminal impulse kernel로 factorize한다.",
+      "evidence": [
+        "adjointCostate2026"
+      ]
+    },
+    {
+      "source": "entry-adjoint-costate-method",
+      "target": "topic-bsvie",
+      "relation": "contrasts-with",
+      "directed": false,
+      "note": "Anchor-indexed BSVIE field를 직접 학습하는 대신 Markovian adjoint PDE의 anchor-free kernel을 학습한다.",
+      "evidence": [
+        "adjointCostate2026",
+        "andersson2026deepbsvie"
+      ]
+    },
+    {
+      "source": "entry-adjoint-costate-method",
+      "target": "topic-high-dimensional-pde",
+      "relation": "uses",
+      "directed": true,
+      "note": "두 backward parabolic kernel PDE를 neural residual solver로 근사한다.",
+      "evidence": [
+        "adjointCostate2026"
+      ]
+    },
+    {
+      "source": "entry-adjoint-costate-method",
+      "target": "topic-stochastic-control",
+      "relation": "applies-to",
+      "directed": true,
+      "note": "Controlled diffusion의 Hamiltonian과 costate로 policy를 합성한다.",
+      "evidence": [
+        "adjointCostate2026"
+      ]
+    },
+    {
+      "source": "entry-adjoint-costate-method",
+      "target": "topic-time-inconsistent-control",
+      "relation": "investigates",
+      "directed": true,
+      "note": "Non-multiplicative discount 아래 closed-loop equilibrium의 diagonal costate를 계산한다.",
+      "evidence": [
+        "adjointCostate2026"
+      ]
+    },
+    {
+      "source": "ref-adjoint-costate-method",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-adjoint-costate-method",
+      "target": "topic-adjoint-methods",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-adjoint-costate-method",
+      "target": "topic-bsvie",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-adjoint-costate-method",
+      "target": "topic-high-dimensional-pde",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-adjoint-costate-method",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-adjoint-costate-method",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2023robustfbsde",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2023robustfbsde",
+      "target": "topic-high-dimensional-pde",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2023robustfbsde",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2026deepbsvie",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2026deepbsvie",
+      "target": "topic-bsvie",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2026deepbsvie",
+      "target": "topic-high-dimensional-pde",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-andersson2026deepbsvie",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-bjork2017timeinconsistent",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-bjork2017timeinconsistent",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-bjork2017timeinconsistent",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-dai2023learning",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-dai2023learning",
+      "target": "topic-mean-variance",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-dai2023learning",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-dai2023learning",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
     {
       "source": "ref-dhariwal2021guided",
       "target": "topic-conditional-diffusion",
@@ -592,6 +1446,54 @@
       "evidence": []
     },
     {
+      "source": "ref-ekeland2012portfolio",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-ekeland2012portfolio",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-ekeland2012portfolio",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-hamaguchi2021consumption",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-hamaguchi2021consumption",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-hamaguchi2021consumption",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
       "source": "ref-han2018deep",
       "target": "topic-high-dimensional-pde",
       "relation": "documents",
@@ -602,6 +1504,22 @@
     {
       "source": "ref-han2018deep",
       "target": "topic-sde",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-he2021equilibrium",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-he2021equilibrium",
+      "target": "topic-time-inconsistent-control",
       "relation": "documents",
       "directed": true,
       "note": "이 문헌이 연결된 지식 노드",
@@ -648,8 +1566,64 @@
       "evidence": []
     },
     {
+      "source": "ref-nguwi2022constructive",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-nguwi2022constructive",
+      "target": "topic-adjoint-methods",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-nguwi2022constructive",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-nguwi2022constructive",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
       "source": "ref-oksendal2003sde",
       "target": "topic-sde",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-peng1990smp",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-peng1990smp",
+      "target": "topic-adjoint-methods",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-peng1990smp",
+      "target": "topic-stochastic-control",
       "relation": "documents",
       "directed": true,
       "note": "이 문헌이 연결된 지식 노드",
@@ -712,12 +1686,176 @@
       "evidence": []
     },
     {
+      "source": "ref-su2024nonmarkovian",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-su2024nonmarkovian",
+      "target": "topic-mean-variance",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-su2024nonmarkovian",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-su2024nonmarkovian",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
       "source": "ref-villani2009ot",
       "target": "topic-optimal-transport",
       "relation": "documents",
       "directed": true,
       "note": "이 문헌이 연결된 지식 노드",
       "evidence": []
+    },
+    {
+      "source": "ref-wang2021bsviecontrol",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-wang2021bsviecontrol",
+      "target": "topic-bsvie",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-wang2021bsviecontrol",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-wang2021bsviecontrol",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-wang2021closedloop",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-wang2021closedloop",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-wang2021closedloop",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-yong2006bsvie",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-yong2006bsvie",
+      "target": "topic-bsvie",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-yong2006bsvie",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-yong2012equilibriumhjb",
+      "target": "entry-adjoint-costate-method",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-yong2012equilibriumhjb",
+      "target": "topic-stochastic-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "ref-yong2012equilibriumhjb",
+      "target": "topic-time-inconsistent-control",
+      "relation": "documents",
+      "directed": true,
+      "note": "이 문헌이 연결된 지식 노드",
+      "evidence": []
+    },
+    {
+      "source": "topic-adjoint-methods",
+      "target": "topic-high-dimensional-pde",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "PDE-constrained optimization에서는 adjoint PDE 한 번으로 많은 parameter의 gradient를 계산한다.",
+      "evidence": []
+    },
+    {
+      "source": "topic-bsvie",
+      "target": "topic-high-dimensional-pde",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "두 시간축의 neural field를 학습하는 Deep BSVIE는 고차원 확률 수치해법이다.",
+      "evidence": [
+        "andersson2026deepbsvie"
+      ]
+    },
+    {
+      "source": "topic-bsvie",
+      "target": "topic-sde",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "BSVIE의 martingale integrand와 forward state는 같은 filtration과 Brownian noise 위에 놓인다.",
+      "evidence": [
+        "yong2006bsvie"
+      ]
     },
     {
       "source": "topic-classifier-free-guidance",
@@ -849,6 +1987,16 @@
       ]
     },
     {
+      "source": "topic-mean-variance",
+      "target": "topic-stochastic-control",
+      "relation": "applies-to",
+      "directed": true,
+      "note": "Portfolio allocation은 controlled wealth SDE의 대표 응용이다.",
+      "evidence": [
+        "dai2023learning"
+      ]
+    },
+    {
       "source": "topic-optimal-transport",
       "target": "topic-fokker-planck",
       "relation": "connected-via",
@@ -894,6 +2042,66 @@
       "note": "Forward와 reverse process를 Itô SDE로 다룬다.",
       "evidence": [
         "song2021score"
+      ]
+    },
+    {
+      "source": "topic-stochastic-control",
+      "target": "topic-adjoint-methods",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "Stochastic maximum principle은 backward costate를 통해 행동의 1차 조건을 표현한다.",
+      "evidence": [
+        "peng1990smp"
+      ]
+    },
+    {
+      "source": "topic-stochastic-control",
+      "target": "topic-high-dimensional-pde",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "Value HJB와 adjoint PDE를 수치적으로 풀 때 고차원 PDE solver가 필요하다.",
+      "evidence": [
+        "andersson2023robustfbsde"
+      ]
+    },
+    {
+      "source": "topic-stochastic-control",
+      "target": "topic-sde",
+      "relation": "uses",
+      "directed": true,
+      "note": "확률제어의 상태는 controlled SDE로 기술된다.",
+      "evidence": [
+        "peng1990smp"
+      ]
+    },
+    {
+      "source": "topic-time-inconsistent-control",
+      "target": "topic-bsvie",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "Anchor와 evolution time을 함께 보존하면 BSVIE와 equilibrium HJB가 자연스럽게 나타난다.",
+      "evidence": [
+        "wang2021bsviecontrol"
+      ]
+    },
+    {
+      "source": "topic-time-inconsistent-control",
+      "target": "topic-mean-variance",
+      "relation": "applies-to",
+      "directed": true,
+      "note": "Conditional variance의 비선형성은 대표적인 시간비일관성을 만든다.",
+      "evidence": [
+        "dai2023learning"
+      ]
+    },
+    {
+      "source": "topic-time-inconsistent-control",
+      "target": "topic-stochastic-control",
+      "relation": "connected-via",
+      "directed": false,
+      "note": "하나의 optimum 대신 temporal selves 사이의 local equilibrium을 구한다.",
+      "evidence": [
+        "bjork2017timeinconsistent"
       ]
     }
   ]

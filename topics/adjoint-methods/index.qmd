@@ -1,0 +1,45 @@
+---
+title: "Adjoint & Costate Methods"
+short-title: "Adjoint Methods"
+description: "전치된 선형화 방정식으로 목적함수의 민감도와 최적성 조건을 계산하는 방법"
+graph-summary: "ODE·PDE·확률제어에서 costate가 gradient를 운반하는 공통 원리."
+node-id: topic-adjoint-methods
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 4
+cluster: stochastic-control
+search-aliases:
+  - adjoint state method
+  - costate
+  - Pontryagin maximum principle
+  - stochastic maximum principle
+  - 수반법
+tags:
+  - adjoint
+  - costate
+  - sensitivity-analysis
+  - optimal-control
+relations:
+  - target: topic-high-dimensional-pde
+    type: connected-via
+    note: "PDE-constrained optimization에서는 adjoint PDE 한 번으로 많은 parameter의 gradient를 계산한다."
+    evidence: []
+---
+
+Adjoint는 특정 하나의 알고리즘보다 넓은 구조다. **상태방정식의 선형화를 전치하여, 상태 sensitivity를 제거하고 목적함수의 미분을 계산한다**는 원리가 ODE costate, PDE adjoint, stochastic maximum principle, reverse-mode autodiff에 반복된다.
+
+{{< include ../../_includes/concepts/adjoint-methods-core.qmd >}}
+
+## ACM과 classical adjoint의 차이
+
+Classical adjoint-state method는 보통 parameter 또는 control gradient를 한 번 계산하는 데 costate를 사용한다. [Adjoint Costate Method](../../entries/adjoint-costate-method/)는 시간비일관적 equilibrium policy가 읽는 **costate field 자체**를 neural PDE로 학습하고, 그 오차에서 policy의 first-order equilibrium gap을 제어한다.
+
+## 다음에 확장할 세부 노드
+
+- Pontryagin maximum principle
+- Stochastic maximum principle과 2차 adjoint
+- PDE-constrained optimization
+- Discrete adjoint와 reverse-mode automatic differentiation
+- A-posteriori residual certification

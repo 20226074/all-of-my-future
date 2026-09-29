@@ -1,0 +1,102 @@
+---
+title: "A Deep Solver for Backward Stochastic Volterra Integral Equations"
+short-title: "Andersson et al. (2026)"
+author:
+  - "Kristoffer Andersson"
+  - "Alessandro Gnoatto"
+  - "Camilo Andrés García Trillos"
+graph-summary: "BSVIE의 두 solution field를 single-stage neural network로 학습하고 decoupled case의 integrated error bound를 제시한다."
+node-id: ref-andersson2026deepbsvie
+node-type: reference
+reference-type: paper
+citekey: andersson2026deepbsvie
+year: 2026
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-bsvie
+  - topic-high-dimensional-pde
+  - topic-time-inconsistent-control
+primary-node: topic-bsvie
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - deep-bsvie
+  - neural-solver
+  - convergence
+  - baseline
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · BSVIE"}
+{{< include ../../_includes/notation/bsvie-core.qmd >}}
+:::
+
+## 이 문헌이 공통 틀에 추가한 것
+
+이 논문은 forward SDE와 decoupled BSVIE
+
+$$
+X_t=x_0+\int_0^tb(r,X_r)\,dr+\int_0^t\sigma(r,X_r)\,dW_r,
+$$
+
+$$
+Y(t)=g(t,X_T)
++\int_t^Tf(t,r,X_r,Y(r),Z(t,r))\,dr
+-\int_t^TZ(t,r)^\top dW_r
+$$
+
+의 두 field를 하나의 학습 단계에서 근사한다 [@andersson2026deepbsvie].
+
+격자 $t_i=ih$에서
+
+$$
+Y_i^\pi=\mathcal Y_\theta(t_i,X_i^\pi),
+\qquad
+Z_{ij}^\pi=\mathcal Z_\theta(t_i,t_j,X_j^\pi)
+$$
+
+로 두고, 각 anchor $t_i$에서 이산 BSVIE를 $T$까지 전개한 terminal prediction $\mathscr Y_N^{\pi,\theta}(i)$를 만든다. Loss는
+
+$$
+\mathcal L(\theta)
+=\sum_{i=0}^{N-1}
+\mathbb E\left|
+\mathscr Y_N^{\pi,\theta}(i)-g(t_i,X_N^\pi)
+\right|^2h
+$$
+
+다. Anchor마다 nested backward solver를 따로 두지 않고 $\mathcal Y_\theta,\mathcal Z_\theta$가 삼각형 전체를 공유한다.
+
+## 증명된 오차의 의미
+
+Decoupled case와 특정 driver 구조, Lipschitz·시간 Hölder 조건 아래 논문은 개략적으로
+
+$$
+\int_0^T\mathbb E|Y(t)-Y^\pi(\pi(t))|^2dt
++\int_0^T\int_t^T
+\mathbb E|Z(t,r)-Z^\pi(\pi(t),\pi(r))|^2dr\,dt
+\le C\bigl(h+\mathcal L_{\mathrm{terminal}}\bigr)
+$$
+
+형태의 non-asymptotic bound를 얻는다. RMS scale에서는 familiar $O(\sqrt h)$ time-discretization rate다. 실험은 공간차원을 500까지 높이고 fully coupled system에도 같은 architecture를 적용한다.
+
+## 무엇까지 보장하지 않는가
+
+- 증명된 bound는 삼각형에 적분한 $L^2$ field error다.
+- Diagonal $Z(t,t)$의 uniform error나 equilibrium gap은 이 norm만으로 나오지 않는다.
+- Fully coupled 실험에는 decoupled theorem과 동일한 보장이 없다.
+- Neural approximation, finite-sample Monte Carlo, SGD optimization error는 별도다.
+
+## ACM과의 관계
+
+ACM 원고의 Deep BSVIE baseline이며 동시에 trace obstruction을 이해하는 핵심 문헌이다. Deep BSVIE는 원래 목표인 field approximation을 다룬다. ACM의 주장은 그 정리가 틀렸다는 것이 아니라, **제어가 읽는 measure-zero diagonal을 인증하려면 추가 구조가 필요하다**는 것이다.
+
+## 원문
+
+- 서지정보: [@andersson2026deepbsvie]
+- [SIAM DOI](https://doi.org/10.1137/25M177463X)
+- [arXiv 원문](https://arxiv.org/abs/2505.18297)
+:::

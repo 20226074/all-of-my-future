@@ -1,0 +1,87 @@
+---
+title: "On Time-Inconsistent Stochastic Control in Continuous Time"
+short-title: "Björk et al. (2017)"
+author:
+  - "Tomas Björk"
+  - "Mariana Khapko"
+  - "Agatha Murgoci"
+graph-summary: "Continuous-time temporal selves의 게임에서 extended HJB system과 equilibrium verification theorem을 세운 일반 Markov framework."
+node-id: ref-bjork2017timeinconsistent
+node-type: reference
+reference-type: paper
+citekey: bjork2017timeinconsistent
+year: 2017
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+primary-node: topic-time-inconsistent-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - extended-hjb
+  - equilibrium-control
+  - verification-theorem
+  - markov-control
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Stochastic Control"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+
+{{< include ../../_includes/notation/stochastic-control-core.qmd >}}
+:::
+
+## 일반 objective가 요구하는 auxiliary fields
+
+Markov diffusion과
+
+$$
+J(t,x;u)
+=\mathbb E_{t,x}[F(x,X_T^u)]
++G\!\left(x,\mathbb E_{t,x}[X_T^u]\right)
+$$
+
+를 생각한다 [@bjork2017timeinconsistent]. Terminal payoff가 현재 state $x$를 기억하고 conditional mean에 nonlinear하게 의존하므로 하나의 value function으로 Bellman recursion이 닫히지 않는다.
+
+Equilibrium feedback $\widehat u$ 아래
+
+$$
+f^y(t,x)
+:=\mathbb E_{t,x}[F(y,X_T^{\widehat u})],
+\qquad
+g(t,x):=\mathbb E_{t,x}[X_T^{\widehat u}]
+$$
+
+를 추가한다. Extended HJB는 value $V$, anchor-state parameter $y$를 가진 $f^y$, conditional mean $g$의 generator equation과, 현재 action에 대한 supremum condition을 결합한다.
+
+직관적으로는 다음 세 계산을 동시에 한다.
+
+1. 미래 selves가 $\widehat u$를 사용할 때 terminal distribution을 전파한다.
+2. 현재 self의 anchor를 고정한 payoff를 계산한다.
+3. 현재 infinitesimal interval만 다른 action으로 바꿨을 때의 generator 차이를 최대화한다.
+
+## 핵심 결과
+
+충분히 매끄러운 extended-HJB solution과 supremum을 실현하는 admissible selector가 존재하면 그 selector가 equilibrium이라는 verification theorem을 준다. Time-inconsistent LQ regulator와 general-equilibrium production economy를 예제로 다룬다.
+
+## 가정과 한계
+
+- Markov feedback framework와 높은 $C^{1,2}$ 정칙성
+- Control-dependent diffusion을 허용하므로 selector에 Hessian이 들어간다.
+- General extended-HJB system의 존재·유일성은 논문 자체도 열린 문제로 남긴다.
+- Verification은 “smooth solution이 있으면 equilibrium” 방향이며 일반적인 converse나 numerical error bound가 아니다.
+
+## ACM과의 관계
+
+Temporal selves, spike equilibrium, diagonal auxiliary field라는 게임론적·PDE적 기반을 제공한다. ACM은 non-multiplicative discount 구조로 좁혀 auxiliary field의 gradient를 kernel로 factorize하고, numerical defect를 first-order gap으로 바꾸는 계산 층을 더한다.
+
+## 원문
+
+- 서지정보: [@bjork2017timeinconsistent]
+- [Springer 출판본](https://doi.org/10.1007/s00780-017-0327-5)
+- [공개 장문 원고](https://arxiv.org/abs/1612.03650)
+:::

@@ -1,0 +1,62 @@
+## BSDE에서 BSVIE로
+
+표준 backward SDE는 하나의 terminal random variable $\xi$에 대해
+
+$$
+Y_t
+=\xi+\int_t^T g(r,Y_r,Z_r)\,dr
+-\int_t^T Z_r\,dW_r
+$$
+
+를 푼다. $Y_t$와 $Z_t$는 한 시간축을 따라 움직인다.
+
+Backward stochastic Volterra integral equation(BSVIE)의 대표적인 Type-I 형태는
+
+$$
+Y(t)
+=\psi(t)
++\int_t^T g(t,r,Y(r),Z(t,r))\,dr
+-\int_t^T Z(t,r)\,dW_r,
+\qquad 0\le t\le T.
+$$
+
+여기에는 두 시간이 있다.
+
+- $t$: 방정식을 시작하거나 선호를 고정하는 query/anchor 시간
+- $r$: $t$부터 $T$까지 실제로 적분하는 evolution 시간
+
+따라서 $Z$는 정사각형 전체가 아니라 적어도 상삼각형 $0\le t\le r\le T$ 위의 field다. Type-II BSVIE는 driver가 $Z(r,t)$까지 사용해 두 삼각형을 결합한다.
+
+## 왜 $Z(t,r)$가 필요한가
+
+고정된 $t$에 대해 $Y(t)$는 $\mathcal F_t$-measurable여야 한다. 미래의 random integral을 현재 정보로 되돌리기 위해 $Z(t,r)$가 martingale integrand 역할을 한다. Adapted M-solution에서는 방정식뿐 아니라
+
+$$
+Y(t)=\mathbb E[Y(t)]+\int_0^t Z(t,r)\,dW_r
+$$
+
+와 같은 martingale representation도 함께 요구한다. 이 조건은 $r<t$ 영역의 $Z(t,r)$까지 정의하며 해의 의미를 완성한다 [@yong2006bsvie].
+
+## 시간비일관성과 자연스럽게 만나는 이유
+
+일반 discount를 가진 continuation value는 시작시각 $t$를 잊을 수 없다. 예를 들어 recursive payoff를
+
+$$
+Y(t)
+=\Phi(t,X_T)
++\int_t^T
+g(t,r,X_r,u_r,Y(r),Z(t,r))\,dr
+-\int_t^T Z(t,r)\,dW_r
+$$
+
+로 두면, 첫 번째 인수 $t$가 preference anchor를 보존한다. Markov 문제에서 이 구조는 $(t,r,x)$를 인수로 갖는 equilibrium HJB field와 대응한다 [@wang2021bsviecontrol].
+
+## 이산화했을 때의 계산 구조
+
+격자 $0=t_0<\cdots<t_N=T$에서 $Y_i\approx Y(t_i)$, $Z_{ij}\approx Z(t_i,t_j)$라 두면 각 $i$마다 $j\ge i$를 다뤄야 한다. 저장량과 직접적인 회귀 문제 수가 대략 $N^2$로 늘어나는 이유다. 또한 제어가 $Z(t,t)$나 $\nabla_x\Theta(t,t,x)$ 같은 diagonal trace를 읽는다면, 삼각형 전체의 평균 오차가 작다는 사실만으로 diagonal 오차가 작다고 결론낼 수 없다.
+
+Deep BSVIE 방법은 두 시간과 상태를 입력으로 받는 neural field로 $Y$와 $Z$를 공동 근사해 nested time-stepping을 피하려 한다 [@andersson2026deepbsvie]. 그러나 loss의 norm, diagonal supervision, time discretization, function-approximation error는 별도로 구분해야 한다.
+
+## BSDE와 혼동하지 않을 점
+
+BSDE는 BSVIE의 특수한 모양으로 볼 수 있지만, 일반 BSVIE에는 semigroup/flow property가 없다. 그래서 BSDE의 비교정리, Markovian decoupling field, time-consistent dynamic programming 결과가 자동으로 옮겨오지 않는다. 논문마다 해의 종류(adapted solution, M-solution), Type-I/II, driver의 Lipschitz 조건을 확인해야 한다.

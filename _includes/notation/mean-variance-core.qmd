@@ -1,0 +1,53 @@
+## Mean-variance의 공통 문제
+
+한 위험자산을 예로 들면 wealth는
+
+$$
+dX_t
+=\left[r_tX_t+\pi_t(\mu_t-r_t)\right]dt
++\pi_t\sigma_t\,dW_t
+$$
+
+를 따른다. $\pi_t$는 위험자산에 배분한 금액, $r_t$는 무위험이율, $\mu_t-r_t$는 excess return, $\sigma_t$는 volatility다. 다자산에서는 $\pi_t\in\mathbb R^k$와 행렬 $\sigma_t$로 바꾼다.
+
+시각 $t$의 classical mean-variance criterion은 예를 들어
+
+$$
+J(t,x;\pi)
+=\mathbb E_{t,x}[X_T]
+-\frac{\gamma}{2}\operatorname{Var}_{t,x}(X_T),
+\qquad \gamma>0
+$$
+
+처럼 쓴다. 평균은 높이고 분산은 낮추려는 목적이다.
+
+## 왜 시간비일관적인가
+
+분산을
+
+$$
+\operatorname{Var}_t(X_T)
+=\mathbb E_t[X_T^2]-\mathbb E_t[X_T]^2
+$$
+
+로 쓰면 마지막 항은 조건부기대값의 **제곱**이다. $t<s<T$에 대해 total variance를 적용하면
+
+$$
+\operatorname{Var}_t(X_T)
+=\mathbb E_t[\operatorname{Var}_s(X_T)]
++\operatorname{Var}_t(\mathbb E_s[X_T]).
+$$
+
+시각 $s$의 self는 첫 항에 해당하는 미래 conditional variance만 직접 평가하지만, 시각 $t$의 self는 두 번째 항도 평가한다. 따라서 $t$에서 최적인 continuation이 $s$에서도 최적일 필요가 없고, 표준 Bellman recursion이 닫히지 않는다.
+
+## Equilibrium portfolio
+
+Feedback $\pi^*(t,x)$가 time-consistent equilibrium이라는 것은 미래 self의 전략을 주어진 것으로 놓았을 때 현재 self가 짧은 구간의 deviation으로 1차 이득을 얻지 못한다는 뜻이다. 이때 논문에 따라 다음이 달라진다.
+
+- open-loop process인지 closed-loop feedback인지
+- risk aversion $\gamma$가 상수인지 상태의존인지
+- 계수 $(r,\mu,\sigma)$가 deterministic, Markovian, 또는 일반 adapted process인지
+- market이 complete인지 incomplete인지
+- entropy를 넣은 randomized/exploratory policy인지
+
+Random coefficient의 closed-loop 해는 deterministic Riccati ODE 대신 backward stochastic Riccati equation/system으로 표현될 수 있다. 학습 논문에서는 policy distribution의 평균과 분산, equilibrium policy-iteration map을 추정 대상으로 삼기도 한다 [@dai2023learning].

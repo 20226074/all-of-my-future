@@ -1,0 +1,122 @@
+## 확률제어의 공통 표기
+
+완비 확률공간 $(\Omega,\mathcal F,(\mathcal F_t)_{0\le t\le T},\mathbb P)$가 $m$차원 Brownian motion $W$를 지닌다고 하자. 상태, 행동, 계수의 차원을 먼저 고정한다.
+
+$$
+X_t\in\mathbb R^d,
+\qquad
+u_t\in U\subseteq\mathbb R^k,
+$$
+
+$$
+b:[0,T]\times\mathbb R^d\times U\to\mathbb R^d,
+\qquad
+\sigma:[0,T]\times\mathbb R^d\times U\to\mathbb R^{d\times m}.
+$$
+
+제어 $u=(u_t)$는 현재까지의 정보만 사용하는 progressively measurable process이고, 아래 SDE와 보상이 잘 정의될 만큼 적분 가능하다고 가정한다. 제어된 상태는
+
+$$
+dX_t=b(t,X_t,u_t)\,dt+\sigma(t,X_t,u_t)\,dW_t,
+\qquad X_s=x
+$$
+
+를 따른다. 여기서는 보상을 **최대화**하는 부호 규약을 사용한다.
+
+$$
+J(s,x;u)
+=\mathbb E_{s,x}\!\left[
+\int_s^T f(r,X_r,u_r)\,dr+\Phi(X_T)
+\right].
+$$
+
+$f$는 running reward, $\Phi$는 terminal reward다. 비용 최소화 문제는 $f,\Phi$의 부호를 바꾸면 같은 표기로 옮길 수 있다.
+
+## 동적계획과 HJB 방정식
+
+시간일관적인 Markov 문제의 value function은
+
+$$
+V(t,x):=\sup_u J(t,x;u)
+$$
+
+이다. 아주 짧은 구간 $[t,t+h]$에서 행동 $a$를 고정하면 동적계획원리는
+
+$$
+V(t,x)
+=\sup_{a\in U}\mathbb E_{t,x}\!\left[
+\int_t^{t+h}f(r,X_r,a)\,dr+V(t+h,X_{t+h})
+\right]
++o(h)
+$$
+
+라고 말한다. $V\in C^{1,2}$라고 가정하고 Itô 공식을 적용한 뒤 $h$로 나누어 $h\downarrow0$을 취하면
+
+$$
+\partial_tV
++\sup_{a\in U}
+\left\{
+f(t,x,a)
++b(t,x,a)\cdot\nabla_xV
++\frac12\operatorname{Tr}
+\left[
+\sigma\sigma^\top(t,x,a)D_x^2V
+\right]
+\right\}=0,
+$$
+
+$$
+V(T,x)=\Phi(x)
+$$
+
+를 얻는다. 고전해가 없을 때에는 이 식을 viscosity solution 의미로 다루어야 한다.
+
+## Hamiltonian과 costate
+
+확률적 최대원리에서는
+
+$$
+H(t,x,a,p,q)
+:=f(t,x,a)+b(t,x,a)\cdot p
++\operatorname{Tr}\!\left(\sigma(t,x,a)^\top q\right)
+$$
+
+를 Hamiltonian으로 둔다. 여기서 $p\in\mathbb R^d$, $q\in\mathbb R^{d\times m}$다. 매끄러운 최적 제어 $u^*$에 대응하는 adjoint pair $(P,Q)$는 전형적으로
+
+$$
+dP_t=-\partial_xH(t,X_t^*,u_t^*,P_t,Q_t)\,dt+Q_t\,dW_t,
+\qquad
+P_T=\nabla_x\Phi(X_T^*)
+$$
+
+라는 backward SDE를 만족한다. 내부해라면
+
+$$
+\partial_aH(t,X_t^*,u_t^*,P_t,Q_t)=0
+$$
+
+가 1차 필요조건이고, 오목성 같은 추가 조건 아래에서는 Hamiltonian maximization이 충분조건이 될 수 있다. 제약된 $U$에서는 미분식보다
+
+$$
+u_t^*\in\arg\max_{a\in U}H(t,X_t^*,a,P_t,Q_t)
+$$
+
+가 안전한 표현이다.
+
+확산계수 $\sigma$가 제어와 상태에 무관하면 $q$가 행동 선택에 직접 들어가지 않고,
+
+$$
+H_0(t,x,a,p):=f(t,x,a)+b(t,x,a)\cdot p
+$$
+
+만으로 제어를 합성할 수 있다. 반대로 control-dependent diffusion에서는 일반적으로 $Q$와 2차 adjoint를 무시할 수 없다.
+
+## HJB와 costate가 만나는 지점
+
+$V$가 충분히 매끄럽고 최적 feedback $u^*(t,x)$가 존재하면, 최적 경로 위에서
+
+$$
+P_t=\nabla_xV(t,X_t^*)
+$$
+
+로 해석할 수 있다. 따라서 HJB는 value를 먼저 구하는 관점이고, 최대원리는 value의 상태미분인 costate와 forward state를 함께 구하는 관점이다. 둘은 경쟁하는 정의가 아니라, 정칙한 경우 같은 최적성 구조를 서로 다른 좌표로 표현한다.

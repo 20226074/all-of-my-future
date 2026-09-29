@@ -1,0 +1,96 @@
+---
+title: "Non-Markovian Mean-Variance Portfolio Selection Problems via Closed-Loop Equilibrium Strategies"
+short-title: "Su et al. (2024)"
+author:
+  - "Xizhi Su"
+  - "Tianxiao Wang"
+  - "Jiaqin Wei"
+  - "Chao Zhou"
+graph-summary: "Random market coefficients의 closed-loop mean-variance equilibrium을 backward stochastic Riccati system으로 표현한다."
+node-id: ref-su2024nonmarkovian
+node-type: reference
+reference-type: paper
+citekey: su2024nonmarkovian
+year: 2024
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-mean-variance
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+primary-node: topic-mean-variance
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - mean-variance
+  - non-markovian
+  - closed-loop-equilibrium
+  - stochastic-riccati
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Mean-Variance → Time-Inconsistent Control"}
+{{< include ../../_includes/notation/mean-variance-core.qmd >}}
+
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+:::
+
+## Non-Markovian market
+
+Vector portfolio $u_s$와 adapted random coefficients를 가진 wealth를
+
+$$
+dX_s
+=\left(r_sX_s+\beta_s^\top u_s\right)ds
++u_s^\top\sigma_s\,dW_s
+$$
+
+로 둔다. 목적은 부호·정규화 차이를 제외하면
+
+$$
+J_t(u)
+=\frac12\operatorname{Var}_t(X_T^u)
+-\gamma\mathbb E_t[X_T^u]
+$$
+
+인 constant-risk-aversion mean-variance criterion이다 [@su2024nonmarkovian]. 계수 자체가 filtration에 적응된 random process라 현재 wealth만으로 미래 시장을 요약할 수 없다.
+
+## Affine feedback와 stochastic Riccati system
+
+Closed-loop equilibrium 후보는
+
+$$
+u_s^*=\Theta_s^*X_s^*+\varphi_s^*
+$$
+
+형태다. Deterministic Riccati ODE 대신 여러 backward pair $(P_i,\Lambda_i)$가 결합된
+
+$$
+dP_i(s)
+=-\mathcal F_i(s,P_1,\ldots,P_k,\Lambda_1,\ldots,\Lambda_k)\,ds
++\Lambda_i(s)\,dW_s
+$$
+
+라는 backward stochastic Riccati system이 $\Theta^*,\varphi^*$를 결정한다. Positivity와 BMO-type 조건 아래 system의 solvability로 equilibrium을 구성한다.
+
+Random interest rate에서는 constant risk aversion이어도 $\Theta_s^*$가 일반적으로 0이 아니어 투자액이 wealth에 의존한다. $r$이 deterministic인 특수 경우에는 wealth slope가 사라지고 open-loop/closed-loop equilibrium 사이의 관계가 단순해진다.
+
+## 가정과 한계
+
+- Bounded adapted coefficients와 nondegenerate volatility
+- Riccati system을 위한 positivity, BMO/Malliavin-type 정칙성
+- 특수한 LQ/mean-variance 구조에 의존
+- Deep-learning 수치실험은 Riccati system을 근사하지만 a-posteriori equilibrium-gap certificate를 제공하지 않는다.
+
+## ACM과의 관계
+
+이 문제는 control-dependent diffusion, random coefficients, conditional variance를 동시에 가진다. 현재 ACM의 범위 밖이지만, stochastic coefficient와 2차 costate/Hessian을 포함하는 다음 확장의 좋은 목표다. ACM이 제공하는 residual-to-gap 연결을 이 BSRE setting에 만들 수 있는지가 핵심 질문이다.
+
+## 원문
+
+- 서지정보: [@su2024nonmarkovian]
+- [Springer 출판본](https://doi.org/10.1007/s00245-023-10085-3)
+- [후기 SSRN 원고](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3973861)
+:::

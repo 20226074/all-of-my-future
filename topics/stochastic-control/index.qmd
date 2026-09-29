@@ -1,0 +1,62 @@
+---
+title: "Stochastic Control"
+description: "확률적으로 움직이는 상태에 피드백을 가해 기대 보상이나 비용을 최적화하는 이론"
+graph-summary: "Controlled SDE, HJB, maximum principle, FBSDE를 잇는 확률제어의 공통 기반."
+node-id: topic-stochastic-control
+node-type: topic
+status: active
+maturity: developing
+priority: now
+importance: 5
+cluster: stochastic-control
+search-aliases:
+  - stochastic optimal control
+  - controlled diffusion
+  - HJB
+  - Hamilton-Jacobi-Bellman
+  - 확률제어
+tags:
+  - stochastic-control
+  - controlled-sde
+  - hjb
+  - maximum-principle
+relations:
+  - target: topic-sde
+    type: uses
+    note: "확률제어의 상태는 controlled SDE로 기술된다."
+    evidence:
+      - peng1990smp
+  - target: topic-high-dimensional-pde
+    type: connected-via
+    note: "Value HJB와 adjoint PDE를 수치적으로 풀 때 고차원 PDE solver가 필요하다."
+    evidence:
+      - andersson2023robustfbsde
+  - target: topic-adjoint-methods
+    type: connected-via
+    note: "Stochastic maximum principle은 backward costate를 통해 행동의 1차 조건을 표현한다."
+    evidence:
+      - peng1990smp
+---
+
+확률제어는 **noise가 있는 동역학에서 현재 정보만 사용해 행동을 선택하는 문제**다. 이 페이지의 표기가 HJB, maximum principle, deep FBSDE, 시간비일관적 equilibrium 문헌의 공통 계약이다.
+
+{{< include ../../_includes/notation/stochastic-control-core.qmd >}}
+
+## 어떤 해법을 택할 것인가
+
+- 상태차원이 낮고 Markov 구조가 명확하면 HJB PDE를 직접 푼다.
+- 차원이 높지만 semilinear PDE/BSDE 구조가 있으면 Monte Carlo와 deep BSDE 계열을 사용할 수 있다.
+- 제어의 1차 조건이나 parameter gradient가 중심이면 stochastic maximum principle과 adjoint BSDE가 자연스럽다.
+- 목적함수가 시간비일관적이면 하나의 Bellman value가 아니라 temporal selves의 equilibrium을 정의해야 한다.
+
+## 이 지도에서 이어지는 경로
+
+- [Adjoint & Costate Methods](../adjoint-methods/): costate와 adjoint-state의 공통 원리
+- [Time-Inconsistent Control](../time-inconsistent-control/): Bellman principle이 깨질 때의 equilibrium
+- [BSVIE](../bsvie/): 두 시간축을 보존하는 backward stochastic equation
+- [High-dimensional PDE Solvers](../high-dimensional-pde/): HJB·adjoint PDE의 계산
+- [Mean-Variance Portfolio Selection](../mean-variance/): 대표적인 시간비일관 금융 문제
+
+## 반드시 분리해서 볼 오차
+
+PDE/BSDE 표현이 맞다는 것, 시간격자 scheme이 수렴한다는 것, neural class가 해를 근사한다는 것, SGD가 좋은 parameter를 찾는다는 것, 계산된 policy가 실제 optimality/equilibrium condition을 만족한다는 것은 서로 다른 주장이다. 각 논문 노트에서는 이 층들을 분리한다.

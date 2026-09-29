@@ -1,0 +1,79 @@
+---
+title: "A Constructive Approach to Existence of Equilibria in Time-Inconsistent Stochastic Control Problems"
+short-title: "Nguwi & Privault (2022)"
+author:
+  - "Jiang Yu Nguwi"
+  - "Nicolas Privault"
+graph-summary: "시간분할 n-person game, adjoint BSDE, relaxed-control compactness로 continuous-time equilibrium 존재를 구성한다."
+node-id: ref-nguwi2022constructive
+node-type: reference
+reference-type: paper
+citekey: nguwi2022constructive
+year: 2022
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+  - topic-adjoint-methods
+primary-node: topic-time-inconsistent-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - equilibrium-existence
+  - n-person-game
+  - relaxed-control
+  - adjoint-bsde
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Control → Adjoint Methods"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+
+{{< include ../../_includes/concepts/adjoint-methods-core.qmd >}}
+:::
+
+## Constructive existence의 아이디어
+
+연속시간의 temporal selves를 바로 다루지 않고 $0=t_0<\cdots<t_n=T$로 나눠 각 구간을 한 player의 control period로 본다 [@nguwi2022constructive].
+
+1. 미래 player의 control을 고정한다.
+2. 현재 구간의 player problem을 maximum principle과 adjoint BSDE로 푼다.
+3. Backward induction으로 $n$-person equilibrium $\mu^{*n}$을 구성한다.
+4. Compact한 relaxed-control space에서 weakly convergent subsequence를 뽑는다.
+5. State와 adjoint의 stability로 diagonal Hamiltonian inequality를 극한에 전달한다.
+
+결과 limit $\mu^*$가 continuous-time equilibrium이다.
+
+## Anchor-indexed adjoint
+
+각 시작시각 $t$마다 미래 $s\ge t$의 adjoint pair $(p_{t,s},q_{t,s})$가 생기고, equilibrium action은 전체 field가 아니라 diagonal $p_{t,t}$로 결정된다. 개략적으로
+
+$$
+H(t,X_t,\nu,p_{t,t})
+\le H(t,X_t,\mu_t^*,p_{t,t})
+\qquad\forall\nu\in\mathcal P(U)
+$$
+
+가 minimization/maximization 부호규약에 맞게 성립한다.
+
+## 결과와 한계
+
+- Bounded smooth coefficients, compact action, uniformly nondegenerate diffusion 아래 relaxed equilibrium 존재
+- $n$-person equilibrium의 weak limit과 finite Markov-chain approximation
+- Scalar state/control과 relaxed controls에 초점을 둔다.
+- Subsequence existence이며 uniqueness나 quantitative convergence rate는 아니다.
+- Finite-chain 계산은 고차원에서 빠르게 비싸진다.
+
+## ACM과의 관계
+
+$p_{t,s}$와 control이 읽는 $p_{t,t}$는 ACM의 anchored costate field와 diagonal의 직접적인 maximum-principle 대응물이다. Nguwi-Privault는 더 일반적인 mean-field objective에서 존재를 구성하고, ACM은 더 좁은 Markov additive-noise 구조에서 costate 계산과 gap certificate를 제공한다.
+
+## 원문
+
+- 서지정보: [@nguwi2022constructive]
+- [SIAM DOI](https://doi.org/10.1137/20M1370446)
+- [arXiv 원문](https://arxiv.org/abs/2104.14334)
+:::

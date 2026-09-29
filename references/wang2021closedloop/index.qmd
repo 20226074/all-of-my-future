@@ -1,0 +1,81 @@
+---
+title: "Closed-Loop Equilibrium Strategies for General Time-Inconsistent Optimal Control Problems"
+short-title: "Wang & Zheng (2021)"
+author:
+  - "Tianxiao Wang"
+  - "Harry Zheng"
+graph-summary: "일반 objective와 random coefficients에서 closed-loop equilibrium을 integral BSPDE와 diagonal pointwise condition으로 특징화한다."
+node-id: ref-wang2021closedloop
+node-type: reference
+reference-type: paper
+citekey: wang2021closedloop
+year: 2021
+attached-to:
+  - entry-adjoint-costate-method
+  - topic-time-inconsistent-control
+  - topic-stochastic-control
+primary-node: topic-time-inconsistent-control
+reading-status: queued
+note-status: ai-draft
+source-checked: true
+priority: now
+last-reviewed: 2026-09-29
+tags:
+  - closed-loop-equilibrium
+  - extended-hjb
+  - bspde
+  - random-coefficients
+---
+
+::: {.reference-note-content}
+::: {.callout-note collapse="true" title="소속 개념 · Time-Inconsistent Control"}
+{{< include ../../_includes/notation/time-inconsistent-control-core.qmd >}}
+:::
+
+## 일반화한 목적함수
+
+논문은 controlled diffusion에 대해
+
+$$
+J(u;t,X_t)
+=\mathbb E_t\!\left[
+\int_t^Tg(t,r,X_t,X_r,u_r)\,dr
++h(t,X_t,X_T,\mathbb E_tX_T)
+\right]
+$$
+
+처럼 anchor $t$, 현재 state, terminal state, conditional mean이 모두 들어가는 목적을 다룬다 [@wang2021closedloop]. Non-exponential discount와 mean-variance를 함께 포괄할 수 있는 형태다.
+
+## 하나의 value가 아닌 field system
+
+Markovian reduction에서는 대략 다음 역할의 auxiliary field가 필요하다.
+
+- $\Lambda(t,y)$: equilibrium feedback 아래 terminal-state conditional mean
+- $\Xi(\tau,t,\gamma,y)$: anchor $(\tau,\gamma)$를 고정한 continuation cost
+- $\Pi(\tau,t,\gamma,y)$: terminal conditional-mean 인자에 대한 sensitivity
+
+각 field는 equilibrium feedback의 generator에 대한 backward PDE를 만족하고, 실제 value와 action condition은 diagonal
+
+$$
+(\tau,\gamma,y)=(t,x,x)
+$$
+
+에서 읽는다. 논문은 random/non-Markovian setting의 integral BSPDE characterization과 Markov setting의 pointwise characterization을 제시한다.
+
+## 주요 결과의 경계
+
+- Closed-loop equilibrium condition을 integral form과 pointwise form으로 특징화한다.
+- Mean-variance, non-exponential consumption/investment, utility-deviation-risk 예제를 한 틀에서 회수한다.
+- 관련 BSPDE/PDE의 classical solution과 높은 정칙성을 가정하는 verification/characterization 결과다.
+- 일반 문제에서 equilibrium 존재·유일성이나 고차원 numerical solver를 자동으로 제공하지 않는다.
+
+## ACM과의 관계
+
+$\Xi(\tau,t,\gamma,y)$는 ACM의 $\Theta^v(s,t,x)$보다 넓은 continuation field다. ACM은 이 umbrella의 additive-noise discounted-reward 부분으로 범위를 좁힌 뒤, diagonal gradient를 discount-free adjoint kernel로 factorize한다. 즉 Wang-Zheng은 넓은 이론적 좌표계, ACM은 그 한 구조의 계산·인증 방법이다.
+
+## 원문
+
+- 서지정보: [@wang2021closedloop]
+- [SIAM DOI](https://doi.org/10.1137/20M1377242)
+- [저자 공개 PDF](https://www.ma.ic.ac.uk/~hz/sicon2021.pdf)
+:::
